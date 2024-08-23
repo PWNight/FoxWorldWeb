@@ -1,0 +1,30 @@
+.players{
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    gap: 1em;
+    margin-top: 1em;
+}
+.player_card{
+    min-width: 350px;
+    border: 1px solid rgb(194, 194, 194);
+    border-radius: .5em;
+    display: flex;
+    gap: .5em;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1em;
+    transition: .5s;
+}
+.avatar{
+    user-select: none;
+}
+.info h1{
+    font-size: 2em;
+}
+.info p{
+    font-size: 1.2em;
+}
+.player_card:hover{
+    border: 1px solid #e87c3d;
+    transition: .5s;
+}
