@@ -32,7 +32,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
-  ],
+, "lib/mysql.js"  ],
   "exclude": [
     "node_modules"
   ]
