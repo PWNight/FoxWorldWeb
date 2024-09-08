@@ -2,28 +2,26 @@
 import { Button, buttonVariants } from "./ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-  } from "@/components/ui/dropdown-menu";
+import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger,} from "./ui/dropdown-menu";
 
 export function AccountButton() {
     const [userData,setUserData] = useState(Object)
     const router = useRouter()
+
     async function getSession(){
         const response = await fetch("http://localhost:3000/api/v1/users/me",{
             method: "GET"
         })
         if(response.ok){
             const data = await response.json()
-            setUserData(data.data.userData)  
+            setUserData(data.data.userData)
         }
     }
+
     useEffect(()=>{
         getSession()
     },[])
+
     if(Object.keys(userData).length != 0){
         return (
             <DropdownMenu>
@@ -49,6 +47,7 @@ export function AccountButton() {
         )
     }else{
         return (
+            //TODO: Переписать обращение с API на страницу localhost:3000/login и написать интерфейс для этой страницы
             <Button className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}
                 onClick={e => router.push('http://localhost:3000/api/v1/auth/login')}
             >Войти</Button>
