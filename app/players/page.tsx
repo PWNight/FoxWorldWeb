@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "@/components/Loading/Loading"
+import Loading from "@/components/load"
 import './players.css'
 
 export default function Players() {

@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -20,14 +19,14 @@ export default function Anchor({
   ...props
 }: AnchorProps) {
   const path = usePathname();
-  const isMatch = absolute
-    ? props.href.toString().split("/")[1] == path.split("/")[1]
-    : path === props.href;
+  const isMatch = absolute ? props.href.toString().split("/")[1] == path.split("/")[1] : path === props.href;
 
-  if (disabled)
+  if(disabled){
     return (
       <div className={cn(className, "cursor-not-allowed")}>{children}</div>
     );
+  }
+
   return (
     <Link className={cn(className, isMatch && activeClassName)} {...props}>
       {children}

@@ -1,9 +1,9 @@
 "use client"
-import { ModeToggle } from "@/components/theme-toggle";
+import { ModeToggle } from "./theme-toggle";
 import Link from "next/link";
 import Anchor from "./anchor";
 import { SheetLeftbar } from "./wiki/leftbar";
-import { SheetClose } from "@/components/ui/sheet";
+import { SheetClose } from "./ui/sheet";
 import { AccountButton } from "./account-button";
 
 export const NAVLINKS = [
@@ -32,6 +32,7 @@ export const NAVLINKS = [
     href: "/map",
   },
 ];
+//TODO: Добавить анимацию загрузки страницы
 export function Navbar() {
   return (
     <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-2 backdrop-filter backdrop-blur-xl bg-opacity-5">
