@@ -9,10 +9,6 @@ export const NAVLINKS = [
     href: "/",
   },
   {
-    title: "Правила",
-    href: "/rules",
-  },
-  {
     title: "Новости",
     href: `/news`,
   },
@@ -21,8 +17,8 @@ export const NAVLINKS = [
     href: `/wiki`,
   },
   {
-    title: "Игроки",
-    href: "/players",
+    title: "Статистика",
+    href: "/statistic",
   },
   {
     title: "Гильдии",
