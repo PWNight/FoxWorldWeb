@@ -18,11 +18,8 @@ export default async function NewsIndexPage() {
     <div className="w-full flex flex-col gap-1 sm:min-h-[91vh] min-h-[88vh] pt-2">
       <div className="mb-6 flex flex-col gap-2 ">
         <h1 className="text-3xl font-extrabold">
-          The latest News of this product
+          Новости сервера
         </h1>
-        <p className="text-muted-foreground">
-          All the latest News and news, straight from the team.
-        </p>
       </div>
       <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
         {news.map((news) => (
@@ -42,11 +39,11 @@ function NewsCard({
   slug,
 }: NewsMdxFrontmatter & { slug: string }) {
   return (
-    <div className="flex flex-col gap-2 items-start border rounded-md">
+    <div className="grid content-between gap-2 items-start border rounded-md">
       <div className="m-auto">
         <img src={imageUrl} alt={imageAlt}/>
       </div>
-      <div className="p-5 pt-7">
+      <div className="p-5 pt-7 flex flex-col gap-2">
         <Link
           href={`/news/${slug}`}
           className="sm:text-lg text-lg font-semibold -mt-1"
@@ -55,7 +52,7 @@ function NewsCard({
         </Link>
         <p className="text-sm text-muted-foreground">{description}</p>
         <p className="text-[13px] text-muted-foreground mb-1">
-          Published on {formatDate2(date)}
+          Опубликовано {formatDate2(date)}
         </p>
         <Link
           href={`/news/${slug}`}
@@ -65,7 +62,7 @@ function NewsCard({
             size: "sm",
           })}
         >
-          Read More
+          Читать
         </Link>
       </div>
     </div>

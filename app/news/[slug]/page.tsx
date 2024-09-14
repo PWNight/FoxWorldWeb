@@ -39,7 +39,7 @@ export default async function NewsPage({ params: { slug } }: PageProps) {
         })}
         href="/news"
       >
-        <ArrowLeftIcon className="w-4 h-4 mr-1.5" /> Back to News
+        <ArrowLeftIcon className="w-4 h-4 mr-1.5" /> Обратно к новостям
       </Link>
       <div className="flex flex-col gap-3 pb-7 w-full border-b mb-4">
         <p className="text-muted-foreground text-sm">
@@ -49,7 +49,6 @@ export default async function NewsPage({ params: { slug } }: PageProps) {
           {res.frontmatter.title}
         </h1>
         <div className="mt-6 flex flex-col gap-3">
-          <p className="text-sm text-muted-foreground">Posted by</p>
           <Authors authors={res.frontmatter.authors} />
         </div>
       </div>
