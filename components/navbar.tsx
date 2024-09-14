@@ -1,15 +1,7 @@
 import { ModeToggle } from "@/components/theme-toggle";
-import {
-  GithubIcon,
-  TwitterIcon,
-  HexagonIcon,
-  MoveUpRightIcon,
-} from "lucide-react";
 import Link from "next/link";
-import { buttonVariants } from "./ui/button";
 import Anchor from "./anchor";
 import { SheetLeftbar } from "./leftbar";
-import { page_routes } from "@/lib/routes-config";
 import { SheetClose } from "@/components/ui/sheet";
 export const NAVLINKS = [
   {
@@ -21,8 +13,12 @@ export const NAVLINKS = [
     href: "/rules",
   },
   {
+    title: "Новости",
+    href: `/news`,
+  },
+  {
     title: "Вики",
-    href: `/wiki${page_routes[0].href}`,
+    href: `/wiki`,
   },
   {
     title: "Игроки",
