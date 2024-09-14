@@ -140,6 +140,8 @@ export type Author = {
 };
 
 export type NewsMdxFrontmatter = BaseMdxFrontmatter & {
+  imageUrl: string;
+  imageAlt: string;
   date: string;
   authors: Author[];
 };
