@@ -36,7 +36,7 @@ const components = {
   StepperItem,
 };
 
-// can be used for other pages like blogs, Guides etc
+// can be used for other pages like news, Guides etc
 async function parseMdx<Frontmatter>(rawMdx: string) {
   return await compileMDX<Frontmatter>({
     source: rawMdx,
@@ -139,37 +139,37 @@ export type Author = {
   handleUrl: string;
 };
 
-export type BlogMdxFrontmatter = BaseMdxFrontmatter & {
+export type NewsMdxFrontmatter = BaseMdxFrontmatter & {
   date: string;
   authors: Author[];
 };
 
-export async function getAllBlogStaticPaths() {
+export async function getAllNewsStaticPaths() {
   try {
-    const blogFolder = path.join(process.cwd(), "/contents/blogs/");
-    const res = await fs.readdir(blogFolder);
+    const newsFolder = path.join(process.cwd(), "/contents/news/");
+    const res = await fs.readdir(newsFolder);
     return res.map((file) => file.split(".")[0]);
   } catch (err) {
     console.log(err);
   }
 }
 
-export async function getAllBlogs() {
-  const blogFolder = path.join(process.cwd(), "/contents/blogs/");
-  const files = await fs.readdir(blogFolder);
+export async function getAllNews() {
+  const newsFolder = path.join(process.cwd(), "/contents/news/");
+  const files = await fs.readdir(newsFolder);
   return await Promise.all(
     files.map(async (file) => {
-      const filepath = path.join(process.cwd(), `/contents/blogs/${file}`);
+      const filepath = path.join(process.cwd(), `/contents/news/${file}`);
       const rawMdx = await fs.readFile(filepath, "utf-8");
       return {
-        ...(await parseMdx<BlogMdxFrontmatter>(rawMdx)),
+        ...(await parseMdx<NewsMdxFrontmatter>(rawMdx)),
         slug: file.split(".")[0],
       };
     })
   );
 }
 
-export async function getBlogForSlug(slug: string) {
-  const blogs = await getAllBlogs();
-  return blogs.find((it) => it.slug == slug);
+export async function getNewsForSlug(slug: string) {
+  const news = await getAllNews();
+  return news.find((it) => it.slug == slug);
 }
