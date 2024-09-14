@@ -1,7 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import Link from "next/link";
-
+import {MoveUpRightIcon,} from "lucide-react";
 export default function Home() {
   return (
     <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center px-2 py-8">
@@ -22,14 +22,14 @@ export default function Home() {
         <div className="flex flex-row items-center gap-5">
         <Link
           href={`https://discord.gg/2yyeWQ5unZ`}
-          className={buttonVariants({ variant: "accent", className: "px-6", size: "lg" })}
+          className={buttonVariants({ variant: "default", className: "px-6", size: "lg" })}
         >
           Наш Discord сервер
         </Link>
         <Link
           href="https://t.me/foxworldteam"
           className={buttonVariants({
-            variant: "accent",
+            variant: "default",
             className: "px-6",
             size: "lg",
           })}

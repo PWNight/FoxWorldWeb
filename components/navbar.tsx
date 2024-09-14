@@ -1,27 +1,24 @@
-"use client"
-import { ModeToggle } from "./theme-toggle";
+import { ModeToggle } from "@/components/theme-toggle";
 import Link from "next/link";
 import Anchor from "./anchor";
-import { SheetLeftbar } from "./wiki/leftbar";
-import { SheetClose } from "./ui/sheet";
-import { AccountButton } from "./account-button";
-
+import { SheetLeftbar } from "./leftbar";
+import { SheetClose } from "@/components/ui/sheet";
 export const NAVLINKS = [
   {
     title: "Главная",
     href: "/",
   },
   {
-    title: "Правила",
-    href: "/rules",
+    title: "Новости",
+    href: `/news`,
   },
   {
     title: "Вики",
     href: `/wiki`,
   },
   {
-    title: "Игроки",
-    href: "/players",
+    title: "Статистика",
+    href: "/statistic",
   },
   {
     title: "Гильдии",
@@ -32,7 +29,7 @@ export const NAVLINKS = [
     href: "/map",
   },
 ];
-//TODO: Добавить анимацию загрузки страницы
+
 export function Navbar() {
   return (
     <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-2 backdrop-filter backdrop-blur-xl bg-opacity-5">
@@ -53,9 +50,6 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <div className="flex">
               <ModeToggle />
-            </div>
-            <div className='flex'>
-              <AccountButton/>
             </div>
           </div>
         </div>
@@ -80,12 +74,12 @@ export function NavMenu({ isSheet = false }) {
         const Comp = (
           <Anchor
             key={item.title + item.href}
-            className="h-full flex items-center duration-150 hover:text-[#F38F54]"
-            activeClassName = {isSheet ? 'text-[#F38F54]' : 'border-b-2 border-orange-400'}
+            activeClassName="text-primary font-semibold"
             absolute
+            className="flex items-center gap-1"
             href={item.href}
           >
-            {item.title}
+            {item.title}{" "}
           </Anchor>
         );
         return isSheet ? (
