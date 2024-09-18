@@ -12,10 +12,11 @@ export default function Home() {
         <h2 className="text-xl font-bold mb-4 sm:text-5xl">
         Наша работа - ваш комфорт
         </h2>
-        <p className="sm:text-xl max-w-[800px]">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequuntur aliquam porro natus! Officia ex maxime saepe sit ad perferendis temporibus, perspiciatis obcaecati, dignissimos cupiditate quos eaque corporis aliquid neque cum.
+        <p className="mb-8 sm:text-xl max-w-[800px] text-zinc-700">
+        Один сервер, многофункциональный сайт, реворк ботов и многое другое..
+        <br/>Сервер в разработке, о прогрессе можно узнать в наших соц. сетях.
         </p>
-        <span className="flex flex-row items-center gap-2 text-zinc-400 text-sm mb-7 -mb-12 max-[800px]:mb-12">
+        <span className="flex flex-row items-center gap-2 text-muted-foreground text-sm mb-7 max-[800px]:mb-12">
         <Heart className="w-4 h-4 mr-1" /> С любовью к своему делу
         </span>
         <div className="flex flex-row items-center gap-5">
