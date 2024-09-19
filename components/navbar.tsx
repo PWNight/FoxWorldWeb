@@ -3,6 +3,7 @@ import Link from "next/link";
 import Anchor from "./anchor";
 import { SheetLeftbar } from "./leftbar";
 import { SheetClose } from "@/components/ui/sheet";
+import { AccountButton } from "./account-button";
 export const NAVLINKS = [
   {
     title: "Главная",
@@ -50,6 +51,7 @@ export function Navbar() {
           <div className="flex items-center gap-2">
             <div className="flex">
               <ModeToggle />
+              <AccountButton/>
             </div>
           </div>
         </div>

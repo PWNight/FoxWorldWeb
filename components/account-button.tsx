@@ -3,6 +3,7 @@ import { Button, buttonVariants } from "./ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger,} from "./ui/dropdown-menu";
+import Anchor from "./anchor";
 
 export function AccountButton() {
     const [userData,setUserData] = useState(Object)
@@ -48,9 +49,7 @@ export function AccountButton() {
     }else{
         return (
             //TODO: Переписать обращение с API на страницу localhost:3000/login и написать интерфейс для этой страницы
-            <Button className={buttonVariants({ variant: "default", className: "px-6", size: "lg",})}
-                onClick={e => router.push('http://localhost:3000/api/v1/auth/login')}
-            >Войти</Button>
+            <Anchor href={'auth'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
         )
     }
 }
