@@ -48,8 +48,7 @@ export function AccountButton() {
         )
     }else{
         return (
-            //TODO: Переписать обращение с API на страницу localhost:3000/login и написать интерфейс для этой страницы
-            <Anchor href={'auth'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
+            <Anchor href={'/auth'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
         )
     }
 }
