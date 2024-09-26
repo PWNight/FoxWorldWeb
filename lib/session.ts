@@ -33,7 +33,7 @@ export async function createSession(token: any, expiresAt: any) {
   })
 }
 export async function updateSession() {
-    const session = cookies().get('session')?.value
+    const session = cookies().get('s_token')?.value
     const payload = await decrypt(session)
 
     if (!session || !payload) {
@@ -41,7 +41,7 @@ export async function updateSession() {
     }
 
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    cookies().set('session', session, {
+    cookies().set('s_token', session, {
       httpOnly: true,
       secure: true,
       expires: expires,
@@ -50,5 +50,5 @@ export async function updateSession() {
     })
 }
 export async function deleteSession() {
-  cookies().delete('session')
+  cookies().delete('s_token')
 }
