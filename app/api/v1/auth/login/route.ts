@@ -7,7 +7,7 @@ const client_secret = 'VZ7CeVBtXcsij-Pu6L3TXQy-GEfhRkmM'
 const redirect_uri = 'http://localhost:3000/api/v1/auth/login'
 const grant_type = 'authorization_code'
 const scope = 'identify%20guilds';
-const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=1275742113337839638&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fv1%2Fauth%2login&scope=identify+guilds'
+const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=1275742113337839638&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fv1%2Fauth%2Flogin&scope=identify+guilds'
 const discord_token_url = 'https://discord.com/api/oauth2/token'
 const discord_user_url = 'https://discord.com/api/users/@me'
 
@@ -22,8 +22,9 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
         const mainURL = new URL(discord_auth_url, request.url)
         return NextResponse.redirect(mainURL)
     } 
-    if(error){
-        console.log({ error: error }, { status: 500 })
+    if(error !== null || error !== ''){
+        const errorDescription = searchParams.get('error_description')
+        console.log({ error: error, errorDescription: errorDescription }, { status: 500 })
         return NextResponse.redirect(mainURL,302)
     }
     
