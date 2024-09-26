@@ -12,7 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
         return NextResponse.json({status: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }
 }
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
     const data = await request.json()
     try{
         const guildData = await getData(`SELECT * FROM guilds WHERE id = '${params.id}'`)
