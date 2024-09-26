@@ -49,7 +49,7 @@ export function Navbar() {
 
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <div className="flex">
+            <div className="flex items-center gap-1">
               <ModeToggle />
               <AccountButton/>
             </div>
@@ -63,7 +63,7 @@ export function Navbar() {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 px-6">
-      <img src="http://localhost:3000/icon.png" className="w-9 h-9 text-muted-foreground fill-current" />
+      <img src="logo.png" className="w-9 h-9 text-muted-foreground fill-current" />
       <h2 className="text-2xl font-bold text-[#F38F54]">FoxWorld</h2>
     </Link>
   );

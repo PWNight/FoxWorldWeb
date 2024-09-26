@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center px-2 py-8">
       <div className="flex flex-col m-auto gap-3">
-        <img className='h-36 w-36 mb-10' src="http://localhost:3000/icon.png"/>
+        <img className='h-36 w-36 mb-10' src="logo.png"/>
         <h1 className="text-[#F38F54] text-5xl sm:text-6xl font-bold">
           FoxWorld
         </h1>
