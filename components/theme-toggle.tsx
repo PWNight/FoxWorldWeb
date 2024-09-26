@@ -23,15 +23,15 @@ export function ModeToggle() {
           <span className="sr-only">Переключение темы</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent>
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          <Sun/>
+          <Sun className="m-auto"/>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <Moon/>
+          <Moon className="m-auto"/>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          <ComputerIcon/>
+          <ComputerIcon className="m-auto"/>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
