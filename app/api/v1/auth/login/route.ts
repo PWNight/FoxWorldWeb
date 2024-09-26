@@ -26,6 +26,7 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
         console.log({ error: error }, { status: 500 })
         return NextResponse.redirect(mainURL,302)
     }
+    
     const body = new URLSearchParams({
         client_id,
         client_secret,
@@ -34,24 +35,26 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
         code,
         scope,
     }).toString()
+
     const getAccess = await fetch(discord_token_url, {
         headers:{"Content-Type": "application/x-www-form-urlencoded"},
         method: "POST",
         body: body
     })
+
     if(!getAccess.ok){
         const data = await getAccess.json();
         console.log({ error: data.error, error_description: data.error_description }, { status: getAccess.status })
         return NextResponse.redirect(mainURL,302)
     }
+
     const accessData = await getAccess.json();
-    
     const getUser = await fetch(discord_user_url,{headers: { Authorization: `${accessData.token_type} ${accessData.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' }})
     const userData = await getUser.json()
 
     const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
     const sessionToken = await encrypt({ userData, expiresAt });
-    await createSession(sessionToken,expiresAt)
 
+    await createSession(sessionToken,expiresAt)
     return NextResponse.redirect(meURL,302)
 }
