@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { buttonVariants } from "./ui/button";
-import { Copyright, DiscIcon, HeartIcon, HexagonIcon, TriangleIcon } from "lucide-react";
 
 export function Footer() {
   return (
@@ -12,7 +11,7 @@ export function Footer() {
           </p>
         </div>
 
-        <div className="gap-4 items-center hidden md:flex">
+        <div className="items-center hidden md:flex">
           <FooterButtons />
         </div>
       </div>
@@ -25,19 +24,16 @@ export function FooterButtons() {
     <>
         <Link
           href={`https://discord.gg/2yyeWQ5unZ`}
-          className={buttonVariants({ variant: "accent", className: "", size: "lg" })}
+          className={buttonVariants({ variant: "link", className: "", size: "sm" })}
         >
-          <DiscIcon/>
+          <img src="disc.svg" className="h-8 w-8"/>
         </Link>
         <Link
           href="https://t.me/foxworldteam"
-          className={buttonVariants({
-            variant: "accent",
-            className: "",
-            size: "lg",
+          className={buttonVariants({ variant: "link", className: "", size: "sm",
           })}
         >
-          <DiscIcon/>
+          <img src="tg.svg" className="h-8 w-8"/>
         </Link>
     </>
   );
