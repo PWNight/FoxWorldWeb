@@ -1,21 +1,20 @@
 "use client"
 import { Button, buttonVariants } from "./ui/button";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import {DropdownMenu,DropdownMenuContent,DropdownMenuItem,DropdownMenuTrigger,} from "./ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Anchor from "./anchor";
 
 export function AccountButton() {
     const [userData,setUserData] = useState(Object)
-    const router = useRouter()
-
     async function getSession(){
         const response = await fetch("http://localhost:3000/api/v1/users/me",{
             method: "GET"
         })
         if(response.ok){
-            const data = await response.json()
-            setUserData(data.data.userData)
+            const json = await response.json()
+            if(json.data != null){
+                setUserData(json.data.userData)
+            }
         }
     }
 
@@ -48,7 +47,7 @@ export function AccountButton() {
         )
     }else{
         return (
-            <Anchor href={'/auth'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
+            <Anchor href={'/login'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
         )
     }
 }
