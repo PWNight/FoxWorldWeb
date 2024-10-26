@@ -6,17 +6,19 @@ export default function Home() {
     <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center px-2 py-8">
       <div className="flex flex-col m-auto gap-3">
         <img className='h-36 w-36 mb-10' src="logo.png"/>
-        <h1 className="text-[#F38F54] text-5xl sm:text-6xl font-bold">
-          FoxWorld
-        </h1>
-        <h2 className="font-bold mb-4 sm:text-3xl">
-        Наша работа - ваш комфорт
+        <div className="flex text-5xl sm:text-6xl font-bold gap-2 items-center">
+          <h1 className="text-[#F38F54]">FoxWorld</h1>
+          <h1>:</h1>
+          <h1>Новое начало</h1>
+        </div>
+        <h2 className="font-bold mb-4 sm:text-xl">
+        Технологичный ванильный сервер, основанный на строительстве и роле-плее.
         </h2>
         <p className="mb-8 max-w-[300px] sm:max-w-[800px]">
-        Lorem ipsum, dolor sit amet consectetur adipisicing elit. Consectetur velit id nobis facere voluptatem, nulla quas quae veniam. Aliquam officia est, explicabo fugit quod animi ullam tenetur officiis! Cumque, repudiandae!
+        Сервер находится на этапе разработки. Отслеживать прогресс и в числе первых узнать дату запуска сервера можно в наших социальных сетях.
         </p>
         <span className="flex flex-row items-center gap-2 text-muted-foreground text-sm mb-7 max-[800px]:mb-12">
-        <Heart className="w-4 h-4 mr-1" /> С любовью к своему делу
+        <Heart className="w-4 h-4 mr-1" /> С любовью к своему делу, команда разработки FoxWorld
         </span>
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
         <Link
