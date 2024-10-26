@@ -78,7 +78,7 @@ export function NavMenu({ isSheet = false }) {
             key={item.title + item.href}
             activeClassName="text-primary font-semibold"
             absolute
-            className="flex items-center gap-1"
+            className="flex items-center gap-1 hover:text-[#F38F54] transition-all"
             href={item.href}
           >
             {item.title}{" "}
