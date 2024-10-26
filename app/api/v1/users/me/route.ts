@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
     const session = request.cookies.get('s_token')
     
     if(session === undefined){
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        return NextResponse.json({ data: null, message: "Unauthorized" }, { status: 200 })
     }
     const userData = await decrypt(session?.value)
     if(userData === null){
