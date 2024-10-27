@@ -7,6 +7,7 @@ import { useEffect, useState } from"react";
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [error, setError] = useState('')
 
     const [usernameError, setUsernameError] = useState('')
     const [passwordError, setPasswordError] = useState('')
@@ -28,7 +29,7 @@ export default function Login() {
         getSession();
     }, [router]);
 
-    const handleSubmit = (e: any) => {
+    const handleSubmit = async(e: any) => {
         e.preventDefault();
 
         // Получение инпутов
@@ -38,6 +39,7 @@ export default function Login() {
         // Сброс ошибок
         setUsernameError('');
         setPasswordError('');
+        setError('')
         let hasError = false;
     
         // Валидация никнейма и пароля
@@ -65,7 +67,15 @@ export default function Login() {
         updateInputClass(passwordInput, passwordError);
     
         if (!hasError) {
-            // Обращение к API
+            const result = await fetch('/api/v1/auth/login',{
+                method: 'POST',
+                body: JSON.stringify({username,password})
+            })
+            if(result.ok){
+                router.push('/me')
+            }else{
+                setError('Неверный никнейм или пароль')
+            }
         }
     };
 
@@ -99,7 +109,10 @@ export default function Login() {
                     {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
                     <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли пароль?</Link>
                 </div>
-                <button type="submit" className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Войти</button>
+                <div>
+                    <button type="submit" className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Войти</button>
+                    {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
+                </div>
                 <div className="flex items-center gap-2 mt-4">
                     <p>Впервые здесь?</p>
                     <Link href='/registration' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Зарегистрируйтесь<UserPlusIcon/></Link>
