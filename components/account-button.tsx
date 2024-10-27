@@ -13,7 +13,7 @@ export function AccountButton() {
         if(response.ok){
             const json = await response.json()
             if(json.data != null){
-                setUserData(json.data.userData)
+                setUserData(json.data.data)
             }
         }
     }
@@ -27,7 +27,7 @@ export function AccountButton() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
-                    <img src={"https://mineskin.eu/helm/"+userData.username}></img>
+                    <img src={"https://mineskin.eu/helm/"+userData.last_nickname}></img>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-4 mt-2 py-10 flex flex-col gap-10 rounded-lg">

@@ -52,17 +52,17 @@ export async function POST(request: NextRequest) {
 
         let hashedPassword = await bcrypt.hash(password, rightSalt);
         hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
-        console.log(hashedPassword)
         
         if(user.hashed_password !== hashedPassword){
             return NextResponse.json({ success: false, message: "Неправильный никнейм или пароль" }, { status: 401 });
         }else{
-            const userData = JSON.stringify(user.uuid, user.last_nickname, user.email)
+            const {uuid, premium_uuid, last_nickname, email} = user;
+            const data = {uuid, premium_uuid, last_nickname, email}
             const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
-            const sessionToken = await encrypt({ userData, expiresAt });
+            const sessionToken = await encrypt({ data, expiresAt });
         
             await createSession(sessionToken, expiresAt)
-            return NextResponse.json({ success: true }, { status: 200 });
+            return NextResponse.json({ success: true, data: { uuid, premium_uuid, last_nickname, email } }, { status: 200 });
         }
     }
 }
