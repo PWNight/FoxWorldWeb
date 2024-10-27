@@ -2,24 +2,23 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export default function Profile() {
-    const [userData,setUserData] = useState(Object)
+export default function Me() {
+    const [userData, setUserData] = useState(Object)
     const router = useRouter()
     async function getSession(){
-        const response = await fetch("http://localhost:3000/api/v1/users/me",{
+        const response = await fetch("/api/v1/users/me",{
             method: "GET"
         })
         if(!response.ok){
-            router.push('http://localhost:3000/api/v1/auth/login')
+            router.push('/login')
             return
         }
-        const data = await response.json()
-        setUserData(data.data.userData)
+        const json = await response.json()
+        setUserData(json.data.data)
     }
     useEffect(()=>{
         getSession()
     },[])
-    console.log(userData)
     return (
         <>
         </>
