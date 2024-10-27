@@ -40,11 +40,11 @@ export default function SubLink({
       Comp
     )
   ) : (
-    <h4 className="font-medium sm:text-sm text-primary">{title}</h4>
+    <h4 className="font-medium text-xl text-primary">{title}</h4>
   );
 
   if (!items) {
-    return <div className="flex flex-col">{titleOrLink}</div>;
+    return <div className="flex flex-col text-lg hover:text-[#F38F54] transition-all">{titleOrLink}</div>;
   }
 
   return (
