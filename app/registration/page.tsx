@@ -89,7 +89,7 @@ export default function Registration() {
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
             <form className="text-sm w-auto sm:w-1/2 lg:w-1/3 mx-auto bg-neutral-100 dark:bg-gray-700 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
-                <h1 className="text-3xl sm:text-4xl mb-5 select-none">Авторизация</h1>
+                <h1 className="text-3xl sm:text-4xl mb-5 select-none">Регистрация</h1>
                 <div className="mb-5 select-none">
                     <label htmlFor="username" className="block mb-2 font-medium">Ваш никнейм</label>
                     <input
