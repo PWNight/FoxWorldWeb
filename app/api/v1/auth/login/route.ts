@@ -57,6 +57,15 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Неправильный никнейм или пароль" }, { status: 401 });
         }else{
             const {uuid, premium_uuid, last_nickname, email} = user;
+            // Получение пользователя из базы данных
+            const sql = 'SELECT * FROM profiles WHERE fk_uuid = ?';
+            const profiles: any = await query(sql, [uuid]);
+
+            if (profiles.length === 0) {
+                const sql = 'INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)'
+                await query(sql, [last_nickname, uuid])
+            }
+
             const data = {uuid, premium_uuid, last_nickname, email}
             const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
             const sessionToken = await encrypt({ data, expiresAt });
