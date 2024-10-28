@@ -34,15 +34,15 @@ export const NAVLINKS = [
 export function Navbar() {
   return (
     <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-2 backdrop-filter backdrop-blur-xl bg-opacity-5">
-      <div className=" mx-auto h-full flex items-center justify-between gap-2">
+      <div className="mx-auto h-full flex items-center justify-between gap-2">
         <div className="flex items-center gap-5 h-full">
-          <div className="flex items-center gap-8 h-full">
-            <div className="sm:flex hidden">
-              <Logo />
+          <div className="flex items-center h-full">
+            <div className="sm:flex sm:text-2xl text-lg">
+              <Logo/>
             </div>
-            <SheetLeftbar />
-            <div className="lg:flex hidden items-center gap-5 text-lg text-muted-foreground h-full select-none">
-              <NavMenu />
+            <SheetLeftbar/>
+            <div className="lg:flex hidden items-center gap-5 text-muted-foreground h-full select-none">
+              <NavMenu/>
             </div>
           </div>
         </div>
@@ -50,7 +50,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">
-              <ModeToggle />
+              <ModeToggle/>
               <AccountButton/>
             </div>
           </div>
@@ -64,7 +64,7 @@ export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 px-6">
       <img src="logo.png" className="w-9 h-9 text-muted-foreground fill-current" />
-      <h2 className="text-2xl font-bold text-[#F38F54]">FoxWorld</h2>
+      <h2 className="font-bold text-[#F38F54]">FoxWorld</h2>
     </Link>
   );
 }
