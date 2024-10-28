@@ -6,12 +6,12 @@ export default function Home() {
     <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center px-2 py-8">
       <div className="flex flex-col m-auto gap-3">
         <img className='h-36 w-36 mb-10' src="logo.png"/>
-        <div className="flex text-5xl sm:text-6xl font-bold gap-2 items-center">
+        <div className="flex text-4xl sm:text-6xl font-bold gap-2 sm:items-center sm:flex-row flex-col items-start">
           <h1 className="text-[#F38F54]">FoxWorld</h1>
-          <h1>:</h1>
+          <h1 className="sm:flex hidden">:</h1>
           <h1>Новое начало</h1>
         </div>
-        <h2 className="font-bold mb-4 sm:text-xl">
+        <h2 className="font-bold mb-4 sm:text-2xl">
         Технологичный ванильный сервер, основанный на строительстве и роле-плее.
         </h2>
         <p className="mb-8 max-w-[300px] sm:max-w-[800px]">
