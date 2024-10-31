@@ -117,11 +117,11 @@ export default function Registration() {
                     <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли пароль?</Link>
                 </div>
                 <button type="submit" className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Зарегистрироваться</button>
-                <div className="flex items-center gap-2 mt-4">
+                <div className="flex items-center gap-2 mt-4 justify-between">
                     <p>Уже есть аккаунт?</p>
                     <Link href='/login' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Войдите<LogIn/></Link>
                 </div>
-                <div className="flex items-center gap-2 mt-1">
+                <div className="flex items-center gap-2 mt-1 justify-between">
                     <p>Утеряли доступ к аккаунту?</p>
                     <Link href='/recover-account' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Восстановить аккаунт<LucideArrowDownLeftFromSquare/></Link>
                 </div>

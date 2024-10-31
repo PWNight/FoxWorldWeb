@@ -33,11 +33,11 @@ export const NAVLINKS = [
 
 export function Navbar() {
   return (
-    <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-2 backdrop-filter backdrop-blur-xl bg-opacity-5">
+    <nav className="w-full border-b h-16 sticky top-0 z-50 lg:px-4 px-1 backdrop-filter backdrop-blur-xl bg-opacity-5">
       <div className="mx-auto h-full flex items-center justify-between gap-2">
         <div className="flex items-center gap-5 h-full">
           <div className="flex items-center h-full">
-            <div className="sm:flex sm:text-2xl text-lg">
+            <div className="sm:flex sm:text-2xl text-sm">
               <Logo/>
             </div>
             <SheetLeftbar/>
@@ -62,7 +62,7 @@ export function Navbar() {
 
 export function Logo() {
   return (
-    <Link href="/" className="flex items-center gap-2.5 px-6">
+    <Link href="/" className="flex items-center gap-2.5 sm:px-2">
       <img src="logo.png" className="w-9 h-9 text-muted-foreground fill-current" />
       <h2 className="font-bold text-[#F38F54]">FoxWorld</h2>
     </Link>
