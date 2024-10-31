@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getData } from "@/lib/mysql";
+import { query } from "@/lib/mysql";
 
 export async function GET(request: NextRequest) {
     try{
-        let [guildData]:any = await await getData("SELECT * FROM guilds")
+        let guildData:any = await await query("SELECT * FROM guilds")
         if(!guildData){
             return NextResponse.json({message: "Guilds not found"}, {status:404})
         }
@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     const params = await request.json()
     try{
-        const guildData = await getData(`SELECT * FROM guilds WHERE name = ${params.name}`)
+        const guildData = await query(`SELECT * FROM guilds WHERE name = ${params.name}`)
         if(!guildData){
             //continue create guild
         }else{
