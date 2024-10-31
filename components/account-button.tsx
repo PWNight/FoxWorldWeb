@@ -3,41 +3,44 @@ import { Button, buttonVariants } from "./ui/button";
 import { useEffect, useState } from "react";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import Anchor from "./anchor";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export function AccountButton() {
-    const [userData,setUserData] = useState(Object)
-    const router = useRouter()
+    const [userData, setUserData] = useState(Object);
+    const pathname = usePathname();
+    const router = useRouter();
 
-    async function getSession(){
-        const response = await fetch("http://localhost:3000/api/v1/users/me",{
+    async function getSession() {
+        const response = await fetch("http://localhost:3000/api/v1/users/me", {
             method: "GET"
-        })
-        if(response.ok){
-            const json = await response.json()
-            if(json.data != null){
-                setUserData(json.data.data)
+        });
+        if (response.ok) {
+            const json = await response.json();
+            if (json.data != null) {
+                setUserData(json.data.data);
+            } else {
+                setUserData(null); // Если данных нет, сбрасываем состояние
             }
         }
     }
 
-    useEffect(()=>{
-        getSession()
-    },[])
+    useEffect(() => {
+        getSession(); // Обновляем данные пользователя при монтировании компонента и изменении маршрута
+    }, [pathname]);
 
-    if(Object.keys(userData).length != 0){
+    if (userData) {
         return (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
-                        <img className='rounded-lg' src={"https://mineskin.eu/helm/"+userData.last_nickname}></img>
+                        <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.last_nickname}></img>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-4 mt-2 py-10 flex flex-col gap-10 rounded-lg">
-                    <DropdownMenuItem className="text-xl">
+                    <DropdownMenuItem className="text-xl" onClick={() => router.push('/me')}>
                         <div className="flex items-center gap-5">
                             <div className="w-14 h-14">
-                                <img className='rounded-lg' src={"https://mineskin.eu/helm/"+userData.last_nickname}></img>
+                                <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.last_nickname}></img>
                             </div>
                             <div className="flex flex-col text-lg">
                                 <h1 className="text-2xl">{userData.last_nickname}</h1>
@@ -55,10 +58,10 @@ export function AccountButton() {
                     </div>
                 </DropdownMenuContent>
             </DropdownMenu>
-        )
-    }else{
+        );
+    } else {
         return (
-            <Anchor href={'/login'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg",})}>Войти</Anchor>
-        )
+            <Anchor href={'/login'} className={buttonVariants({ variant: "accent", className: "px-6", size: "lg", })}>Войти</Anchor>
+        );
     }
 }
