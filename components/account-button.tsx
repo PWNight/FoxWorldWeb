@@ -16,34 +16,29 @@ export function AccountButton() {
         });
         if (response.ok) {
             const json = await response.json();
-            if (json.data != null) {
-                setUserData(json.data.data);
-            } else {
-                setUserData(null); // Если данных нет, сбрасываем состояние
-            }
+            setUserData(json);
         }
     }
 
     useEffect(() => {
         getSession(); // Обновляем данные пользователя при монтировании компонента и изменении маршрута
     }, [pathname]);
-
-    if (userData) {
+    if (Object.keys(userData).length != 0) {
         return (
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon">
-                        <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.last_nickname}></img>
+                        <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.profile.nick}></img>
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="p-4 mt-2 py-10 flex flex-col gap-10 rounded-lg">
                     <DropdownMenuItem className="text-xl" onClick={() => router.push('/me')}>
                         <div className="flex items-center gap-5">
                             <div className="w-14 h-14">
-                                <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.last_nickname}></img>
+                                <img className='rounded-lg' src={"https://mineskin.eu/helm/" + userData.profile.nick}></img>
                             </div>
                             <div className="flex flex-col text-lg">
-                                <h1 className="text-2xl">{userData.last_nickname}</h1>
+                                <h1 className="text-2xl">{userData.profile.nick}</h1>
                                 <p>Без доступа</p>
                             </div>
                         </div>
