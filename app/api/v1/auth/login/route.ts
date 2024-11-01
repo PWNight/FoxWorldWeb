@@ -56,22 +56,24 @@ export async function POST(request: NextRequest) {
         if(user.hashed_password !== hashedPassword){
             return NextResponse.json({ success: false, message: "Неправильный никнейм или пароль" }, { status: 401 });
         }else{
-            const {uuid, premium_uuid, last_nickname, email} = user;
+            const {uuid, last_nickname} = user;
+
             // Получение пользователя из базы данных
             const sql = 'SELECT * FROM profiles WHERE fk_uuid = ?';
-            const profiles: any = await query(sql, [uuid]);
+            let profiles: any = await query(sql, [uuid]);
 
             if (profiles.length === 0) {
                 const sql = 'INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)'
                 await query(sql, [last_nickname, uuid])
             }
 
-            const data = {uuid, premium_uuid, last_nickname, email}
+            // Заносим UUID и Никнейм в сессию, остальную информация будет поступать из БД
+            const data = {uuid, last_nickname}
             const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
             const sessionToken = await encrypt({ data, expiresAt });
         
             await createSession(sessionToken, expiresAt)
-            return NextResponse.json({ success: true, data: { uuid, premium_uuid, last_nickname, email } }, { status: 200 });
+            return NextResponse.json({ success: true, data: { uuid, last_nickname } }, { status: 200 });
         }
     }
 }
