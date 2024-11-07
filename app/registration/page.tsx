@@ -20,7 +20,7 @@ export default function Registration() {
             });
             if (response.ok) {
                 const json = await response.json();
-                if (json != null) {
+                if (Object.keys(json).length != 0) {
                     router.push('/');
                 }
             }
