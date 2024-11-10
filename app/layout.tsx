@@ -30,7 +30,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <main className="sm:container mx-auto w-[85vw] h-auto">
+          <main className="sm:container mx-auto w-[85vw]">
             {children}
           </main>
           <Footer/>
