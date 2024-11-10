@@ -20,7 +20,7 @@ export default function RootLayout({
         <title>FoxWorld</title>
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-regular scroll-smooth`}
+        className={`${GeistSans.variable} ${GeistMono.variable} font-regular scroll-smooth min-h-screen grid grid-rows-[64px,1fr,64px]`}
         suppressHydrationWarning
       >
         <ThemeProvider

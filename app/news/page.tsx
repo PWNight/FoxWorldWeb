@@ -15,7 +15,7 @@ export default async function NewsIndexPage() {
       stringToDate(a.frontmatter.date).getTime()
   );
   return (
-    <div className="w-full flex flex-col gap-1 sm:min-h-[91vh] min-h-[88vh] pt-2">
+    <div className="w-full flex flex-col gap-1 pt-2">
       <div className="mb-6 flex flex-col gap-2 ">
         <h1 className="text-3xl font-extrabold">
           Новости сервера

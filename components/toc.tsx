@@ -6,7 +6,7 @@ export default async function Toc({ path }: { path: string }) {
   const tocs = await getWikiTocs(path);
 
   return (
-    <div className="lg:flex hidden toc flex-[1] min-w-[230px] py-8 sticky top-16 h-[95.95vh]">
+    <div className="lg:flex hidden toc flex-[1] min-w-[230px] py-8 sticky top-16">
       <div className="flex flex-col gap-3 w-full pl-2">
         <h3 className="font-medium text-sm">Содержание:</h3>
         <ScrollArea className="pb-4 pt-0.5">

@@ -3,7 +3,7 @@ import { Heart } from "lucide-react";
 import Link from "next/link";
 export default function Home() {
   return (
-    <div className="flex flex-col justify-center px-2 py-8">
+    <div className="flex flex-col justify-center px-2 py-8 my-auto h-full">
       <div className="flex flex-col m-auto gap-3">
         <img className='h-28 w-28 mb-10' src="logo.png"/>
         <div className="flex text-4xl sm:text-6xl font-bold gap-2 sm:items-center sm:flex-row flex-col items-start">
