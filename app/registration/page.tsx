@@ -88,7 +88,7 @@ export default function Registration() {
 
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
-            <form className="text-sm w-auto sm:w-1/2 lg:w-1/3 mx-auto bg-neutral-100 dark:bg-gray-700 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
+            <form className="text-sm w-auto sm:w-1/2 lg:w-1/3 mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
                 <h1 className="text-3xl sm:text-4xl mb-5 select-none">Регистрация</h1>
                 <div className="mb-5 select-none">
                     <label htmlFor="username" className="block mb-2 font-medium">Ваш никнейм</label>
@@ -98,7 +98,7 @@ export default function Registration() {
                         id="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
                         placeholder="PWNight"
                     />
                     {usernameError && <p className="text-red-400 mt-1 mb-5">{usernameError}</p>}
@@ -111,7 +111,7 @@ export default function Registration() {
                         id="password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                        className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
                     />
                     {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
                     <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли пароль?</Link>
