@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SubAnchor from "@/components/subanchor";
-import { Castle, House, Landmark, ShieldCheck } from "lucide-react";
+import { Castle, CloudUpload, House, Landmark, ShieldCheck, Store, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function Me() {
     const [userData, setUserData] = useState(Object)
@@ -16,61 +18,99 @@ export default function Me() {
             return
         }
         const json = await response.json()
+        console.log(json)
         setUserData(json)
     }
     useEffect(()=>{
         getSession()
     },[])
-    return (
-        <div className="grid grid-cols-[300px,1fr] gap-6 mt-6">
-            <div className="flex items-center">
-                <div className="bg-neutral-100 dark:bg-neutral-800 rounded-md flex flex-col gap-5 px-6 py-4 lg:min-w-[300px]">
-                    <h1 className="border-b text-xl my-2 w-full text-center">Меню навигации</h1>
-                    <div className="w-full flex flex-col gap-2 items-center">
-                        <SubAnchor
-                            key='/me'
-                            activeClassName="bg-orange-300"
-                            absolute
-                            className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
-                            href='/me'
-                        >
-                        <House/>Главная страница
-                        </SubAnchor>
-                        <SubAnchor
-                            key='/me/security'
-                            activeClassName="bg-orange-300"
-                            absolute
-                            className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
-                            href='/me/security'
-                        >
-                        <ShieldCheck/>Настройки безопасности
-                        </SubAnchor>
-                        <SubAnchor
-                            key='/me/bank'
-                            activeClassName="bg-orange-300"
-                            absolute
-                            className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
-                            href='/me/bank'
-                        >
-                        <Landmark/> Управление средствами
-                        </SubAnchor>
-                        <SubAnchor
-                            key='/me/guilds'
-                            activeClassName="bg-orange-300"
-                            absolute
-                            className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
-                            href='/me/guilds'
-                        >
-                        <Castle/> Управление гильдиями
-                        </SubAnchor>
+    if(Object.keys(userData).length != 0){
+        return (
+            <div className="grid lg:grid-cols-[300px,1fr] gap-6 mt-6">
+                <div className="flex items-start">
+                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-md flex flex-col gap-5 px-6 py-4">
+                        <h1 className="border-b text-xl my-2 w-full text-center">Меню навигации</h1>
+                        <div className="w-full flex flex-col gap-2 items-center">
+                            <SubAnchor
+                                key='/me'
+                                activeClassName="bg-orange-300"
+                                absolute
+                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                href='/me'
+                            >
+                            <House/>Главная страница
+                            </SubAnchor>
+                            <SubAnchor
+                                key='/me/donate'
+                                activeClassName="bg-orange-300"
+                                absolute
+                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                href='/me/donate'
+                            >
+                            <Store/> Магазин сервера
+                            </SubAnchor>
+                            <SubAnchor
+                                key='/me/security'
+                                activeClassName="bg-orange-300"
+                                absolute
+                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                href='/me/security'
+                            >
+                            <ShieldCheck/> Настройки безопасности
+                            </SubAnchor>
+                            <SubAnchor
+                                key='/me/bank'
+                                activeClassName="bg-orange-300"
+                                absolute
+                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                href='/me/bank'
+                            >
+                            <Landmark/> Управление средствами
+                            </SubAnchor>
+                            <SubAnchor
+                                key='/me/guilds'
+                                activeClassName="bg-orange-300"
+                                absolute
+                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                href='/me/guilds'
+                            >
+                            <Castle/> Управление гильдиями
+                            </SubAnchor>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-                <div className="bg-neutral-100 grid grid-cols-[.3fr,1fr]">
+                <div className="grid lg:grid-cols-3 lg:grid-rows-2 gap-2">
+                    <div className="bg-neutral-100 p-4">
+                        <div className="border-b">
+                            <h1 className="text-2xl">Информация об аккаунте</h1>
+                            <p className="text-muted-foreground">Основная информация о вас</p>
+                        </div>
+                        <div className="flex flex-col gap-4 my-2">
+                            <div>
+                                <div className="flex gap-2"><p className="text-muted-foreground">Никннейм:</p><p>{userData.profile.nick}</p></div>
+                                <div className="flex gap-2"><p className="text-muted-foreground">Дата регистрации:</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
+                                <div className="flex gap-2"><p className="text-muted-foreground">Дата последнего входа на сервер:</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-neutral-100"></div>
+                    <div className="bg-neutral-100"></div>
+                    <div className="bg-neutral-100 p-4 max-h-[180px]">
+                        <div className="border-b">
+                            <h1 className="text-2xl">Управление скином</h1>
+                            <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
+                        </div>
+                        <div className="flex flex-col gap-4 my-2">
+                            <div className="flex gap-1"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p><Link href='/rules' className="text-orange-400 hover:text-orange-500 transition-all">правила сервера</Link></div>
+                            <div className="flex gap-5">
+                                <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл скина</Button>
+                                <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-neutral-100 lg:col-span-2"></div>
                 </div>
-                <div className="bg-neutral-100 col-span-2"></div>
             </div>
-        </div>
-    )
+        )
+    }
 }
