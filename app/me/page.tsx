@@ -26,52 +26,52 @@ export default function Me() {
     },[])
     if(Object.keys(userData).length != 0){
         return (
-            <div className="grid lg:grid-cols-[300px,1fr] gap-6 mt-6">
-                <div className="flex items-start">
+            <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
+                <div className="sm:flex items-start">
                     <div className="bg-neutral-100 dark:bg-neutral-800 rounded-md flex flex-col gap-5 px-6 py-4">
                         <h1 className="border-b text-xl my-2 w-full text-center">Меню навигации</h1>
                         <div className="w-full flex flex-col gap-2 items-center">
                             <SubAnchor
                                 key='/me'
-                                activeClassName="bg-orange-300"
+                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
                                 absolute
-                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me'
                             >
                             <House/>Главная страница
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/donate'
-                                activeClassName="bg-orange-300"
+                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
                                 absolute
-                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/donate'
                             >
                             <Store/> Магазин сервера
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/security'
-                                activeClassName="bg-orange-300"
+                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
                                 absolute
-                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/security'
                             >
                             <ShieldCheck/> Настройки безопасности
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/bank'
-                                activeClassName="bg-orange-300"
+                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
                                 absolute
-                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/bank'
                             >
                             <Landmark/> Управление средствами
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/guilds'
-                                activeClassName="bg-orange-300"
+                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
                                 absolute
-                                className="flex items-center gap-1 hover:bg-orange-200 transition-all w-full py-2 px-1 rounded-sm"
+                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/guilds'
                             >
                             <Castle/> Управление гильдиями
@@ -85,25 +85,25 @@ export default function Me() {
                             <h1 className="text-2xl">Информация об аккаунте</h1>
                             <p className="text-muted-foreground">Основная информация о вас</p>
                         </div>
-                        <div className="flex flex-col gap-4 my-2">
-                            <div>
+                        <div className="my-2">
+                            <div className="flex flex-col gap-1">
                                 <div className="flex gap-2"><p className="text-muted-foreground">Никннейм:</p><p>{userData.profile.nick}</p></div>
-                                <div className="flex gap-2"><p className="text-muted-foreground">Дата регистрации:</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
-                                <div className="flex gap-2"><p className="text-muted-foreground">Дата последнего входа на сервер:</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
+                                <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата регистрации:</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
+                                <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата последнего входа на сервер:</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
                             </div>
                         </div>
                     </div>
                     <div className="bg-neutral-100"></div>
                     <div className="bg-neutral-100"></div>
-                    <div className="bg-neutral-100 p-4 max-h-[180px]">
+                    <div className="bg-neutral-100 p-4">
                         <div className="border-b">
                             <h1 className="text-2xl">Управление скином</h1>
                             <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
                         </div>
                         <div className="flex flex-col gap-4 my-2">
                             <div className="flex gap-1"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p><Link href='/rules' className="text-orange-400 hover:text-orange-500 transition-all">правила сервера</Link></div>
-                            <div className="flex gap-5">
-                                <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл скина</Button>
+                            <div className="flex xs:flex-row flex-col gap-2 xs:gap-5">
+                                <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
                                 <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
                             </div>
                         </div>
