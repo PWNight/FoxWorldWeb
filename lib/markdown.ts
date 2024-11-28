@@ -6,37 +6,44 @@ import rehypePrism from "rehype-prism-plus";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
-import { page_routes } from "./routes-config";
+import { page_routes, ROUTES } from "./routes-config";
 import { visit } from "unist-util-visit";
+import matter from "gray-matter";
 
 // custom components imports
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {Table,TableHeader,TableBody,TableFooter,TableHead,TableRow,TableCell,TableCaption,} from "@/components/ui/table"
-import Pre from "@/components/pre";
-import Note from "@/components/note";
-import { Stepper, StepperItem } from "@/components/ui/stepper";
+import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Pre from "@/components/markdown/pre";
+import Note from "@/components/markdown/note";
+import { Stepper, StepperItem } from "@/components/markdown/stepper";
+import Image from "@/components/markdown/image";
+import Link from "@/components/markdown/link";
+import Outlet from "@/components/markdown/outlet";
 
 // add custom components
 const components = {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
   Table,
   TableBody,
   TableCaption,
   TableCell,
   TableFooter,
-  TableHeader,
   TableHead,
+  TableHeader,
   TableRow,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
   pre: Pre,
   Note,
   Stepper,
   StepperItem,
+  img: Image,
+  a: Link,
+  Outlet,
 };
 
-// can be used for other pages like news, Guides etc
+// can be used for other pages like blogs, Guides etc
 async function parseMdx<Frontmatter>(rawMdx: string) {
   return await compileMDX<Frontmatter>({
     source: rawMdx,
@@ -58,16 +65,16 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
   });
 }
 
-// logic for wiki
+// logic for docs
 
-type BaseMdxFrontmatter = {
+export type BaseMdxFrontmatter = {
   title: string;
   description: string;
 };
 
-export async function getWikiForSlug(slug: string) {
+export async function getDocsForSlug(slug: string) {
   try {
-    const contentPath = getWikiContentPath(slug);
+    const contentPath = getDocsContentPath(slug);
     const rawMdx = await fs.readFile(contentPath, "utf-8");
     return await parseMdx<BaseMdxFrontmatter>(rawMdx);
   } catch (err) {
@@ -75,8 +82,8 @@ export async function getWikiForSlug(slug: string) {
   }
 }
 
-export async function getWikiTocs(slug: string) {
-  const contentPath = getWikiContentPath(slug);
+export async function getDocsTocs(slug: string) {
+  const contentPath = getDocsContentPath(slug);
   const rawMdx = await fs.readFile(contentPath, "utf-8");
   // captures between ## - #### can modify accordingly
   const headingsRegex = /^(#{2,4})\s(.+)$/gm;
@@ -105,14 +112,50 @@ export function getPreviousNext(path: string) {
 
 function sluggify(text: string) {
   const slug = text.toLowerCase().replace(/\s+/g, "-");
-  return slug.replace(/[^а-я0-9-]/g, "");
+  return slug.replace(/[^a-z0-9-]/g, "");
 }
 
-function getWikiContentPath(slug: string) {
-  return path.join(process.cwd(), "/contents/wiki/", `${slug}/index.mdx`);
+function getDocsContentPath(slug: string) {
+  return path.join(process.cwd(), "/contents/docs/", `${slug}/index.mdx`);
 }
 
-// for copying the code
+function justGetFrontmatterFromMD<Frontmatter>(rawMd: string): Frontmatter {
+  return matter(rawMd).data as Frontmatter;
+}
+
+export async function getAllChilds(pathString: string) {
+  const items = pathString.split("/").filter((it) => it != "");
+  let page_routes_copy = ROUTES;
+
+  let prevHref = "";
+  for (const it of items) {
+    const found = page_routes_copy.find((innerIt) => innerIt.href == `/${it}`);
+    if (!found) break;
+    prevHref += found.href;
+    page_routes_copy = found.items ?? [];
+  }
+  if (!prevHref) return [];
+
+  return await Promise.all(
+    page_routes_copy.map(async (it) => {
+      const totalPath = path.join(
+        process.cwd(),
+        "/contents/docs/",
+        prevHref,
+        it.href,
+        "index.mdx",
+      );
+      const raw = await fs.readFile(totalPath, "utf-8");
+      return {
+        ...justGetFrontmatterFromMD<BaseMdxFrontmatter>(raw),
+        href: `/docs${prevHref}${it.href}`,
+      };
+    }),
+  );
+}
+
+// for copying the code in pre
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const preProcess = () => (tree: any) => {
   visit(tree, (node) => {
     if (node?.type === "element" && node?.tagName === "pre") {
@@ -123,11 +166,11 @@ const preProcess = () => (tree: any) => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const postProcess = () => (tree: any) => {
   visit(tree, "element", (node) => {
     if (node?.type === "element" && node?.tagName === "pre") {
       node.properties["raw"] = node.raw;
-      // console.log(node);
     }
   });
 };
@@ -140,38 +183,45 @@ export type Author = {
 };
 
 export type NewsMdxFrontmatter = BaseMdxFrontmatter & {
-  imageUrl: string;
-  imageAlt: string;
   date: string;
   authors: Author[];
+  cover: string;
 };
 
 export async function getAllNewsStaticPaths() {
   try {
-    const newsFolder = path.join(process.cwd(), "/contents/news/");
+    const newsFolder = path.join(process.cwd(), "/contents/Newss/");
     const res = await fs.readdir(newsFolder);
     return res.map((file) => file.split(".")[0]);
   } catch (err) {
     console.log(err);
   }
 }
-
 export async function getAllNews() {
   const newsFolder = path.join(process.cwd(), "/contents/news/");
   const files = await fs.readdir(newsFolder);
-  return await Promise.all(
+  const uncheckedRes = await Promise.all(
     files.map(async (file) => {
+      if (!file.endsWith(".mdx")) return undefined;
       const filepath = path.join(process.cwd(), `/contents/news/${file}`);
       const rawMdx = await fs.readFile(filepath, "utf-8");
       return {
-        ...(await parseMdx<NewsMdxFrontmatter>(rawMdx)),
+        ...justGetFrontmatterFromMD<NewsMdxFrontmatter>(rawMdx),
         slug: file.split(".")[0],
       };
-    })
+    }),
   );
+  return uncheckedRes.filter((it) => !!it) as (NewsMdxFrontmatter & {
+    slug: string;
+  })[];
 }
 
 export async function getNewsForSlug(slug: string) {
-  const news = await getAllNews();
-  return news.find((it) => it.slug == slug);
+  const newsFile = path.join(process.cwd(), "/contents/news/", `${slug}.mdx`);
+  try {
+    const rawMdx = await fs.readFile(newsFile, "utf-8");
+    return await parseMdx<NewsMdxFrontmatter>(rawMdx);
+  } catch {
+    return undefined;
+  }
 }
