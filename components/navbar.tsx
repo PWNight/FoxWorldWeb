@@ -14,8 +14,8 @@ export const NAVLINKS = [
     href: `/news`,
   },
   {
-    title: "Вики",
-    href: `/wiki`,
+    title: "Документация",
+    href: `/docs`,
   },
   {
     title: "Статистика",
