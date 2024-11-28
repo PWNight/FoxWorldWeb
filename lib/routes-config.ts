@@ -16,8 +16,8 @@ export const ROUTES: EachRoute[] = [
     noLink: true,
     items: [
       { title: "О нас", href: "/about" },
-      { title: "FAQ", href: "/commands" },
-      { title: "Команды", href: "/faq" },
+      { title: "Команды", href: "/commands" },
+      { title: "FAQ", href: "/faq" },
       { title: "Начать игру", href: "/start-game" },
     ],
   },
