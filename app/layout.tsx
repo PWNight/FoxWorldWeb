@@ -3,7 +3,6 @@ import { Navbar } from "@/components/navbar";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
-//TODO: Вставить когда напишу футер
 import { Footer } from "@/components/footer";
 
 export default function RootLayout({
@@ -12,11 +11,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="ru" suppressHydrationWarning>
       <head>
-        <link rel="shortcut icon" href="http://localhost:3000/logo.png" />
-        <link rel="shortcut" href="http://localhost:3000/tg.svg" />
-        <link rel="shortcut" href="http://localhost:3000/disc.svg" />
+        <link rel="shortcut icon" href="/logo.png" />
         <title>FoxWorld</title>
       </head>
       <body
