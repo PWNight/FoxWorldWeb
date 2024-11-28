@@ -10,6 +10,7 @@ const scope = 'identify%20guilds';
 const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=1275742113337839638&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fv1%2Fauth%2Flogin&scope=identify+guilds'
 const discord_token_url = 'https://discord.com/api/oauth2/token'
 const discord_user_url = 'https://discord.com/api/users/@me'
+const bot_token = 'MTI3NTc0MjExMzMzNzgzOTYzOA.GRS9M6.Q2tCUjbVBJ1JWO1AOHWJthaV7C2ycqg70VWCIw'
 
 export async function GET(request: NextRequest, response: NextApiResponse) {
     const meURL = new URL("/me", request.url)
