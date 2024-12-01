@@ -17,7 +17,7 @@ export default function Me() {
             method: "GET"
         })
         const json = await response.json()
-        
+
         if(Object.keys(json).length == 0){
             router.push('/login')
         }else{
@@ -134,7 +134,7 @@ export default function Me() {
                             </div>
                             <div className="my-2">
                                 <div>
-                                    <Accordion type='multiple' className="gap-2 grid xl:grid-cols-3">
+                                    <Accordion type='multiple' className="gap-2 grid 2xl:grid-cols-2">
                                         <AccordionItem value="online">
                                             <AccordionTrigger>
                                                 <div className="flex gap-2"><p className="text-muted-foreground">Статистика активности</p></div>
