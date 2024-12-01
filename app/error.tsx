@@ -16,18 +16,19 @@ export default function Error({
   }, [error]);
 
   return (
-    <div className="min-h-[99vh] px-2 py-8 flex flex-col gap-3 items-start">
-      <div>
-        <h2 className="text-5xl font-bold">Oops!</h2>
-        <p className="text-muted-foreground">Something went wrong!</p>
+    <div className="min-h-[99vh] px-2 py-8 flex flex-col gap-5 items-start">
+      <div className="flex flex-col gap-2">
+        <h2 className="text-5xl font-bold">Произошла ошибка!</h2>
+        <p className="text-muted-foreground">Кажется, что-то пошло не так. Попробуйте заново загрузить страницу или вернитесь на главную и сообщите команде разработки о баге.</p>
       </div>
       <Button
+        variant='accent'
         onClick={
           // Attempt to recover by trying to re-render the segment
           () => reset()
         }
       >
-        Try again
+        Попытать удачу
       </Button>
     </div>
   );

@@ -10,7 +10,6 @@ export function Footer() {
             FoxWorld © 2022 - 2024
           </p>
         </div>
-
         <div className="items-center hidden md:flex">
           <FooterButtons />
         </div>

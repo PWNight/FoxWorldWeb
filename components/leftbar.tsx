@@ -32,7 +32,7 @@ export function SheetLeftbar() {
         </Button>
       </SheetTrigger>
       <SheetContent className="flex flex-col gap-4 px-0" side="left">
-        <DialogTitle className="sr-only">Menu</DialogTitle>
+        <DialogTitle className="sr-only">Меню</DialogTitle>
         <SheetHeader>
           <SheetClose className="px-5" asChild>
             <Logo />
