@@ -16,14 +16,14 @@ export default function Me() {
         const response = await fetch("/api/v1/users/me",{
             method: "GET"
         })
-        if(!response.ok){
-            router.push('/login')
-            return
-        }
         const json = await response.json()
-        console.log(json)
-        setUserData(json)
-        getStats(json)
+        
+        if(Object.keys(json).length == 0){
+            router.push('/login')
+        }else{
+            setUserData(json)
+            getStats(json)
+        }
     }
 
     async function getStats(data : any){
@@ -35,7 +35,6 @@ export default function Me() {
             return
         }
         const json = await response.json()
-        console.log(json)
         setStatsData(json)
     }
     useEffect(()=>{
