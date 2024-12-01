@@ -62,17 +62,11 @@ export async function POST(request: NextRequest) {
             const sql = 'SELECT * FROM profiles WHERE fk_uuid = ?';
             let profiles: any = await query(sql, [uuid]);
 
+            // Совместимость со сценарием, когда аккаунт зарегистрирован в игре
             if (profiles.length === 0) {
                 const sql = 'INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)'
                 await query(sql, [last_nickname, uuid])
             }
-
-            // Заносим UUID и Никнейм в сессию, остальную информация будет поступать из БД
-            const data = {uuid, last_nickname}
-            const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
-            const sessionToken = await encrypt({ data, expiresAt });
-        
-            await createSession(sessionToken, expiresAt)
             return NextResponse.json({ success: true, data: { uuid, last_nickname } }, { status: 200 });
         }
     }

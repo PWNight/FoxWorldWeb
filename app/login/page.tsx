@@ -1,4 +1,5 @@
 "use client"
+import { createSession, encrypt } from "@/lib/session";
 import { LucideArrowDownLeftFromSquare, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from"next/navigation";
@@ -72,7 +73,17 @@ export default function Login() {
                 body: JSON.stringify({username,password})
             })
             if(result.ok){
-                router.push('/me')
+                const json : any = await result.json()
+                const uuid = json.data.uuid
+                const last_nickname = json.data.last_nickname
+                const response = await fetch('/api/v1/auth/createSession',{
+                    method: 'POST',
+                    body: JSON.stringify({uuid,last_nickname})
+                })
+                
+                if(response.ok){
+                    router.push('/me')
+                }
             }else{
                 setError('Неверный никнейм или пароль')
             }
