@@ -96,72 +96,85 @@ export default function Me() {
                         </div>
                     </div>
                 </div>
-                <div className="grid lg:grid-cols-3 lg:grid-rows-2 gap-2">
-                    <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col">
-                        <div className="border-b">
-                            <h1 className="text-2xl">Информация об аккаунте</h1>
-                            <p className="text-muted-foreground">Основная информация о вас</p>
+                <div className="grid lg:grid-cols-[.4fr,1fr] lg:grid-rows-2 gap-2">
+                    <div className="flex flex-col gap-2">
+                        <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col">
+                            <div className="border-b">
+                                <h1 className="text-2xl">Информация об аккаунте</h1>
+                                <p className="text-muted-foreground">Основная информация о вас</p>
+                            </div>
+                            <div className="my-2">
+                                <div className="flex flex-col gap-1">
+                                    <div className="flex gap-2"><p className="text-muted-foreground">Никннейм:</p><p>{userData.profile.nick}</p></div>
+                                    <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата регистрации:</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
+                                    <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата последнего входа на сервер:</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="my-2">
-                            <div className="flex flex-col gap-1">
-                                <div className="flex gap-2"><p className="text-muted-foreground">Никннейм:</p><p>{userData.profile.nick}</p></div>
-                                <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата регистрации:</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
-                                <div className="xs:flex gap-2"><p className="text-muted-foreground">Дата последнего входа на сервер:</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
+                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col">
+                            <div className="border-b">
+                                <h1 className="text-2xl">Управление скином</h1>
+                                <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
+                            </div>
+                            <div className="flex flex-col gap-4 my-2">
+                                <Link href='/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
+                                <div className="flex 2xl:flex-row flex-col gap-2">
+                                    <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
+                                    <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div className="bg-neutral-100 rounded-sm p-4 lg:col-span-2">
-                        <div className="border-b">
-                            <h1 className="text-2xl">Игровая статистика</h1>
-                            <p className="text-muted-foreground">Статистика вашей игры</p>
-                        </div>
-                        <div className="my-2">
-                            <div className="flex flex-col gap-1">
-                                <Accordion type='multiple' className="grid lg:grid-cols-2 gap-2">
-                                    <AccordionItem value="online_all">
-                                        <AccordionTrigger>
-                                            <div className="flex gap-2"><p className="text-muted-foreground">Статистика онлайна за всё время</p></div>
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                        <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.info.playtime}</p></div>
-                                            <div className="flex gap-1"><p>{statsData.info.active_playtime}</p><p className="text-muted-foreground">активной игры</p></div>
-                                            <div className="flex gap-1"><p>{statsData.info.afk_time}</p><p className="text-muted-foreground">в афк</p></div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                    <AccordionItem value="online_30d">
-                                        <AccordionTrigger>
-                                            <div className="flex gap-2"><p className="text-muted-foreground">Статистика онлайна за 30 дней</p></div>
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                        <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
+                    <div className="grid lg:grid-rows-2 xl:grid-cols-3">
+                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2">
+                            <div className="border-b">
+                                <h1 className="text-2xl">Игровая статистика</h1>
+                                <p className="text-muted-foreground">Статистика вашей игры</p>
+                            </div>
+                            <div className="my-2">
+                                <div>
+                                    <Accordion type='multiple' className="gap-2 grid xl:grid-cols-3">
+                                        <AccordionItem value="online">
+                                            <AccordionTrigger>
+                                                <div className="flex gap-2"><p className="text-muted-foreground">Статистика онлайна</p></div>
+                                            </AccordionTrigger>
+                                            <AccordionContent className="flex flex-col gap-2">
+                                                <div>
+                                                    <h1 className="text-muted-foreground text-lg">За всё время</h1>
+                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.info.playtime}</p></div>
+                                                    <div className="flex gap-1"><p>{statsData.info.active_playtime}</p><p className="text-muted-foreground">активной игры</p></div>
+                                                    <div className="flex gap-1"><p>{statsData.info.afk_time}</p><p className="text-muted-foreground">в афк</p></div>
+                                                </div>
+                                                <div>
+                                                    <h1 className="text-muted-foreground text-lg">За 30 дней</h1>
+                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
+                                                    <div className="flex gap-1"><p>{statsData.online_activity.active_playtime_30d}</p><p className="text-muted-foreground">активной игры</p></div>
+                                                    <div className="flex gap-1"><p>{statsData.online_activity.afk_time_30d}</p><p className="text-muted-foreground">в афк</p></div>
+                                                </div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                        <AccordionItem value="online_30d">
+                                            <AccordionTrigger>
+                                                <div className="flex gap-2"><p className="text-muted-foreground">Статистика онлайна за 30 дней</p></div>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                            <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
                                             <div className="flex gap-1"><p>{statsData.online_activity.active_playtime_30d}</p><p className="text-muted-foreground">активной игры</p></div>
                                             <div className="flex gap-1"><p>{statsData.online_activity.afk_time_30d}</p><p className="text-muted-foreground">в афк</p></div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                    <AccordionItem value="sessions">
-                                        <AccordionTrigger>
-                                            <div className="flex gap-2"><p className="text-muted-foreground">Статистика сессий</p></div>
-                                        </AccordionTrigger>
-                                        <AccordionContent>
-                                        <div className="flex gap-1"><p className="text-muted-foreground">Всего вы зашли к нам</p><p>{statsData.info.session_count}</p><p className="text-muted-foreground">раз</p></div>
-                                            <div className="flex gap-1"><p>{statsData.online_activity.session_count_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
-                                            <div className="flex gap-1"><p>{statsData.online_activity.session_count_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                </Accordion>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col">
-                        <div className="border-b">
-                            <h1 className="text-2xl">Управление скином</h1>
-                            <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
-                        </div>
-                        <div className="flex flex-col gap-4 my-2">
-                            <div className="flex gap-1"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p><Link href='/rules' className="text-orange-400 hover:text-orange-500 transition-all">правила сервера</Link></div>
-                            <div className="flex 2xl:flex-row flex-col gap-2">
-                                <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
-                                <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                        <AccordionItem value="sessions">
+                                            <AccordionTrigger>
+                                                <div className="flex gap-2"><p className="text-muted-foreground">Статистика сессий</p></div>
+                                            </AccordionTrigger>
+                                            <AccordionContent>
+                                            <div className="flex gap-1"><p className="text-muted-foreground">Всего вы зашли к нам</p><p>{statsData.info.session_count}</p><p className="text-muted-foreground">раз</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.session_count_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.session_count_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
+                                            </AccordionContent>
+                                        </AccordionItem>
+                                    </Accordion>
+                                </div>
                             </div>
                         </div>
                     </div>
