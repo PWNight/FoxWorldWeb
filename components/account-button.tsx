@@ -20,6 +20,18 @@ export function AccountButton() {
         }
     }
 
+    async function logOut(){
+        if(Object.keys(userData).length != 0){
+            const response = await fetch("/api/v1/auth/logout",{
+                method: "GET"
+            })
+            if(response.ok){
+                Object.keys(userData).length = 0
+                router.push('/')
+            }
+        }
+    }
+
     useEffect(() => {
         getSession(); // Обновляем данные пользователя при монтировании компонента и изменении маршрута
     }, [pathname]);
@@ -47,7 +59,7 @@ export function AccountButton() {
                         <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
                             <p>Личный кабинет</p>
                         </DropdownMenuItem>
-                        <DropdownMenuItem onClick={() => router.push('/logout')} className="text-xl">
+                        <DropdownMenuItem onClick={() => logOut()} className="text-xl">
                             <p>Выйти</p>
                         </DropdownMenuItem>
                     </div>
