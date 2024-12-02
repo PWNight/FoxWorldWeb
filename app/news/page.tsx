@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "AriaDocs - news",
+  title: "FoxWorld - Новости",
 };
 
 export default async function NewsIndexPage() {
@@ -14,8 +14,8 @@ export default async function NewsIndexPage() {
     (a, b) => stringToDate(b.date).getTime() - stringToDate(a.date).getTime()
   );
   return (
-    <div className="w-full mx-auto flex flex-col gap-1 sm:min-h-[91vh] min-h-[88vh] pt-2">
-      <div className="mb-7 flex flex-col gap-2">
+    <div className="w-full mx-auto flex flex-col gap-1">
+      <div className="mb-2 flex flex-col gap-2">
         <h1 className="text-3xl font-extrabold">
           Последние новости
         </h1>
@@ -23,7 +23,7 @@ export default async function NewsIndexPage() {
           Все новости от команды разработки
         </p>
       </div>
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-5">
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-2">
         {news.map((news) => (
           <NewsCard {...news} slug={news.slug} key={news.slug} />
         ))}
@@ -43,9 +43,9 @@ function NewsCard({
   return (
     <Link
       href={`/news/${slug}`}
-      className="flex flex-col gap-2 items-start border rounded-md py-5 px-3 min-h-[400px]"
+      className="flex flex-col gap-2 items-start border rounded-md py-5 px-3"
     >
-      <h3 className="text-md font-semibold -mt-1 pr-7">{title}</h3>
+      <h3 className="text-xl font-semibold -mt-1 pr-7">{title}</h3>
       <div className="w-full">
         <Image
           src={cover}
@@ -76,7 +76,7 @@ function AvatarGroup({ users, max = 4 }: { users: Author[]; max?: number }) {
       {displayUsers.map((user, index) => (
         <Avatar
           key={user.username}
-          className={`inline-block border-2 w-9 h-9 border-background ${
+          className={`inline-block border-2 w-10 h-12 border-background ${
             index !== 0 ? "-ml-3" : ""
           } `}
         >
