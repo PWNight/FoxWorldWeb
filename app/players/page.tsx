@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "@/components/load"
 import './players.css'
 
 export default function Players() {
@@ -11,7 +10,7 @@ export default function Players() {
 
     useEffect(()=>{
         async function getAll(){
-            const response = await fetch("http://65.108.21.148:25644/v1/playersTable",{
+            const response = await fetch("http://135.181.126.159:25576/v1/playersTable",{
                 method:"GET"
             })
             if(response.ok){
@@ -30,13 +29,7 @@ export default function Players() {
         return players.filter((player:any) => player.playerName.toLowerCase().includes(searchQuery.toLowerCase()));
     };
 
-    if(players.length === 0){
-        return(
-            <>
-            <Loading/>
-            </>
-        )
-    }else{
+    if(players.length != 0){
         return (
             <>
                 <div className="flex mt-9 flex-col gap-4 select-none">
