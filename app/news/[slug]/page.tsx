@@ -3,6 +3,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Author, getAllNewsStaticPaths, getNewsForSlug } from "@/lib/markdown";
 import { ArrowLeftIcon } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { formatDate } from "@/lib/utils";
@@ -18,6 +19,7 @@ export async function generateMetadata({ params: { slug } }: PageProps) {
   return {
     title: frontmatter.title,
     description: frontmatter.description,
+    cover: frontmatter.cover
   };
 }
 
@@ -42,6 +44,16 @@ export default async function NewsPage({ params: { slug } }: PageProps) {
         <ArrowLeftIcon className="w-4 h-4 mr-1.5" /> Обратно к новостям
       </Link>
       <div className="flex flex-col gap-3 pb-7 w-full border-b mb-4">
+        <div>
+          <Image
+            src={res.frontmatter.cover}
+            alt={res.frontmatter.title}
+            width={400}
+            height={250}
+            quality={80}
+            className="w-full rounded-md object-cover h-[250px] border"
+          />
+        </div>
         <p className="text-muted-foreground text-sm">
           {formatDate(res.frontmatter.date)}
         </p>
@@ -69,7 +81,7 @@ function Authors({ authors }: { authors: Author[] }) {
             className="flex items-center gap-2"
             key={author.username}
           >
-            <Avatar className="w-10 h-10">
+            <Avatar className="w-10 h-12">
               <AvatarImage src={author.avatar} />
               <AvatarFallback>
                 {author.username.slice(0, 2).toUpperCase()}
