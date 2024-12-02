@@ -190,7 +190,7 @@ export type NewsMdxFrontmatter = BaseMdxFrontmatter & {
 
 export async function getAllNewsStaticPaths() {
   try {
-    const newsFolder = path.join(process.cwd(), "/contents/Newss/");
+    const newsFolder = path.join(process.cwd(), "/contents/news/");
     const res = await fs.readdir(newsFolder);
     return res.map((file) => file.split(".")[0]);
   } catch (err) {
