@@ -50,8 +50,8 @@ export default async function NewsPage({ params: { slug } }: PageProps) {
             alt={res.frontmatter.title}
             width={400}
             height={250}
-            quality={80}
-            className="w-full rounded-md object-cover h-[250px] border"
+            quality={100}
+            className="rounded-md object-cover border"
           />
         </div>
         <p className="text-muted-foreground text-sm">
