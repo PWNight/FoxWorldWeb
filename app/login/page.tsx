@@ -76,7 +76,7 @@ export default function Login() {
                 const json : any = await result.json()
                 const uuid = json.data.uuid
                 const last_nickname = json.data.last_nickname
-                const response = await fetch('/api/v1/auth/createSession',{
+                const response = await fetch('/api/v1/auth/create-session',{
                     method: 'POST',
                     body: JSON.stringify({uuid,last_nickname})
                 })
