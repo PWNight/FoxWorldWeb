@@ -4,26 +4,25 @@ import { useRouter } from "next/navigation";
 import SubAnchor from "@/components/subanchor";
 import { Castle, House, Landmark, ShieldCheck, Store } from "lucide-react";
 
-export default function Me() {
+export default function MeBank() {
     const [userData, setUserData] = useState(Object)
     const router = useRouter()
 
-    async function getSession(){
-        const response = await fetch("/api/v1/users/me",{
-            method: "GET"
-        })
-        const json = await response.json()
-        
-        if(Object.keys(json).length == 0){
-            router.push('/login')
-        }else{
-            setUserData(json)
-        }
-    }
-
     useEffect(()=>{
+        async function getSession(){
+            const response = await fetch("/api/v1/users/me",{
+                method: "GET"
+            })
+            const json = await response.json()
+
+            if(Object.keys(json).length == 0){
+                router.push('/login')
+            }else{
+                setUserData(json)
+            }
+        }
         getSession()
-    },[])
+    },[router])
     if(Object.keys(userData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">

@@ -11,35 +11,34 @@ export default function Me() {
     const [userData, setUserData] = useState(Object)
     const [statsData, setStatsData] = useState(Object)
     const router = useRouter()
-
-    async function getSession(){
-        const response = await fetch("/api/v1/users/me",{
-            method: "GET"
-        })
-        const json = await response.json()
-
-        if(Object.keys(json).length == 0){
-            router.push('/login')
-        }else{
-            setUserData(json)
-            getStats(json)
-        }
-    }
-
-    async function getStats(data : any){
-        const response = await fetch(`http://135.181.126.159:25576/v1/player?player=${data.profile.fk_uuid}`,{
-            method: "GET"
-        })
-        if(!response.ok){
-            console.log(response)
-            return
-        }
-        const json = await response.json()
-        setStatsData(json)
-    }
+    
     useEffect(()=>{
+        async function getStats(data : any){
+            const response = await fetch(`http://135.181.126.159:25576/v1/player?player=${data.profile.fk_uuid}`,{
+                method: "GET"
+            })
+            if(!response.ok){
+                console.log(response)
+                return
+            }
+            const json = await response.json()
+            setStatsData(json)
+        }
+        async function getSession(){
+            const response = await fetch("/api/v1/users/me",{
+                method: "GET"
+            })
+            const json = await response.json()
+    
+            if(Object.keys(json).length == 0){
+                router.push('/login')
+            }else{
+                setUserData(json)
+                await getStats(json)
+            }
+        }
         getSession()
-    },[])
+    },[router])
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
