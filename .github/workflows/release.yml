@@ -1,0 +1,17 @@
+name: Notify about new release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Discord notification
+        uses: htpc/discord@v2
+        with:
+          url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          message: |
+            **${{ github.event.release.name }}**
+            ${{ github.event.release.body }}
