@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: discord
-      uses: rguillaume/discord-action-embed@v1.0.2
+      uses: rguillaume/discord-action-embed@v1.0.4
       with:
         webhook: ${{ secrets.WEBHOOK }}
         message: "" 
-        embed: '{ "color": ffb082, "title": "${{ github.event.release.name }}", "description": "${{ github.event.release.body }}", "foother": {"text": "— С любовью к своему делу, команда разработки FoxWorld.", "icon_url": "https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c2016&"} }'
+        embed: '{ "color": "ffb082", "title": "${{ github.event.release.name }}", "description": "${{ github.event.release.body }}", "footer": {"text": "— С любовью к своему делу, команда разработки FoxWorld.", "icon_url": "https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c2016&"} }'
