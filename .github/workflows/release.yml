@@ -11,7 +11,7 @@ jobs:
       - name: Send note to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          my_embeds: |
+          EMBED: |
             {
               "embeds": [{
                 "title": "${{ github.event.release.name }}",
@@ -22,5 +22,5 @@ jobs:
                 }
               }]
             }
-          DISCORD_EMBEDS: ${{ toJson(my_embeds) }}  
+          DISCORD_EMBEDS: ${{ toJson(EMBED) }}  
         uses: Ilshidur/action-discord@0.3.2
