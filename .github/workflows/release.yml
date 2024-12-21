@@ -11,5 +11,5 @@ jobs:
       - name: Send note to Discord
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          DISCORD_EMBEDS: ${{ toJson([{"title":"${{ github.event.release.name }}","description":"${{ github.event.release.body }}","footer":{"text":"— С любовью к своему делу, команда разработки FoxWorld.", "icon_url":"https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c203a83ea50e91860196016&"}}]) }}
+          DISCORD_EMBEDS: ${{ toJson({"title":"${{ github.event.release.name }}","description":"${{ github.event.release.body }}","footer":{"text":"— С любовью к своему делу, команда разработки FoxWorld.", "icon_url":"https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c203a83ea50e91860196016&"}}) }}
         uses: Ilshidur/action-discord@0.3.2
