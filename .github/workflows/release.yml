@@ -8,9 +8,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send message
-        id: discordAction
-        uses: Poss111/discord-hook-action@v1.6.12
+        uses: Zmicier14/discord-webhook@v1.0.6
         with:
-          discord-hook-url: ${{ secrets.WEBHOOK }}
-          title: ${{ github.event.release.name }}
-          message: ${{ github.event.release.body }}
+            severity: info
+            color: '#ff00aa'
+            description: "## ${{ github.event.release.name }}"
+            details: "{{ github.event.release.body}}"
+            webhookUrl: ${{ secrets.WEBHOOK }}
