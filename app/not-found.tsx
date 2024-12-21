@@ -8,7 +8,7 @@ export default function NotFound() {
         <p className="text-muted-foreground text-xl">Мы не смогли найти указанную страницу :(
           <br/>Возможно данная страница временно недоступна или ещё не существует.
         </p>
-        <Link href="/" className={buttonVariants({})}>
+        <Link href="/" className={buttonVariants({variant: "accent"})}>
         На главную
       </Link>
     </div>
