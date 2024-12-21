@@ -1,6 +1,6 @@
 {
-  "name": "foxworld-app",
-  "version": "0.4.0",
+  "name": "foxworld-web",
+  "version": "1.0.0-alpha1",
   "private": true,
   "scripts": {
     "dev": "next dev",
