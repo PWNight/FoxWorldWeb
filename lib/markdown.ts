@@ -112,7 +112,7 @@ export function getPreviousNext(path: string) {
 
 function sluggify(text: string) {
   const slug = text.toLowerCase().replace(/\s+/g, "-");
-  return slug.replace(/[^a-z0-9-]/g, "");
+  return slug.replace(/[^а-я0-9-]/g, "");
 }
 
 function getDocsContentPath(slug: string) {
