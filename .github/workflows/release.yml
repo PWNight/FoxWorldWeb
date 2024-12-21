@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Discord notification
-        uses: actions-ecosystem/discord@v2  # Assuming the new repository is actions-ecosystem/discord
+        uses: appleboy/discord-action@master
         with:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           message: |
