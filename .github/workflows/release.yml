@@ -8,9 +8,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Send note to Discord
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          EMBED_DATA: '{"title":"${{ github.event.release.name }}","description":"${{ github.event.release.body }}","footer":{"text":"— С любовью к своему делу, команда разработки FoxWorld.", "icon_url":"https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c2016&"}}'
-          DISCORD_EMBEDS: ${{ toJson(EMBED_DATA) }}
-        uses: Ilshidur/action-discord@0.3.2
+      - name: Send Discord Message
+        uses: EhsanFox/djs-actions@0.1.0
+        with:
+          id: ${{ secrets.webhook_id }}
+          token: ${{ secrets.webhook_token }}
+          title: ${{ github.event.release.name }}
+          description: ${{ github.event.release.body }}
+          color: "ffb082"
+          footer: "— С любовью к своему делу, команда разработки FoxWorld."
+          footer_icon: "https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d87456433c2016&"
