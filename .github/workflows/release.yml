@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Discord notification
-        uses: appleboy/discord-action@master
+        uses: actions-ecosystem/discord@v2
         with:
           url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           message: |
