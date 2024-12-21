@@ -14,12 +14,14 @@ jobs:
           my_embeds: |
             [
               {
-                "title": "${{ github.event.release.name }}",
-                "description": "${{ github.event.release.body }}",
-                "footer": {
-                  "text": "— С любовью к своему делу, команда разработки FoxWorld.",
-                  "icon_url": "https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d9c760ad9169878e8d87456433c03a83ea50e9186019664a974fd18c8dc&"
-                },
+                "embeds": [{
+                  "title": "${{ github.event.release.name }}",
+                  "description": "${{ github.event.release.body }}",
+                  "footer": {
+                    "text": "— С любовью к своему делу, команда разработки FoxWorld.",
+                    "icon_url": "https://media.discordapp.net/attachments/1053188398573166652/1279677459541000202/852d96957e5a13fa.jpg?ex=6767a681&is=67665501&hm=f82d4d9c760ad9169878e8d87456433c03a83ea50e9186019664a974fd18c8dc&"
+                  }
+                }]
               }
             ]
           DISCORD_EMBEDS: ${{ toJson(my_embeds) }} 
