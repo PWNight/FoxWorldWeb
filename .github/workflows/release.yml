@@ -16,5 +16,5 @@ jobs:
             color: '#ffb082'
             description: "## ```${{ github.event.release.name }}```"
             details: "${{ github.event.release.body}}"
-            foother: "— С любовью к своему делу, команда разработки FoxWorld."
+            footer: "— С любовью к своему делу, команда разработки FoxWorld."
             webhookUrl: ${{ secrets.WEBHOOK }}
