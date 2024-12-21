@@ -14,7 +14,9 @@ type PageProps = {
 
 export async function generateMetadata({ params: { slug } }: PageProps) {
   const res = await getNewsForSlug(slug);
-  if (!res) return null;
+  if (!res) { // @ts-ignore
+      return null;
+  }
   const { frontmatter } = res;
   return {
     title: frontmatter.title,
