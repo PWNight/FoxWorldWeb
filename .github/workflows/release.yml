@@ -1,0 +1,20 @@
+name: Release note (Discord)
+on:
+  release:
+    types: [published]
+jobs:
+  build:
+    name: Send note
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send message
+        uses: Zmicier14/discord-webhook@v1.0.6
+        with:
+            severity: info
+            username: "FoxWorld"
+            avatarUrl: "https://cdn.discordapp.com/avatars/1300520523725410425/e8b382f3c4cbecc0da5632e31ebf501a.png"
+            color: '#ffb082'
+            description: "## ```${{ github.event.release.name }}```"
+            details: "${{ github.event.release.body}}"
+            footer: "— С любовью к своему делу, команда разработки FoxWorld."
+            webhookUrl: ${{ secrets.WEBHOOK }}
