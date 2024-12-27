@@ -23,7 +23,7 @@ export default function Login() {
             if (response.ok) {
                 const json = await response.json();
                 if (Object.keys(json).length != 0) {
-                    router.push('/');
+                    router.push('/me');
                 }
             }
         }
@@ -126,7 +126,7 @@ export default function Login() {
                 </div>
                 <div className="flex items-center gap-2 mt-4">
                     <p>Впервые здесь?</p>
-                    <Link href='/registration' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Зарегистрируйтесь<UserPlusIcon/></Link>
+                    <Link href='/docs/introduction/start-game' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
                 </div>
             </form>
         </div>
