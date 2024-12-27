@@ -2,7 +2,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SubAnchor from "@/components/subanchor";
-import { Castle, House, Landmark, ShieldCheck, Store } from "lucide-react";
+import {Castle, House, Landmark, ShieldCheck, Store, Pencil} from "lucide-react";
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
 
 export default function MeSecurity() {
     const [userData, setUserData] = useState(Object)
@@ -37,7 +39,7 @@ export default function MeSecurity() {
                                 className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me'
                             >
-                            <House/>Главная страница
+                                <House/>Главная страница
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/donate'
@@ -46,7 +48,7 @@ export default function MeSecurity() {
                                 className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/donate'
                             >
-                            <Store/> Магазин сервера
+                                <Store/> Магазин сервера
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/security'
@@ -55,7 +57,7 @@ export default function MeSecurity() {
                                 className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/security'
                             >
-                            <ShieldCheck/> Настройки безопасности
+                                <ShieldCheck/> Настройки безопасности
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/bank'
@@ -64,7 +66,7 @@ export default function MeSecurity() {
                                 className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/bank'
                             >
-                            <Landmark/> Управление средствами
+                                <Landmark/> Управление средствами
                             </SubAnchor>
                             <SubAnchor
                                 key='/me/guilds'
@@ -73,12 +75,56 @@ export default function MeSecurity() {
                                 className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
                                 href='/me/guilds'
                             >
-                            <Castle/> Управление гильдиями
+                                <Castle/> Управление гильдиями
                             </SubAnchor>
                         </div>
                     </div>
                 </div>
-                <div className="">
+                <div className="grid lg:grid-cols-[.8fr,1fr] gap-2 ">
+                    <div className="flex flex-col gap-2">
+                        <div
+                            className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
+                            <div className="border-b">
+                                <h1 className="text-2xl">Изменение никнейма</h1>
+                            </div>
+                            <div className="flex flex-col gap-4 my-2">
+                                <Link href='/docs/rules'
+                                      className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
+                                    <p className="text-muted-foreground">Никнейм не должен нарушать</p>правила сервера
+                                </Link>
+                                <div className="flex 2xl:flex-row flex-col gap-2 2xl:items-center">
+                                    <input
+                                        type="text"
+                                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                        placeholder="Введите никнейм"
+                                    />
+                                    <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div
+                            className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
+                            <div className="border-b">
+                                <h1 className="text-2xl">Изменение пароля</h1>
+                            </div>
+                            <div className="flex flex-col gap-4 my-2">
+                                <div className="flex 2xl:flex-row flex-col gap-2 2xl:items-center">
+                                    <input
+                                        type="text"
+                                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                        placeholder="Введите новый пароль"
+                                    />
+                                    <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
+                                </div>
+                                <Link href='/recover'
+                                      className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
+                                    <p className="text-muted-foreground">Забыли пароль?</p>Перейти к восстановлению
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-full">
+                    </div>
                 </div>
             </div>
         )
