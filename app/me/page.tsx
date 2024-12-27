@@ -94,9 +94,9 @@ export default function Me() {
                         </div>
                     </div>
                 </div>
-                <div className="grid lg:grid-cols-[.4fr,1fr] gap-2">
-                    <div className="flex flex-col gap-2">
-                        <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col">
+                <div className="grid lg:grid-cols-[.4fr,1fr] gap-2 ">
+                    <div className="flex flex-col gap-2 ">
+                        <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Информация об аккаунте</h1>
                                 <p className="text-muted-foreground">Основная информация о вас</p>
@@ -111,7 +111,7 @@ export default function Me() {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col">
+                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Управление скином</h1>
                                 <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
@@ -126,7 +126,7 @@ export default function Me() {
                         </div>
                     </div>
                     <div className="grid lg:grid-rows-2 xl:grid-cols-3">
-                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2">
+                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2 dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Игровая статистика</h1>
                                 <p className="text-muted-foreground">Статистика вашей игры</p>

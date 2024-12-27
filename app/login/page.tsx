@@ -1,6 +1,5 @@
 "use client"
-import { createSession, encrypt } from "@/lib/session";
-import { LucideArrowDownLeftFromSquare, UserPlusIcon } from "lucide-react";
+import { UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
