@@ -8,10 +8,12 @@ export async function GET(request: NextRequest) {
     if(session === undefined){
         return NextResponse.json({}, { status: 200 })
     }
+
     const data:any = await decrypt(session?.value)
     if(data === null){
         return NextResponse.json({ error: 'Токен некорректен' }, { status: 401 })
     }
+
     try{
         const {uuid} = data.data;
         let profiles : any = await query('SELECT * FROM profiles WHERE fk_uuid = ?', [uuid])
