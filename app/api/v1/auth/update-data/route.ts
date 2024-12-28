@@ -1,5 +1,6 @@
 import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
 import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
 
 export async function POST(request: NextRequest) {
     let hasErrors = false;
@@ -67,9 +68,16 @@ export async function POST(request: NextRequest) {
 
                 await query('UPDATE `librepremium_data` SET last_nickname = ? WHERE last_nickname = ?', [new_value, old_value]);
                 await query('UPDATE `profiles` SET nick = ? WHERE nick = ?', [new_value, old_value]);
-                break;
+                return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
             case 'change_password':
-                break;
+                const user: any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [json.profile.nick]);
+                const rightSalt = `$2a$10$${user.salt}`;
+
+                let hashedPassword = await bcrypt.hash(new_value, rightSalt);
+                hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
+
+                await query('UPDATE `librepremium_data` SET hashed_password = ? WHERE last_nickname = ?', [new_value, json.profile.nick]);
+                return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
         }
     }
 }
