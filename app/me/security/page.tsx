@@ -15,9 +15,14 @@ export default function MeSecurity() {
             const response = await fetch("/api/v1/users/me",{
                 method: "GET"
             })
-            const json = await response.json()
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
 
-            if(Object.keys(json).length == 0){
+            const json = await response.json()
+            if (!json.success) {
                 router.push('/login')
             }else{
                 setUserData(json)

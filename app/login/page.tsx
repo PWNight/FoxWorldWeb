@@ -21,7 +21,7 @@ export default function Login() {
             });
             if (response.ok) {
                 const json = await response.json();
-                if (Object.keys(json).length != 0) {
+                if (!json.success) {
                     router.push('/me');
                 }
             }

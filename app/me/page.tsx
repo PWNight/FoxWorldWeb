@@ -18,6 +18,7 @@ export default function Me() {
                 method: "GET"
             })
             if(!response.ok){
+                // TODO: Implement error handler
                 console.log(response)
                 return
             }
@@ -28,9 +29,14 @@ export default function Me() {
             const response = await fetch("/api/v1/users/me",{
                 method: "GET"
             })
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
+
             const json = await response.json()
-    
-            if(Object.keys(json).length == 0){
+            if (!json.success) {
                 router.push('/login')
             }else{
                 setUserData(json)
