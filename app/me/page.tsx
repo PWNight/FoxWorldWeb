@@ -94,7 +94,7 @@ export default function Me() {
                         </div>
                     </div>
                 </div>
-                <div className="grid lg:grid-cols-[.6fr,1fr] gap-2 ">
+                <div className="grid lg:grid-cols-[.6fr,1fr] gap-2 mb-6">
                     <div className="flex flex-col gap-2 ">
                         <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
