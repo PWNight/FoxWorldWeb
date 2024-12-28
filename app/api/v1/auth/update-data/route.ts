@@ -1,6 +1,4 @@
-import { createSession, encrypt } from "@/lib/session";
 import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
-import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -62,6 +60,13 @@ export async function POST(request: NextRequest) {
 
         switch (action) {
             case 'change_nickname':
+                const libre_user: any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [new_value]);
+                if (libre_user.length != 0) {
+                    return NextResponse.json({ success: false, message: 'Данный никнейм уже занят' }, { status: 403 });
+                }
+
+                await query('UPDATE `librepremium_data` SET last_nickname = ? WHERE last_nickname = ?', [new_value, old_value]);
+                await query('UPDATE `profiles` SET nick = ? WHERE nick = ?', [new_value, old_value]);
                 break;
             case 'change_password':
                 break;
