@@ -1,5 +1,5 @@
 "use client"
-import { UserPlusIcon } from "lucide-react";
+import {LucideLoader, UserPlusIcon} from "lucide-react";
 import Link from "next/link";
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
@@ -7,6 +7,8 @@ import { useEffect, useState } from"react";
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
+    const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('')
 
     const [usernameError, setUsernameError] = useState('')
@@ -32,6 +34,8 @@ export default function Login() {
     const handleSubmit = async(e: any) => {
         e.preventDefault();
 
+        setIsLoading(true);
+
         // Получение инпутов
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
@@ -45,10 +49,12 @@ export default function Login() {
         // Валидация никнейма и пароля
         if ('' === username) {
             setUsernameError('Введите логин');
+            setIsLoading(false);
             hasError = true;
         }
         if ('' === password) {
             setPasswordError('Введите пароль');
+            setIsLoading(false);
             hasError = true;
         }
     
@@ -84,6 +90,7 @@ export default function Login() {
                     router.push('/me')
                 }
             }else{
+                setIsLoading(false);
                 setError('Неверный никнейм или пароль')
             }
         }
@@ -104,7 +111,7 @@ export default function Login() {
 
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
-            <form className="text-sm w-auto sm:w-1/2 lg:w-1/3 mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
+            <form className="text-sm w-auto mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
                 <h1 className="text-3xl sm:text-4xl mb-5 select-none">Авторизация</h1>
                 <div className="mb-5 select-none">
                     <label htmlFor="username" className="block mb-2 font-medium">Ваш никнейм</label>
@@ -136,7 +143,7 @@ export default function Login() {
                 </div>
                 <div>
                     <button type="submit"
-                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Войти</button>
+                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center">{isLoading ? <><LucideLoader/><p>Выполняю вход</p></> : 'Войти'}</button>
                     {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                 </div>
                 <div className="flex items-center gap-2 mt-4">
