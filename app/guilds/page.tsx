@@ -1,7 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Loading from "@/components/load"
 import './guilds.css'
 
 export default function Guilds() {
@@ -33,7 +32,6 @@ export default function Guilds() {
     if(guilds.length === 0){
         return(
             <>
-            <Loading/>
             </>
         )
     }else{
@@ -49,7 +47,7 @@ export default function Guilds() {
                             <div key={guild.id} onClick={() => router.push("/g/"+guild.url)} className="guild_card">
                                 <div className="txt">
                                     <div className="head">
-                                        <div className="owner"><img src="https://plasmorp.com/avatar/Apehum?w=24"></img><p>NoName</p></div>
+                                        <div className="owner"><img src="https://plasmorp.com/avatar/Apehum?w=24" alt='profile_avatar'></img><p>NoName</p></div>
                                     </div>
                                     <div className="info">
                                             <div>
@@ -67,7 +65,7 @@ export default function Guilds() {
                                         </div>
                                 </div>
                                 <div className="img">
-                                    {guild.emblem_url!=null&&<img src={guild.emblem_url}></img>} 
+                                    {guild.emblem_url!=null&&<img src={guild.emblem_url} alt='guild_emblem'></img>}
                                 </div>
                             </div>
                         ))

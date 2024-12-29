@@ -1,6 +1,5 @@
 "use client"
-import { createSession, encrypt } from "@/lib/session";
-import { LucideArrowDownLeftFromSquare, UserPlusIcon } from "lucide-react";
+import { UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
@@ -22,8 +21,8 @@ export default function Login() {
             });
             if (response.ok) {
                 const json = await response.json();
-                if (Object.keys(json).length != 0) {
-                    router.push('/');
+                if (!json.success) {
+                    router.push('/me');
                 }
             }
         }
@@ -76,7 +75,7 @@ export default function Login() {
                 const json : any = await result.json()
                 const uuid = json.data.uuid
                 const last_nickname = json.data.last_nickname
-                const response = await fetch('/api/v1/auth/createSession',{
+                const response = await fetch('/api/v1/auth/create-session',{
                     method: 'POST',
                     body: JSON.stringify({uuid,last_nickname})
                 })
@@ -126,7 +125,7 @@ export default function Login() {
                 </div>
                 <div className="flex items-center gap-2 mt-4">
                     <p>Впервые здесь?</p>
-                    <Link href='/registration' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Зарегистрируйтесь<UserPlusIcon/></Link>
+                    <Link href='/docs/introduction/start-game' className="text-orange-400 hover:text-orange-500 2xl:flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
                 </div>
             </form>
         </div>

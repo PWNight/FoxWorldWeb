@@ -63,7 +63,7 @@ export function Navbar() {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 sm:px-5">
-      <img src="/logo.png" className="w-9 h-9 text-muted-foreground fill-current" />
+      <img src="/logo.png" className="w-9 h-9 text-muted-foreground fill-current"  alt='logo'/>
       <h2 className="font-bold text-[#F38F54]">FoxWorld</h2>
     </Link>
   );

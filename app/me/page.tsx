@@ -11,35 +11,40 @@ export default function Me() {
     const [userData, setUserData] = useState(Object)
     const [statsData, setStatsData] = useState(Object)
     const router = useRouter()
-
-    async function getSession(){
-        const response = await fetch("/api/v1/users/me",{
-            method: "GET"
-        })
-        const json = await response.json()
-
-        if(Object.keys(json).length == 0){
-            router.push('/login')
-        }else{
-            setUserData(json)
-            getStats(json)
-        }
-    }
-
-    async function getStats(data : any){
-        const response = await fetch(`http://135.181.126.159:25576/v1/player?player=${data.profile.fk_uuid}`,{
-            method: "GET"
-        })
-        if(!response.ok){
-            console.log(response)
-            return
-        }
-        const json = await response.json()
-        setStatsData(json)
-    }
+    
     useEffect(()=>{
+        async function getStats(data : any){
+            const response = await fetch(`http://135.181.126.159:25576/v1/player?player=${data.profile.fk_uuid}`,{
+                method: "GET"
+            })
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
+            const json = await response.json()
+            setStatsData(json)
+        }
+        async function getSession(){
+            const response = await fetch("/api/v1/users/me",{
+                method: "GET"
+            })
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
+
+            const json = await response.json()
+            if (!json.success) {
+                router.push('/login')
+            }else{
+                setUserData(json)
+                await getStats(json)
+            }
+        }
         getSession()
-    },[])
+    },[router])
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
@@ -95,9 +100,9 @@ export default function Me() {
                         </div>
                     </div>
                 </div>
-                <div className="grid lg:grid-cols-[.4fr,1fr] gap-2">
-                    <div className="flex flex-col gap-2">
-                        <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col">
+                <div className="grid lg:grid-cols-[.6fr,1fr] gap-2 mb-6">
+                    <div className="flex flex-col gap-2 ">
+                        <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Информация об аккаунте</h1>
                                 <p className="text-muted-foreground">Основная информация о вас</p>
@@ -112,13 +117,13 @@ export default function Me() {
                                 </div>
                             </div>
                         </div>
-                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col">
+                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Управление скином</h1>
                                 <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
                             </div>
                             <div className="flex flex-col gap-4 my-2">
-                                <Link href='/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
+                                <Link href='/docs/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
                                 <div className="flex 2xl:flex-row flex-col gap-2">
                                     <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
                                     <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
@@ -127,66 +132,60 @@ export default function Me() {
                         </div>
                     </div>
                     <div className="grid lg:grid-rows-2 xl:grid-cols-3">
-                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2">
+                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2 dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Игровая статистика</h1>
                                 <p className="text-muted-foreground">Статистика вашей игры</p>
                             </div>
                             <div className="my-2">
-                                <div>
-                                    <Accordion type='multiple' className="gap-2 grid 2xl:grid-cols-2">
-                                        <AccordionItem value="online">
-                                            <AccordionTrigger>
-                                                <div className="flex gap-2"><p className="text-muted-foreground">Статистика активности</p></div>
-                                            </AccordionTrigger>
-                                            <AccordionContent className="flex flex-col gap-2">
-                                                <div>
-                                                    <h1 className="text-muted-foreground text-lg">За всё время</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.info.playtime}</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.info.active_playtime}</p><p className="text-muted-foreground">активной игры</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.info.afk_time}</p><p className="text-muted-foreground">в афк</p></div>
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-muted-foreground text-lg">За 30 дней</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.online_activity.active_playtime_30d}</p><p className="text-muted-foreground">активной игры</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.online_activity.afk_time_30d}</p><p className="text-muted-foreground">в афк</p></div>
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-muted-foreground text-lg">Ваши сессии</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего вы зашли к нам</p><p>{statsData.info.session_count}</p><p className="text-muted-foreground">раз</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.online_activity.session_count_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.online_activity.session_count_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
-                                                </div>
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                        <AccordionItem value="online_30d">
-                                            <AccordionTrigger>
-                                                <div className="flex gap-2"><p className="text-muted-foreground">Статистика убийств и смертей</p></div>
-                                            </AccordionTrigger>
-                                            <AccordionContent className="flex flex-col gap-2">
+                                <Accordion type='multiple' className="gap-2 grid 2xl:grid-cols-2">
+                                    <AccordionItem value="online">
+                                        <AccordionTrigger><p className="text-muted-foreground">Статистика активности</p></AccordionTrigger>
+                                        <AccordionContent className="flex flex-col gap-2">
                                             <div>
-                                                    <h1 className="text-muted-foreground text-lg">Убийства мобов</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего вы убили</p><p>{statsData.kill_data.mob_kills_total}</p><p className="text-muted-foreground">животных</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-muted-foreground text-lg">Убийства игроков</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего вы убили</p><p>{statsData.kill_data.player_kills_total}</p><p className="text-muted-foreground">игроков</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.player_kills_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.player_kills_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
-                                                </div>
-                                                <div>
-                                                    <h1 className="text-muted-foreground text-lg">Ваши смерти</h1>
-                                                    <div className="flex gap-1"><p className="text-muted-foreground">Всего вы умерли</p><p>{statsData.kill_data.deaths_total}</p><p className="text-muted-foreground">раз(-а)</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.deaths_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
-                                                    <div className="flex gap-1"><p>{statsData.kill_data.deaths_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
-                                                </div>
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                    </Accordion>
-                                </div>
+                                                <h1 className="text-muted-foreground text-lg">За всё время</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.info.playtime}</p></div>
+                                                <div className="flex gap-1"><p>{statsData.info.active_playtime}</p><p className="text-muted-foreground">активной игры</p></div>
+                                                <div className="flex gap-1"><p>{statsData.info.afk_time}</p><p className="text-muted-foreground">в афк</p></div>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-muted-foreground text-lg">За 30 дней</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.active_playtime_30d}</p><p className="text-muted-foreground">активной игры</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.afk_time_30d}</p><p className="text-muted-foreground">в афк</p></div>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-muted-foreground text-lg">Ваши сессии</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего вы зашли к нам</p><p>{statsData.info.session_count}</p><p className="text-muted-foreground">раз</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.session_count_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
+                                                <div className="flex gap-1"><p>{statsData.online_activity.session_count_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                    <AccordionItem value="online_30d">
+                                        <AccordionTrigger><p className="text-muted-foreground">Статистика убийств и смертей</p></AccordionTrigger>
+                                        <AccordionContent className="flex flex-col gap-2">
+                                            <div>
+                                                <h1 className="text-muted-foreground text-lg">Убийства мобов</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего вы убили</p><p>{statsData.kill_data.mob_kills_total}</p><p className="text-muted-foreground">животных</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-muted-foreground text-lg">Убийства игроков</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего вы убили</p><p>{statsData.kill_data.player_kills_total}</p><p className="text-muted-foreground">игроков</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.player_kills_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.player_kills_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
+                                            </div>
+                                            <div>
+                                                <h1 className="text-muted-foreground text-lg">Ваши смерти</h1>
+                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего вы умерли</p><p>{statsData.kill_data.deaths_total}</p><p className="text-muted-foreground">раз(-а)</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.deaths_30d}</p><p className="text-muted-foreground">раз(-а) за последние 30 дней</p></div>
+                                                <div className="flex gap-1"><p>{statsData.kill_data.deaths_7d}</p><p className="text-muted-foreground">раз(-а) за последние 7 дней</p></div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
                             </div>
                         </div>
                     </div>

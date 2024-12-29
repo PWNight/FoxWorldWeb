@@ -43,7 +43,7 @@ function NewsCard({
   return (
     <Link
       href={`/news/${slug}`}
-      className="flex flex-col gap-2 items-start border rounded-md py-5 px-3"
+      className="flex flex-col gap-2 items-start border rounded-md py-5 px-3 bg-accent"
     >
       <h3 className="text-xl font-semibold -mt-1 pr-7">{title}</h3>
       <div className="w-full">
@@ -76,8 +76,8 @@ function AvatarGroup({ users, max = 4 }: { users: Author[]; max?: number }) {
       {displayUsers.map((user, index) => (
         <Avatar
           key={user.username}
-          className={`inline-block border-2 w-10 h-12 border-background ${
-            index !== 0 ? "-ml-3" : ""
+          className={`inline-block w-10 h-14 ${
+            index !== 0 ? "-ml-1" : ""
           } `}
         >
           <AvatarImage src={user.avatar} alt={user.username} />

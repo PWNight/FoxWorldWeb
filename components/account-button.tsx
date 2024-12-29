@@ -10,16 +10,6 @@ export function AccountButton() {
     const pathname = usePathname();
     const router = useRouter();
 
-    async function getSession() {
-        const response = await fetch("http://localhost:3000/api/v1/users/me", {
-            method: "GET"
-        });
-        if (response.ok) {
-            const json = await response.json();
-            setUserData(json);
-        }
-    }
-
     async function logOut(){
         if(Object.keys(userData).length != 0){
             const response = await fetch("/api/v1/auth/logout",{
@@ -33,8 +23,25 @@ export function AccountButton() {
     }
 
     useEffect(() => {
+        async function getSession(){
+            const response = await fetch("/api/v1/users/me",{
+                method: "GET"
+            })
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
+
+            const json = await response.json()
+            if (!json.success) {
+                router.push('/login')
+            }else{
+                setUserData(json)
+            }
+        }
         getSession(); // Обновляем данные пользователя при монтировании компонента и изменении маршрута
-    }, [pathname]);
+    }, [pathname, router]);
     if (Object.keys(userData).length != 0) {
         return (
             <DropdownMenu>

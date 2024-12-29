@@ -48,7 +48,9 @@ export async function generateMetadata(props: PageProps) {
 
   const pathName = slug.join("/");
   const res = await getDocsForSlug(pathName);
-  if (!res) return null;
+  if (!res) { // @ts-ignore
+    return null;
+  }
   const { frontmatter } = res;
   return {
     title: frontmatter.title,
