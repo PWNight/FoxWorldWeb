@@ -21,7 +21,7 @@ export default function Login() {
             });
             if (response.ok) {
                 const json = await response.json();
-                if (!json.success) {
+                if (json.success) {
                     router.push('/me');
                 }
             }
@@ -89,6 +89,19 @@ export default function Login() {
         }
     };
 
+    const showPassword = () => {
+        let checkbox = document.getElementById('show-password');
+        let inputPassword = document.getElementById('password');
+        // @ts-ignore
+        if(checkbox.toggleAttribute('checked')){
+            // @ts-ignore
+            inputPassword.type = 'text';
+        }else{
+            // @ts-ignore
+            inputPassword.type = 'password';
+        }
+    }
+
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
             <form className="text-sm w-auto sm:w-1/2 lg:w-1/3 mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
@@ -117,15 +130,18 @@ export default function Login() {
                         className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
                     />
                     {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
-                    <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли пароль?</Link>
+                    <label><input id="show-password" type="checkbox" className="password-checkbox" onChange={()=>showPassword()}/> Показать пароль</label><br/>
+                    <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли
+                        пароль?</Link>
                 </div>
                 <div>
-                    <button type="submit" className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Войти</button>
+                    <button type="submit"
+                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-full px-5 py-2.5 text-center">Войти</button>
                     {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                 </div>
                 <div className="flex items-center gap-2 mt-4">
                     <p>Впервые здесь?</p>
-                    <Link href='/docs/introduction/start-game' className="text-orange-400 hover:text-orange-500 2xl:flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
+                    <Link href='/docs/introduction/start-game' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
                 </div>
             </form>
         </div>
