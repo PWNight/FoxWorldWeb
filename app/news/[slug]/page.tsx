@@ -41,7 +41,7 @@ export default async function NewsPage(props: PageProps) {
     const res = await getNewsForSlug(slug);
     if (!res) notFound();
     return (
-        <div className="lg:w-[60%] sm:[95%] md:[75%] mx-auto">
+        <div className="lg:w-[60%] sm:[95%] md:[75%] mx-auto px-4">
           <Link
             className={buttonVariants({
               variant: "link",
