@@ -1,6 +1,6 @@
-import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
+import { query } from '@/lib/mysql';
+import { rconQuery } from '@/lib/rcon'
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from 'bcrypt';
 
 export async function POST(request: NextRequest) {
     let hasErrors = false;
@@ -47,10 +47,13 @@ export async function POST(request: NextRequest) {
         }
     }
 
+    if (old_value == new_value ) {
+        return NextResponse.json({ success: false, message: 'Укажите новое значение' }, { status: 403 });
+    }
     if (hasErrors) {
         return NextResponse.json({ success: false, errors }, { status: 401 });
     } else {
-        const response = await fetch("/api/v1/users/me",{
+        const response = await fetch("http://localhost:3000/api/v1/users/me",{
             method: "GET"
         })
         const json = await response.json()
@@ -66,17 +69,14 @@ export async function POST(request: NextRequest) {
                     return NextResponse.json({ success: false, message: 'Данный никнейм уже занят' }, { status: 403 });
                 }
 
-                await query('UPDATE `librepremium_data` SET last_nickname = ? WHERE last_nickname = ?', [new_value, old_value]);
+                // TODO: Implement error handler
+                await rconQuery(`librelogin user migrate ${old_value} ${new_value}`);
+
                 await query('UPDATE `profiles` SET nick = ? WHERE nick = ?', [new_value, old_value]);
                 return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
             case 'change_password':
-                const user: any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [json.profile.nick]);
-                const rightSalt = `$2a$10$${user.salt}`;
-
-                let hashedPassword = await bcrypt.hash(new_value, rightSalt);
-                hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
-
-                await query('UPDATE `librepremium_data` SET hashed_password = ? WHERE last_nickname = ?', [new_value, json.profile.nick]);
+                // TODO: Implement error handler
+                await rconQuery(`librelogin user pass-change ${json.profile.nick} ${new_value}`);
                 return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
         }
     }
