@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import { Footer } from "@/components/footer";
+import React from "react";
 
 export default function RootLayout({
   children,
@@ -17,7 +18,7 @@ export default function RootLayout({
         <title>FoxWorld</title>
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-regular scroll-smooth min-h-screen grid grid-rows-[64px,1fr,64px]`}
+        className={`${GeistSans.variable} ${GeistMono.variable} font-regular antialiased tracking-wide min-h-screen grid grid-rows-[64px,1fr,64px]`}
         suppressHydrationWarning
       >
         <ThemeProvider
