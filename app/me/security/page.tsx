@@ -1,8 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import SubAnchor from "@/components/subanchor";
-import {Castle, House, Landmark, ShieldCheck, Store, Pencil} from "lucide-react";
+import {Pencil} from "lucide-react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {NavMe} from "@/components/navbar_me";

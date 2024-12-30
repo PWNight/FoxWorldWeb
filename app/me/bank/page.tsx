@@ -1,8 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import SubAnchor from "@/components/subanchor";
-import { Castle, House, Landmark, ShieldCheck, Store } from "lucide-react";
 import {NavMe} from "@/components/navbar_me";
 
 export default function MeBank() {

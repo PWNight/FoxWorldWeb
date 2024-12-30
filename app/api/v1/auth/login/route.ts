@@ -1,4 +1,3 @@
-import { createSession, encrypt } from "@/lib/session";
 import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
 import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from "next/server";

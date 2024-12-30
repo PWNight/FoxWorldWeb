@@ -1,6 +1,6 @@
 import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
+import bcrypt from 'bcrypt';
 
 export async function POST(request: NextRequest) {
     let hasErrors = false;

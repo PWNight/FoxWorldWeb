@@ -18,7 +18,7 @@ export async function generateMetadata(props: PageProps) {
 
     const res = await getNewsForSlug(slug);
     if (!res) { // @ts-ignore
-      return null;
+        return null;
     }
     const { frontmatter } = res;
     return {

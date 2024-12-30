@@ -1,9 +1,8 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import SubAnchor from "@/components/subanchor";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { Castle, CloudUpload, House, Landmark, ShieldCheck, Store, Trash2 } from "lucide-react";
+import { CloudUpload, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {NavMe} from "@/components/navbar_me";
