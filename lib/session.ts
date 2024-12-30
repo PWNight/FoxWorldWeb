@@ -24,16 +24,19 @@ export async function decrypt(session: string | undefined = '') {
   }
 }
 export async function createSession(token: any, expiresAt: any) {
-  return cookies().set('s_token', token, {
-    httpOnly: true,
-    secure: true,
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
-  })
+    let cookiesStore = await cookies()
+    return cookiesStore.set('s_token', token, {
+        httpOnly: true,
+        secure: true,
+        expires: expiresAt,
+        sameSite: 'lax',
+        path: '/',
+    })
 }
+/*
 export async function updateSession() {
-    const session = cookies().get('s_token')?.value
+    let cookiesStore = await cookies()
+    const session = cookiesStore.get('s_token')?.value
     const payload = await decrypt(session)
 
     if (!session || !payload) {
@@ -41,7 +44,7 @@ export async function updateSession() {
     }
 
     const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    cookies().set('s_token', session, {
+    return cookiesStore.set('s_token', session, {
       httpOnly: true,
       secure: true,
       expires: expires,
@@ -49,6 +52,8 @@ export async function updateSession() {
       path: '/',
     })
 }
+*/
 export async function deleteSession() {
-  cookies().delete('s_token')
+    let cookiesStore = await cookies()
+    cookiesStore.delete('s_token')
 }

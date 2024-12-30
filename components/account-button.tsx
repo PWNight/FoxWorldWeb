@@ -35,7 +35,7 @@ export function AccountButton() {
 
             const json = await response.json()
             if (!json.success) {
-                router.push('/login')
+                setUserData({})
             }else{
                 setUserData(json)
             }

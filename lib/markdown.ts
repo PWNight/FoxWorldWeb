@@ -15,7 +15,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Pre from "@/components/markdown/pre";
 import Note from "@/components/markdown/note";
-import { Stepper, StepperItem } from "@/components/markdown/stepper";
 import Image from "@/components/markdown/image";
 import Link from "@/components/markdown/link";
 import Outlet from "@/components/markdown/outlet";
@@ -36,8 +35,6 @@ const components = {
   TabsTrigger,
   pre: Pre,
   Note,
-  Stepper,
-  StepperItem,
   img: Image,
   a: Link,
   Outlet,
