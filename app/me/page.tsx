@@ -6,6 +6,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Castle, CloudUpload, House, Landmark, ShieldCheck, Store, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import {NavMe} from "@/components/navbar_me";
 
 export default function Me() {
     const [userData, setUserData] = useState(Object)
@@ -48,58 +49,7 @@ export default function Me() {
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                <div className="sm:flex items-start">
-                    <div className="bg-neutral-100 rounded-sm dark:bg-neutral-800 flex flex-col gap-5 px-6 py-4">
-                        <h1 className="border-b text-xl my-2 w-full text-center">Меню навигации</h1>
-                        <div className="w-full flex flex-col gap-2 items-center">
-                            <SubAnchor
-                                key='/me'
-                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
-                                absolute
-                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                                href='/me'
-                            >
-                            <House/>Главная страница
-                            </SubAnchor>
-                            <SubAnchor
-                                key='/me/donate'
-                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
-                                absolute
-                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                                href='/me/donate'
-                            >
-                            <Store/> Магазин сервера
-                            </SubAnchor>
-                            <SubAnchor
-                                key='/me/security'
-                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
-                                absolute
-                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                                href='/me/security'
-                            >
-                            <ShieldCheck/> Настройки безопасности
-                            </SubAnchor>
-                            <SubAnchor
-                                key='/me/bank'
-                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
-                                absolute
-                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                                href='/me/bank'
-                            >
-                            <Landmark/> Управление средствами
-                            </SubAnchor>
-                            <SubAnchor
-                                key='/me/guilds'
-                                activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
-                                absolute
-                                className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                                href='/me/guilds'
-                            >
-                            <Castle/> Управление гильдиями
-                            </SubAnchor>
-                        </div>
-                    </div>
-                </div>
+                <NavMe/>
                 <div className="grid lg:grid-cols-[.6fr,1fr] gap-2 mb-6">
                     <div className="flex flex-col gap-2 ">
                         <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
