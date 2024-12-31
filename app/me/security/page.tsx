@@ -96,32 +96,31 @@ export default function MeSecurity() {
         //setIsLoading(true);
 
         // Получение инпутов
-        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
 
         // Сброс ошибок
-        setUsernameError('');
+        setPasswordError('');
         let hasError = false;
 
         // Валидация никнейма и пароля
-        if ('' === username) {
-            setUsernameError('Введите никнейм');
+        if ('' === password) {
+            setPasswordError('Введите никнейм');
             hasError = true;
         }
 
-        updateInputClass(usernameInput, usernameError);
+        updateInputClass(passwordInput, passwordError);
 
         if (!hasError) {
-            const oldNickName = userData.profile.nick;
             const result = await fetch('/api/v1/auth/update-data',{
                 method: 'POST',
-                body: JSON.stringify({action:'change_nickname',old_value:oldNickName,new_value:username})
+                body: JSON.stringify({action:'change_password',old_value:'None',new_value:password})
             })
             const json : any = await result.json()
             console.log(json)
             if(result.ok){
 
             }else{
-                setUsernameError('Возникла проблема при смене никнейма')
+                setPasswordError('Возникла проблема при смене никнейма')
             }
         }
     };
@@ -130,14 +129,14 @@ export default function MeSecurity() {
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                 <NavMe/>
-                <div className="grid lg:grid-cols-[.8fr,1fr] gap-2 ">
+                <div className="grid lg:grid-cols-[.5fr,1fr] gap-2">
                     <div className="flex flex-col gap-2">
                         <div
                             className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
                             <div className="border-b">
                                 <h1 className="text-2xl">Изменение никнейма</h1>
                             </div>
-                            <div className="flex flex-col gap-4 my-2">
+                            <div className="flex flex-col my-2">
                                 <Link href='/docs/rules'
                                       className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
                                     <p className="text-muted-foreground">Никнейм не должен нарушать</p>правила сервера
@@ -152,9 +151,9 @@ export default function MeSecurity() {
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                     />
-                                    {usernameError && <p className="text-red-400 mt-1 mb-5">{usernameError}</p>}
                                     <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
                                 </form>
+                                {usernameError && <p className="text-red-400 mt-1">{usernameError}</p>}
                             </div>
                         </div>
                         <div
@@ -162,7 +161,7 @@ export default function MeSecurity() {
                             <div className="border-b">
                                 <h1 className="text-2xl">Изменение пароля</h1>
                             </div>
-                            <div className="flex flex-col gap-4 my-2">
+                            <div className="flex flex-col my-2">
                                 <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitPassword}>
                                     <input
                                         type="text"
@@ -173,9 +172,9 @@ export default function MeSecurity() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
                                     <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
                                 </form>
+                                {passwordError && <p className="text-red-400 mt-1">{passwordError}</p>}
                                 <Link href='/recover'
                                       className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
                                     <p className="text-muted-foreground">Забыли пароль?</p>Перейти к восстановлению
