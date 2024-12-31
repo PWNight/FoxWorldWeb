@@ -88,9 +88,10 @@ export default function MeSecurity() {
 
         if (!hasError) {
             const oldNickName = userData.profile.nick;
+            const session_token = userData.token;
             const result = await fetch('/api/v1/auth/update-data',{
                 method: 'POST',
-                body: JSON.stringify({action:'change_nickname',old_value:oldNickName,new_value:username})
+                body: JSON.stringify({action:'change_nickname',old_value:oldNickName,new_value:username, session_token})
             })
 
             const json : any = await result.json()
@@ -125,11 +126,11 @@ export default function MeSecurity() {
         }
 
         updateInputClass(passwordInput, passwordError);
-
         if (!hasError) {
-            const result = await fetch('/api/v1/auth/update-data',{
+            const session_token = userData.token;
+            const result = await fetch('/api/v1/users/me/change-password/',{
                 method: 'POST',
-                body: JSON.stringify({action:'change_password',old_value:'None',new_value:password, user_data: userData})
+                body: JSON.stringify({new_password:password, session_token})
             })
             const json : any = await result.json()
             console.log(json)

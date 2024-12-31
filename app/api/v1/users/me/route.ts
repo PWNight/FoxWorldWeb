@@ -21,7 +21,7 @@ async function checkToken(token: any){
         const user = users[0];
         const { premium_uuid, joined, last_seen } = user;
 
-        return NextResponse.json({success: true, user: {premium_uuid, joined, last_seen}, profile }, {status:200})
+        return NextResponse.json({success: true, user: {premium_uuid, joined, last_seen}, profile, token }, {status:200})
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }

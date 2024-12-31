@@ -1,0 +1,69 @@
+import { query } from '@/lib/mysql';
+import { rconQuery } from '@/lib/rcon'
+import { NextRequest, NextResponse } from "next/server";
+import bcrypt from "bcrypt";
+
+export async function POST(request: NextRequest) {
+    let hasErrors = false;
+    let errors = {
+        session_token: '',
+        new_password: '',
+    };
+
+    const data = await request.json();
+    const session_token = data.session_token;
+    const new_password = data.new_password;
+
+    if (session_token == null || session_token === '' || typeof session_token !== 'string') {
+        hasErrors = true;
+        if (session_token == null || session_token === '') {
+            errors.session_token = 'Токен сессии отсутствует';
+        } else {
+            if (typeof session_token !== 'string') {
+                errors.session_token = 'Токен сессии должен быть строкой';
+            }
+        }
+    }
+
+    if (new_password == null || new_password === '' || typeof new_password !== 'string') {
+        hasErrors = true;
+        if (new_password == null || new_password === '') {
+            errors.new_password = 'Новый пароль отсутствует';
+        } else {
+            if (typeof new_password !== 'string') {
+                errors.new_password = 'Новый пароль должен быть строкой';
+            }
+        }
+    }
+
+    if (hasErrors) {
+        return NextResponse.json({ success: false, errors }, { status: 401 });
+    }
+
+    const response = await fetch("http://localhost:3000/api/v1/users/me",{
+        method: "POST",
+        body: JSON.stringify({session_token}),
+    })
+
+    const json = await response.json()
+    if(!json.success){
+        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+    }
+
+    // Получение пользователя из базы данных
+    const sql = 'SELECT * FROM librepremium_data WHERE last_nickname = ?';
+    const users: any = await query(sql, [json.profile.nick]);
+    const user = users[0];
+
+    const rightSalt = `$2a$10$${user.salt}`;
+
+    let hashedPassword = await bcrypt.hash(new_password, rightSalt);
+    hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
+
+    if(user.hashed_password == hashedPassword){
+        return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
+    }
+
+    await rconQuery(`librelogin user pass-change ${json.profile.nick} ${new_password}`);
+    return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
+}
