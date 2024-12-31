@@ -8,12 +8,15 @@ export async function POST(request: NextRequest) {
         action: '',
         old_value: '',
         new_value: '',
+        user_data: ''
     };
 
     const data = await request.json();
     const action = data.action;
     const old_value = data.old_value;
     const new_value = data.new_value;
+    //TODO: Переписать небезопасное получение информации
+    const user_data = data.user_data;
 
     if (action == null || action === '' || typeof action !== 'string') {
         hasErrors = true;
@@ -47,21 +50,36 @@ export async function POST(request: NextRequest) {
         }
     }
 
+    if (user_data == null || typeof user_data !== "object") {
+        hasErrors = true;
+        if (user_data == null) {
+            errors.user_data = 'Отсутствует информация об игроке';
+        } else {
+            if (typeof user_data !== 'object') {
+                errors.user_data = 'Информация об игроке должна быть объектом';
+            }
+        }
+    }
+
     if (old_value == new_value ) {
         return NextResponse.json({ success: false, message: 'Укажите новое значение' }, { status: 403 });
     }
     if (hasErrors) {
         return NextResponse.json({ success: false, errors }, { status: 401 });
     } else {
-        const response = await fetch("http://localhost:3000/api/v1/users/me",{
+        //TODO: Переписать получение информации об игроке через API
+        /*const response = await fetch("http://localhost:3000/api/v1/users/me",{
             method: "GET"
         })
         const json = await response.json()
 
         if(Object.keys(json).length == 0){
-            return NextResponse.json({ success: false, data: json }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
         }
-
+        if(!json.success){
+            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        }
+        */
         switch (action) {
             case 'change_nickname':
                 const libre_user: any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [new_value]);
@@ -76,7 +94,7 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
             case 'change_password':
                 // TODO: Implement error handler
-                await rconQuery(`librelogin user pass-change ${json.profile.nick} ${new_value}`);
+                await rconQuery(`librelogin user pass-change ${user_data.profile.nick} ${new_value}`);
                 return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
         }
     }
