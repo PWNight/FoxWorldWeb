@@ -2,14 +2,8 @@ import { query } from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-    const session = request.cookies.get('s_token')
-    
-    if(session === undefined){
-        return NextResponse.json({success: false}, { status: 200 })
-    }
-
-    const data:any = await decrypt(session?.value)
+async function checkToken(token: any){
+    const data:any = await decrypt(token)
     if(data === null){
         return NextResponse.json({ success: false, error: 'Токен некорректен' }, { status: 401 })
     }
@@ -31,4 +25,37 @@ export async function GET(request: NextRequest) {
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }
+}
+
+export async function GET(request: NextRequest) {
+    const session_token = request.cookies.get('s_token')
+    if(session_token === undefined){
+        return NextResponse.json({success: false, message: "Отсутсвует токен сессии в куки браузера"}, { status: 200 })
+    }
+
+    return await checkToken(session_token?.value)
+}
+export async function POST(request: NextRequest) {
+    const data:any = await request.json()
+    const session_token = data.session_token
+
+    let hasErrors = false;
+    let error = ''
+
+    if (session_token == null || session_token === '' || typeof session_token !== 'string') {
+        hasErrors = true;
+        if (session_token == null || session_token === '') {
+            error = 'Токен сессии отсутствует';
+        } else {
+            if (typeof session_token !== 'string') {
+                error = 'Токен сессии должен быть строкой';
+            }
+        }
+    }
+
+    if (hasErrors) {
+        return NextResponse.json({ success: false, error }, { status: 401 });
+    }
+
+    return await checkToken(session_token)
 }
