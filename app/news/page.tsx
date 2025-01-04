@@ -23,7 +23,7 @@ export default async function NewsIndexPage() {
           Все новости от команды разработки
         </p>
       </div>
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-2">
+      <div className="grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-8 gap-4 mb-2">
         {news.map((news) => (
           <NewsCard {...news} slug={news.slug} key={news.slug} />
         ))}
@@ -43,17 +43,17 @@ function NewsCard({
   return (
     <Link
       href={`/news/${slug}`}
-      className="flex flex-col gap-2 items-start border rounded-md py-5 px-3 bg-accent"
+      className="flex flex-col gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all"
     >
       <h3 className="text-xl font-semibold -mt-1 pr-7">{title}</h3>
       <div className="w-full">
         <Image
           src={cover}
           alt={title}
-          width={400}
-          height={150}
-          quality={80}
-          className="w-full rounded-md object-cover h-[180px] border"
+          width={1000}
+          height={1000}
+          quality={100}
+          className="w-full rounded-md object-cover border"
         />
       </div>
       <p className="text-sm text-muted-foreground">{description}</p>

@@ -56,8 +56,8 @@ export default async function NewsPage(props: PageProps) {
               <Image
                 src={res.frontmatter.cover}
                 alt={res.frontmatter.title}
-                width={400}
-                height={250}
+                width={1000}
+                height={1000}
                 quality={100}
                 className="rounded-md object-cover border"
               />
