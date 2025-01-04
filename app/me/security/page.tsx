@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {CodeXml, LucideLoader, Pencil} from "lucide-react";
+import {LucideLoader, Pencil} from "lucide-react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {NavMe} from "@/components/navbar_me";
