@@ -17,7 +17,7 @@ export default function MeSecurity() {
     // Объявление параметров валидации
     const [isLoading, setIsLoading] = useState(false);
     const [hasError, setHasError] = useState(false);
-    const [usernameError, setUsernameError] = useState('')
+    const [usernameMessage, setUsernameMessage] = useState('')
     const [passwordMessage, setPasswordMessage] = useState('')
 
     const router = useRouter()
@@ -65,44 +65,46 @@ export default function MeSecurity() {
         }
     };
 
-    const handleSubmitNickname = async(e: any) => {
+    const handleSubmitUsername = async(e: any) => {
         e.preventDefault();
         setIsLoading(true);
+        setUsernameMessage('');
+        setHasError(false);
 
         // Получение инпутов
         const usernameInput = document.getElementById('username');
+        updateInputClass(usernameInput, false);
 
-        // Сброс ошибок
-        setUsernameError('');
-
-        // Валидация никнейма и пароля
+        // Валидация никнейма
         if ('' === username) {
-            setUsernameError('Введите никнейм');
             setHasError(true)
+            setUsernameMessage('Введите никнейм');
+            updateInputClass(usernameInput, true);
+            setIsLoading(false);
+            return
+        }
+        if(username.length < 4){
+            setHasError(true)
+            setUsernameMessage('Длина никнейма должна быть не менее 4 символов');
+            updateInputClass(usernameInput, true);
+            setIsLoading(false);
+            return
         }
 
-        updateInputClass(usernameInput, usernameError);
-
-        if (!hasError) {
-            const oldNickName = userData.profile.nick;
-            const session_token = userData.token;
-            const result = await fetch('/api/v1/users/me/change-nickname',{
-                method: 'POST',
-                body: JSON.stringify({action:'change_nickname',old_value:oldNickName,new_value:username, session_token})
-            })
-
-            const json : any = await result.json()
-            console.log(json)
-
-            if(result.ok){
-            }else{
-                if(!json.success){
-                    setUsernameError(json.message)
-                }else{
-                    setUsernameError('Произошла неизвестная ошибка')
-                }
-            }
+        const session_token = userData.token;
+        const result = await fetch('/api/v1/users/me/change-username/',{
+            method: 'POST',
+            body: JSON.stringify({new_username : username, session_token})
+        })
+        const json : any = await result.json()
+        if(result.ok){
+            setUsernameMessage(json.message)
+        }else{
+            setHasError(true)
+            setUsernameMessage(json.message)
         }
+        updateInputClass(usernameInput, hasError);
+        setIsLoading(false);
     };
     const handleSubmitPassword = async(e: any) => {
         e.preventDefault();
@@ -114,7 +116,7 @@ export default function MeSecurity() {
         const passwordInput = document.getElementById('password');
         updateInputClass(passwordInput, false);
 
-        // Валидация никнейма и пароля
+        // Валидация пароля
         if ('' === password) {
             setHasError(true)
             setPasswordMessage('Введите никнейм');
@@ -136,7 +138,6 @@ export default function MeSecurity() {
             body: JSON.stringify({new_password:password, session_token})
         })
         const json : any = await result.json()
-        console.log(json)
         if(result.ok){
             setPasswordMessage(json.message)
         }else{
@@ -163,7 +164,7 @@ export default function MeSecurity() {
                                       className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
                                     <p className="text-muted-foreground">Никнейм не должен нарушать</p>правила сервера
                                 </Link>
-                                <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitNickname}>
+                                <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitUsername}>
                                     <input
                                         type="text"
                                         className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
@@ -175,7 +176,11 @@ export default function MeSecurity() {
                                     />
                                     <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
                                 </form>
-                                {usernameError && <p className="text-red-400 mt-1">{usernameError}</p>}
+                                {hasError ? (
+                                    <p className="text-red-400 mt-1">{usernameMessage}</p>
+                                ) : (
+                                    <p className="text-green-500 mt-1">{usernameMessage}</p>
+                                )}
                             </div>
                         </div>
                         <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
@@ -198,7 +203,7 @@ export default function MeSecurity() {
                                 {hasError ? (
                                     <p className="text-red-400 mt-1">{passwordMessage}</p>
                                 ) : (
-                                    <p className="text-green-400 mt-1">{passwordMessage}</p>
+                                    <p className="text-green-500 mt-1">{passwordMessage}</p>
                                 )}
                                 <Link href='/'
                                       className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
