@@ -50,17 +50,12 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
     }
 
-    // Получение пользователя из базы данных
-    const sql = 'SELECT * FROM librepremium_data WHERE last_nickname = ?';
-    const users: any = await query(sql, [json.profile.nick]);
-    const user = users[0];
-
-    const rightSalt = `$2a$10$${user.salt}`;
-
-    let hashedPassword = await bcrypt.hash(new_password, rightSalt);
-    hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
-
-    if(user.hashed_password == hashedPassword){
+    const nickname = json.profile.nick;
+    const result = await fetch('http://localhost:3000/api/v1/auth/login',{
+        method: 'POST',
+        body: JSON.stringify({username:nickname,password:new_password}),
+    })
+    if(result.ok){
         return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
     }
 
