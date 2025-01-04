@@ -37,10 +37,10 @@ export async function POST(request: NextRequest) {
     }
 
     if (hasErrors) {
-        return NextResponse.json({ success: false, errors }, { status: 401 });
+        return NextResponse.json({ success: false, message: "Ошибка валидации", errors }, { status: 401 });
     }
 
-    const response = await fetch("http://localhost:3000/api/v1/users/me",{
+    let response = await fetch("http://localhost:3000/api/v1/users/me",{
         method: "POST",
         body: JSON.stringify({session_token}),
     })
@@ -62,6 +62,15 @@ export async function POST(request: NextRequest) {
 
     if(user.hashed_password == hashedPassword){
         return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
+    }
+
+    response = await fetch("http://localhost:3000/forbidden-passwords.txt",{
+        method: "GET",
+    })
+    let text = await response.text()
+
+    if (text.indexOf(new_password) >= 0){
+        return NextResponse.json({ success: false, message: "Пароль небезопасен, выберите другой" }, { status: 401 });
     }
 
     await rconQuery(`librelogin user pass-change ${json.profile.nick} ${new_password}`);

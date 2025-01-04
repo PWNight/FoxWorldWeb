@@ -1,22 +1,24 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {Pencil} from "lucide-react";
+import {CodeXml, LucideLoader, Pencil} from "lucide-react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import {NavMe} from "@/components/navbar_me";
-import {Accordion, AccordionContent, AccordionItem, AccordionTrigger} from "@/components/ui/accordion";
+import InDev from "@/components/indev";
 
 export default function MeSecurity() {
+    // Объявление хранилищ данных
     const [userData, setUserData] = useState(Object)
     const [statsData, setStatsData] = useState(Object)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    //const [isLoading, setIsLoading] = useState(false);
-
+    // Объявление параметров валидации
+    const [isLoading, setIsLoading] = useState(false);
+    const [hasError, setHasError] = useState(false);
     const [usernameError, setUsernameError] = useState('')
-    const [passwordError, setPasswordError] = useState('')
+    const [passwordMessage, setPasswordMessage] = useState('')
 
     const router = useRouter()
 
@@ -26,13 +28,11 @@ export default function MeSecurity() {
                 method: "GET"
             })
             if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
+                console.error(response)
+                return 'Произошла неизвестная ошибка. Пожалуйста, сообщите об этом команде разработки, прикрепив сообщение ошибки из консоли разработчика (F12)'
             }
             const json = await response.json()
             const sessions = json.sessions.slice(0,5)
-            console.log(sessions)
             setStatsData(sessions)
         }
         async function getSession(){
@@ -40,9 +40,8 @@ export default function MeSecurity() {
                 method: "GET"
             })
             if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
+                console.error(response)
+                return 'Произошла неизвестная ошибка. Пожалуйста, сообщите об этом команде разработки, прикрепив сообщение ошибки из консоли разработчика (F12)'
             }
 
             const json = await response.json()
@@ -50,13 +49,13 @@ export default function MeSecurity() {
                 router.push('/login')
             }else{
                 setUserData(json)
-                getStats(json)
+                await getStats(json)
             }
         }
         getSession()
     },[router])
     // Обновление классов в зависимости от наличия ошибок
-    const updateInputClass = (input: HTMLElement | null, error: string) => {
+    const updateInputClass = (input: HTMLElement | null, error: boolean) => {
         if (error) {
             input?.classList.replace("border-gray-300", "border-red-400");
             input?.classList.replace("dark:border-gray-600", "dark:border-gray-400");
@@ -68,20 +67,18 @@ export default function MeSecurity() {
 
     const handleSubmitNickname = async(e: any) => {
         e.preventDefault();
-
-        //setIsLoading(true);
+        setIsLoading(true);
 
         // Получение инпутов
         const usernameInput = document.getElementById('username');
 
         // Сброс ошибок
         setUsernameError('');
-        let hasError = false;
 
         // Валидация никнейма и пароля
         if ('' === username) {
             setUsernameError('Введите никнейм');
-            hasError = true;
+            setHasError(true)
         }
 
         updateInputClass(usernameInput, usernameError);
@@ -89,7 +86,7 @@ export default function MeSecurity() {
         if (!hasError) {
             const oldNickName = userData.profile.nick;
             const session_token = userData.token;
-            const result = await fetch('/api/v1/auth/update-data',{
+            const result = await fetch('/api/v1/users/me/change-nickname',{
                 method: 'POST',
                 body: JSON.stringify({action:'change_nickname',old_value:oldNickName,new_value:username, session_token})
             })
@@ -109,44 +106,52 @@ export default function MeSecurity() {
     };
     const handleSubmitPassword = async(e: any) => {
         e.preventDefault();
-
-        //setIsLoading(true);
+        setIsLoading(true);
+        setPasswordMessage('');
+        setHasError(false);
 
         // Получение инпутов
         const passwordInput = document.getElementById('password');
-
-        // Сброс ошибок
-        setPasswordError('');
-        let hasError = false;
+        updateInputClass(passwordInput, false);
 
         // Валидация никнейма и пароля
         if ('' === password) {
-            setPasswordError('Введите никнейм');
-            hasError = true;
+            setHasError(true)
+            setPasswordMessage('Введите никнейм');
+            updateInputClass(passwordInput, true);
+            setIsLoading(false);
+            return
+        }
+        if(password.length < 8){
+            setHasError(true)
+            setPasswordMessage('Длина пароля должна быть не менее 8 символов');
+            updateInputClass(passwordInput, true);
+            setIsLoading(false);
+            return
         }
 
-        updateInputClass(passwordInput, passwordError);
-        if (!hasError) {
-            const session_token = userData.token;
-            const result = await fetch('/api/v1/users/me/change-password/',{
-                method: 'POST',
-                body: JSON.stringify({new_password:password, session_token})
-            })
-            const json : any = await result.json()
-            console.log(json)
-            if(result.ok){
-
-            }else{
-                setPasswordError('Возникла проблема при смене никнейма')
-            }
+        const session_token = userData.token;
+        const result = await fetch('/api/v1/users/me/change-password/',{
+            method: 'POST',
+            body: JSON.stringify({new_password:password, session_token})
+        })
+        const json : any = await result.json()
+        console.log(json)
+        if(result.ok){
+            setPasswordMessage(json.message)
+        }else{
+            setHasError(true)
+            setPasswordMessage(json.message)
         }
+        updateInputClass(passwordInput, hasError);
+        setIsLoading(false);
     };
 
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                 <NavMe/>
-                <div className="grid lg:grid-cols-[.5fr,1fr] gap-2">
+                <div className="grid xl:grid-cols-[.5fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
                     <div className="flex flex-col gap-2">
                         <div
                             className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
@@ -168,7 +173,7 @@ export default function MeSecurity() {
                                         value={username}
                                         onChange={(e) => setUsername(e.target.value)}
                                     />
-                                    <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
+                                    <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
                                 </form>
                                 {usernameError && <p className="text-red-400 mt-1">{usernameError}</p>}
                             </div>
@@ -188,41 +193,22 @@ export default function MeSecurity() {
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    <Button variant="accent" className="flex gap-1"><Pencil/>Изменить</Button>
+                                    <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
                                 </form>
-                                {passwordError && <p className="text-red-400 mt-1">{passwordError}</p>}
-                                <Link href='/  '
+                                {hasError ? (
+                                    <p className="text-red-400 mt-1">{passwordMessage}</p>
+                                ) : (
+                                    <p className="text-green-400 mt-1">{passwordMessage}</p>
+                                )}
+                                <Link href='/'
                                       className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
                                     <p className="text-muted-foreground">Забыли пароль?</p>Перейти к восстановлению
                                 </Link>
                             </div>
                         </div>
                     </div>
-                    <div className="h-full">
-                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit dark:bg-neutral-800 mb-4">
-                            <h1 className="text-2xl">Последние 5 сессий</h1>
-                        </div>
-                        <Accordion type='multiple' className="flex flex-col">
-                            {
-                                statsData.map((session: any, key: any) => (
-                                    <AccordionItem value={session.start} key={key}>
-                                        <AccordionTrigger className='border-b bg-neutral-100 rounded-sm p-4 max-h-fit dark:bg-neutral-800 mb-1 w-full'>
-                                            <h1 className="text-2xl">Сессия от {session.start}</h1>
-                                        </AccordionTrigger>
-                                        <AccordionContent
-                                            className="bg-neutral-100 rounded-sm p-4 max-h-fit dark:bg-neutral-800">
-                                            <div className="flex gap-1"><p className="text-muted-foreground">Время сессии:</p><p>{session.start} - {session.end}</p></div>
-                                            <div className="flex gap-1"><p className="text-muted-foreground">Сессия
-                                                длилась</p><p>{session.length}</p></div>
-                                            <div className="flex gap-1"><p className="text-muted-foreground">Большую часть времени вы были в мире</p><p>{session.most_used_world}</p></div>
-                                            <div className="flex gap-1"><p className="text-muted-foreground">Вы
-                                                провели</p><p>{session.afk_time}</p><p
-                                                className="text-muted-foreground">в АФК</p></div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                ))
-                            }
-                        </Accordion>
+                    <div className="">
+                        <InDev/>
                     </div>
                 </div>
             </div>
