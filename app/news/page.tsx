@@ -53,7 +53,7 @@ function NewsCard({
           width={1000}
           height={1000}
           quality={100}
-          className="w-full rounded-md object-cover border"
+          className="w-full rounded-md object-cover border h-[290px]"
         />
       </div>
       <p className="text-sm text-muted-foreground">{description}</p>
