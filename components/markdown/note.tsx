@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
+import {CircleAlert, CircleCheck, InfoIcon, TriangleAlert} from "lucide-react";
 
 type NoteProps = PropsWithChildren & {
   title?: string;
@@ -9,7 +10,7 @@ type NoteProps = PropsWithChildren & {
 
 export default function Note({
   children,
-  title = "Note",
+  title = "Примечание:",
   type = "note",
 }: NoteProps) {
   const noteClassNames = clsx({
@@ -21,7 +22,18 @@ export default function Note({
     "dark:bg-green-950 bg-green-100 border-green-200 dark:border-green-900":
       type === "success",
   });
-
+  function getNoteIcon(){
+    switch (type) {
+      case "note":
+        return <InfoIcon/>;
+      case "warning":
+        return <TriangleAlert/>;
+      case "success":
+        return <CircleCheck/>;
+      case "danger":
+        return <CircleAlert/>;
+    }
+  }
   return (
     <div
       className={cn(
@@ -29,7 +41,7 @@ export default function Note({
         noteClassNames
       )}
     >
-      <p className="font-bold -mb-2.5">{title}:</p> {children}
+      <p className="font-bold -mb-2.5 flex flex-row items-center gap-1">{getNoteIcon()}{title}</p> {children}
     </div>
   );
 }
