@@ -1,11 +1,25 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Heart } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: "FoxWorld - Главная",
+};
+
 export default function Home() {
   return (
     <div className="flex flex-col justify-center px-2 py-8 my-auto h-full">
       <div className="flex flex-col m-auto gap-3">
-        <img className='h-28 w-28 mb-10' src="logo.png"/>
+        <Image
+          src='/logo.png'
+          alt='logo'
+          width={1000}
+          height={1000}
+          quality={100}
+          className="h-28 w-28 mb-10"
+        />
         <div className="flex text-4xl sm:text-6xl font-bold gap-2 sm:items-center sm:flex-row flex-col items-start">
           <h1 className="text-[#F38F54]">FoxWorld</h1>
           <h1 className="sm:flex hidden">:</h1>
