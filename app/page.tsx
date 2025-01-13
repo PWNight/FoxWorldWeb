@@ -5,7 +5,7 @@ import Image from "next/image";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "FoxWorld - Главная",
+  title: "FW - Главная",
 };
 
 export default function Home() {

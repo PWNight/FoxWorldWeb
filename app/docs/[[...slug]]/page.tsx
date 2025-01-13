@@ -48,7 +48,7 @@ export async function generateMetadata(props: PageProps) {
   }
   const { frontmatter } = res;
   return {
-    title: frontmatter.title,
+    title: `FW - ${frontmatter.title}`,
     description: frontmatter.description,
   };
 }

@@ -3,7 +3,7 @@ import Link from "next/link";
 import {Metadata} from "next";
 
 export const metadata: Metadata = {
-  title: "FoxWorld",
+  title: "FW - Не найдена",
 };
 
 export default function NotFound() {

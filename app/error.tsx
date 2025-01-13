@@ -2,6 +2,11 @@
 
 import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+import {Metadata} from "next";
+
+export const metadata: Metadata = {
+  title: "FW - Мы сломались :(",
+};
 
 export default function Error({
   error,
