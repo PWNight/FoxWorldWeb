@@ -88,8 +88,8 @@ export default function Me() {
                             <div className="my-2">
                                 <div className="gap-2 grid 2xl:grid-cols-2">
                                     <div>
-                                        <p className="text-muted-foreground">Статистика активности</p>
-                                        <div className="flex flex-col gap-2">
+                                        <p className="text-muted-foreground text-xl">Статистика активности</p>
+                                        <div className="flex flex-col gap-2 text-sm">
                                             <div>
                                                 <h1 className="text-muted-foreground text-lg">За всё время</h1>
                                                 <div className="flex gap-1"><p className="text-muted-foreground">Всего
@@ -127,10 +127,10 @@ export default function Me() {
                                         </div>
                                     </div>
                                     <div>
-                                        <p className="text-muted-foreground">Статистика убийств и
+                                        <p className="text-muted-foreground text-xl">Статистика убийств и
                                             смертей</p>
                                         <div className="flex flex-col gap-2">
-                                        <div>
+                                        <div className='text-sm'>
                                                 <h1 className="text-muted-foreground text-lg">Убийства мобов</h1>
                                                 <div className="flex gap-1"><p className="text-muted-foreground">Всего
                                                     вы убили</p><p>{statsData.kill_data.mob_kills_total}</p><p
