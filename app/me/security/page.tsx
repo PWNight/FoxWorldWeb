@@ -152,7 +152,7 @@ export default function MeSecurity() {
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                 <NavMe/>
-                <div className="grid xl:grid-cols-[.5fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
+                <div className="grid xl:grid-cols-[.7fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
                     <div className="flex flex-col gap-2">
                         <div
                             className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
@@ -160,10 +160,7 @@ export default function MeSecurity() {
                                 <h1 className="text-2xl">Изменение никнейма</h1>
                             </div>
                             <div className="flex flex-col my-2">
-                                <Link href='/docs/rules'
-                                      className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
-                                    <p className="text-muted-foreground">Никнейм не должен нарушать</p>правила сервера
-                                </Link>
+                                <Link href='/docs/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый никнейм не должен нарушать</p>правила сервера</Link>
                                 <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitUsername}>
                                     <input
                                         type="text"
