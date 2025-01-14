@@ -4,6 +4,7 @@ import Anchor from "./anchor";
 import { SheetLeftbar } from "./leftbar";
 import { SheetClose } from "@/components/ui/sheet";
 import { AccountButton } from "./account-button";
+import Image from "next/image";
 export const NAVLINKS = [
   {
     title: "Главная",
@@ -59,7 +60,14 @@ export function Navbar() {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2.5 sm:px-5">
-      <img src="/logo.png" className="w-9 h-9 text-muted-foreground fill-current"  alt='logo'/>
+      <Image
+        src="/logo.png"
+        alt="logo"
+        width={50}
+        height={50}
+        quality={100}
+        className="w-9 h-9 text-muted-foreground fill-current"
+      />
       <h2 className="font-bold text-[#F38F54]">FoxWorld</h2>
     </Link>
   );
