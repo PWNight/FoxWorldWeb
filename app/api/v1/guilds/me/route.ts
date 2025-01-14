@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
 
     // Получение пользователя из базы данных
     if(json.profile.in_guild){
-        const guild_user: any = await query('SELECT guilds.id, url, badge_url, name, description, info, is_recruit, discord_code, create_date, permission, member_since FROM guilds JOIN guilds_members ON guilds.id = guilds_members.fk_guild WHERE guilds_members.uid = ?', [json.profile.id]);
+        const guild_user: any = await query('SELECT guilds.id, url, profiles.nick as owner_nickname, ' +
+            'badge_url, name, description, info, is_recruit, discord_code, create_date, permission, member_since ' +
+            'FROM guilds JOIN guilds_members ON guilds.id = guilds_members.fk_guild ' +
+            'JOIN profiles ON guilds.owner_id = profiles.id ' +
+            'WHERE guilds_members.uid = ?', [json.profile.id]);
         return NextResponse.json({ success: true, data: guild_user }, { status: 200 });
     }
     return NextResponse.json({ success: true, data: null }, { status: 200 });
