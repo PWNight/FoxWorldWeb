@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "npm run build && scp -r .next/* j26389063@ee3775acbb96.hosting.myjino.ru\n:~/domains/foxworld.ru/.next && ssh j26389063@ee3775acbb96.hosting.myjino.ru\n \"mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt\""
+    "deploy": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt\""
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.0",
