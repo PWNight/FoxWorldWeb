@@ -3,7 +3,7 @@ import { query } from "@/lib/mysql";
 
 export async function GET(request: NextRequest) {
     try{
-        let guildData:any = await await query("SELECT * FROM guilds")
+        let guildData:any = await query("SELECT * FROM guilds")
         if(!guildData){
             return NextResponse.json({message: "Guilds not found"}, {status:404})
         }

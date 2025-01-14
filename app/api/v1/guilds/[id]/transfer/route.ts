@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getData } from "@/lib/mysql";
+import { query } from "@/lib/mysql";
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
+    const {id} = await params;
     try{
-        let [guildData]:any = await getData(`SELECT * FROM guilds WHERE id = '${params.id}'`)
+        let [guildData]:any = await query(`SELECT * FROM guilds WHERE id = ?`,[id])
         if(!guildData){
             return NextResponse.json({message:"Guild not found"}, {status:404});
         }

@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { query } from "@/lib/mysql";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
+    const {id} = await params;
     try{
-        let profiles : any = await query('SELECT * FROM profiles WHERE id = ?', [params.id])
+        let profiles : any = await query('SELECT * FROM profiles WHERE id = ?', [id])
 
         if (profiles.length === 0) {
             return NextResponse.json({ success: false, message: 'Пользователь не найден' }, { status: 404 });
