@@ -2,6 +2,6 @@
 
 export default function Map() {
     return (
-        <iframe src='http://mc.foxworld.ru:25599/' className='w-full h-full'></iframe>
+        <iframe src='https://foxworld.dynmap.xyz' className='w-full h-full'></iframe>
     );
 }
