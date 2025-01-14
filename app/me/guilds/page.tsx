@@ -5,6 +5,7 @@ import {NavMe} from "@/components/navbar_me";
 
 export default function MeGuilds() {
     const [userData, setUserData] = useState(Object)
+    const [userGuilds, setUserGuilds] = useState(Object)
     const router = useRouter()
 
     useEffect(()=>{
@@ -23,6 +24,26 @@ export default function MeGuilds() {
                 router.push('/login')
             }else{
                 setUserData(json)
+                getGuilds(json)
+            }
+        }
+        async function getGuilds(data:any){
+            const session_token = data.token
+            const response = await fetch("/api/v1/guilds/me",{
+                method: "POST",
+                body: JSON.stringify({session_token}),
+            })
+            if(!response.ok){
+                // TODO: Implement error handler
+                console.log(response)
+                return
+            }
+
+            const json = await response.json()
+            if (!json.success) {
+                router.push('/login')
+            }else{
+                setUserGuilds(json.data)
             }
         }
         getSession()
