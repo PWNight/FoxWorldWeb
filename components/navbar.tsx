@@ -18,10 +18,6 @@ export const NAVLINKS = [
     href: `/docs`,
   },
   {
-    title: "Статистика",
-    href: "/statistic",
-  },
-  {
     title: "Гильдии",
     href: "/guilds",
   },

@@ -1,7 +1,7 @@
 "use client";
 import InDev from "@/components/indev";
 
-export default function Guilds() {
+export default function Map() {
     return (
         <InDev/>
     );

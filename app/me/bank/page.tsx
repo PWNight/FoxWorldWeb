@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {NavMe} from "@/components/navbar_me";
+import InDev from "@/components/indev";
 
 export default function MeBank() {
     const [userData, setUserData] = useState(Object)
@@ -32,6 +33,7 @@ export default function MeBank() {
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                 <NavMe/>
                 <div className="">
+                    <InDev/>
                 </div>
             </div>
         )
