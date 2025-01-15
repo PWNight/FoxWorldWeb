@@ -5,14 +5,17 @@ export function Footer() {
   return (
     <footer className="border-t w-full p-5 max-h-14">
       <div className="container flex items-center sm:justify-between justify-center sm:gap-0 gap-4 h-full text-muted-foreground text-sm flex-wrap sm:py-0 py-3 max-sm:px-4">
-        <div className="flex items-center gap-3">
-          <p className="text-center flex flex-row items-center">
-            FoxWorld © 2022 - 2024
-          </p>
-        </div>
-        <div className="items-center hidden md:flex">
-          <FooterButtons />
-        </div>
+          <div className="flex items-center gap-3">
+              <p className="text-center flex flex-row items-center">
+                  FoxWorld © 2021 - 2024
+              </p>
+              <p className="text-center flex flex-row items-center">
+                  Версия сайта - DEV 1.0.0-beta1
+              </p>
+          </div>
+          <div className="items-center hidden md:flex">
+              <FooterButtons/>
+          </div>
       </div>
     </footer>
   );
@@ -35,7 +38,7 @@ export function FooterButtons() {
           Telegram
         </Link>
         <Link
-          href="https://vk.com/foxworldproject"
+          href="https://vk.com/foxworldserver"
           className={buttonVariants({ variant: "link", className: "", size: "sm",
           })}
         >
