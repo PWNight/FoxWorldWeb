@@ -1,0 +1,21 @@
+name: 'Post to Discord'
+
+on:
+  release:
+    branches: [main]
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Publish BreweryX release
+        uses: gradle/gradle-build-action@v3
+        env:
+          CHANGELOG: ${{ github.event.release.body }}
+          REPO_USERNAME: 'FoxWorld Web'
+          DISCORD_WEBHOOK: ${{ secrets.WEBHOOK }}
+        with:
+          arguments: publishRelease -Dsources=true --stacktrace
