@@ -1,7 +1,5 @@
-import { query } from '@/lib/mysql';
 import { rconQuery } from '@/lib/rcon'
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcrypt";
 
 export async function POST(request: NextRequest) {
     let hasErrors = false;
