@@ -41,7 +41,7 @@ export default async function NewsPage(props: PageProps) {
     const res = await getNewsForSlug(slug);
     if (!res) notFound();
     return (
-        <div className="lg:w-[60%] sm:[95%] md:[75%] mx-auto px-4">
+        <div className="lg:w-[60%] sm:[95%] md:[75%] mx-auto px-4 break-normal">
           <Link
             className={buttonVariants({
               variant: "link",
@@ -56,10 +56,10 @@ export default async function NewsPage(props: PageProps) {
               <Image
                 src={res.frontmatter.cover}
                 alt={res.frontmatter.title}
-                width={1000}
-                height={1000}
+                width={500}
+                height={500}
                 quality={100}
-                className="rounded-md object-cover border"
+                className="rounded-md object-cover border w-auto h-auto"
               />
             </div>
             <p className="text-muted-foreground text-sm">
