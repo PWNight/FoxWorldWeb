@@ -24,7 +24,7 @@ export default function MeSecurity() {
 
     useEffect(()=>{
         async function getStats(data : any){
-            const response = await fetch(`http://135.181.126.159:25576/v1/player?player=${data.profile.fk_uuid}`,{
+            const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
                 method: "GET"
             })
             if(!response.ok){
