@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Ошибка валидации", error }, { status: 401 });
     }
 
-    let response = await fetch("http://localhost:3000/api/v1/users/me",{
+    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
         method: "POST",
         body: JSON.stringify({session_token}),
     })

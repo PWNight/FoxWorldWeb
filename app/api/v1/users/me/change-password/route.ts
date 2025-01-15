@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Ошибка валидации", errors }, { status: 401 });
     }
 
-    let response = await fetch("http://localhost:3000/api/v1/users/me",{
+    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
         method: "POST",
         body: JSON.stringify({session_token}),
     })
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     }
 
     const nickname = json.profile.nick;
-    const result = await fetch('http://localhost:3000/api/v1/auth/login',{
+    const result = await fetch('https://foxworld.ru/api/v1/auth/login',{
         method: 'POST',
         body: JSON.stringify({username:nickname,password:new_password}),
     })
@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
     }
 
-    response = await fetch("http://localhost:3000/forbidden-passwords.txt",{
+    response = await fetch("https://foxworld.ru/forbidden-passwords.txt",{
         method: "GET",
     })
     let text = await response.text()
