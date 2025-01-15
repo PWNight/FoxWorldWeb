@@ -59,7 +59,7 @@ export default async function NewsPage(props: PageProps) {
                 width={500}
                 height={500}
                 quality={100}
-                className="rounded-md object-cover border w-auto h-auto"
+                className="rounded-md object-cover border w-full h-auto max-h-[400px]"
               />
             </div>
             <p className="text-muted-foreground text-sm">
