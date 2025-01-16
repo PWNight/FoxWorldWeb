@@ -30,7 +30,7 @@ export const NAVLINKS = [
 
 export function Navbar() {
   return (
-    <nav className="w-full border-b max-h-16 sticky top-0 z-50 lg:px-14 px-1 backdrop-filter backdrop-blur-xl bg-opacity-5 flex items-center">
+    <nav className="w-[94vw] mx-auto border-b max-h-16 sticky top-0 z-50 lg:px-14 px-1 backdrop-filter backdrop-blur-xl bg-opacity-5 flex items-center">
       <div className="w-full h-full flex items-center justify-between gap-2">
         <div className="flex items-center gap-5 h-full">
           <div className="flex items-center h-full gap-2">
