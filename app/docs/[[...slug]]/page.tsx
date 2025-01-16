@@ -5,6 +5,7 @@ import { page_routes } from "@/lib/routes-config";
 import { notFound } from "next/navigation";
 import { getDocsForSlug } from "@/lib/markdown";
 import { Typography } from "@/components/typography";
+import {Info} from "lucide-react";
 
 type PageProps = {
   params: Promise<{ slug: string[] }>;
@@ -28,10 +29,11 @@ export default async function DocsPage(props: PageProps) {
             {res.frontmatter.description}
           </p>
           <div>{res.content}</div>
-          <Pagination pathname={pathName} />
+          <p className='text-sm flex flex-row items-center gap-1'><Info className='w-4 h-4'/>Последнее обновление: {res.frontmatter.update_date}</p>
+          <Pagination pathname={pathName}/>
         </Typography>
       </div>
-      <Toc path={pathName} />
+      <Toc path={pathName}/>
     </div>
   );
 }

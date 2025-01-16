@@ -67,6 +67,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
 export type BaseMdxFrontmatter = {
   title: string;
   description: string;
+  update_date: string;
 };
 
 export async function getDocsForSlug(slug: string) {
