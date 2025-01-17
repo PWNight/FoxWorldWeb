@@ -5,6 +5,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import Anchor from "./anchor";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
+import {Ban, CircleUser, Gavel, HandHeart, LogOut} from "lucide-react";
 
 export function AccountButton() {
     const [userData, setUserData] = useState(Object);
@@ -73,16 +75,29 @@ export function AccountButton() {
                             </div>
                             <div className="flex flex-col text-lg">
                                 <h1 className="text-2xl">{userData.profile.nick}</h1>
-                                <p>Без доступа</p>
+                                {userData.profile.has_foxplus ?
+                                    <p className='flex flex-row gap-1'><HandHeart/>Подписка активна</p>
+                                    : null
+                                }
+                                {userData.profile.has_access ?
+                                    <Link href='/access'
+                                      className = 'inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline'
+                                    ><Ban/>Заполните анкету</Link>
+                                    : null
+                                }
+                                {!userData.profile.is_banned ?
+                                    <p className='flex flex-row gap-1'><Gavel/>Заблокирован</p>
+                                    : null
+                                }
                             </div>
                         </div>
                     </DropdownMenuItem>
                     <div>
                         <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
-                            <p>Личный кабинет</p>
+                            <p className='flex flex-row gap-1'><CircleUser/>Личный кабинет</p>
                         </DropdownMenuItem>
                         <DropdownMenuItem onClick={() => logOut()} className="text-xl">
-                            <p>Выйти</p>
+                            <p className='flex flex-row gap-1'><LogOut/>Выйти</p>
                         </DropdownMenuItem>
                     </div>
                 </DropdownMenuContent>
