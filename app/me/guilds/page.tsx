@@ -28,7 +28,7 @@ export default function MeGuilds() {
                 router.push('/login')
             }else{
                 setUserData(json)
-                getGuilds(json)
+                await getGuilds(json)
             }
         }
         async function getGuilds(data:any){

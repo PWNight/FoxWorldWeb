@@ -76,7 +76,7 @@ pre>code {
 }
 
 .code-line {
-  padding: 0.75px 12.5px;
+  padding: 1px 13px;
 }
 
 .line-number::before {
@@ -86,7 +86,7 @@ pre>code {
   margin-left: -2px;
   color: rgb(110, 110, 110);
   content: attr(line);
-  font-size: 13.5px;
+  font-size: 14px;
   text-align: right;
 }
 
@@ -159,7 +159,6 @@ pre>code {
   @apply font-normal;
   @apply tracking-wider;
   @apply font-medium;
-  font-family: var(--font-code) !important;
 }
 
 .highlight-comp>code {
