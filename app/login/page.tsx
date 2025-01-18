@@ -87,7 +87,6 @@ export default function Login() {
                     method: 'POST',
                     body: JSON.stringify({uuid,last_nickname})
                 })
-                
                 if(response.ok){
                     router.push('/me')
                 }
@@ -115,7 +114,7 @@ export default function Login() {
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
-                        placeholder="PWNight"
+                        placeholder="OlegMongol4566"
                     />
                     {usernameError && <p className="text-red-400 mt-1 mb-5">{usernameError}</p>}
                 </div>
@@ -128,6 +127,7 @@ export default function Login() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                        placeholder="SuperSecret4566"
                     />
                     {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
                     <label><input id="show-password" type="checkbox" className="password-checkbox" onChange={()=>togglePasswordVisibility()}/> Показать пароль</label><br/>
