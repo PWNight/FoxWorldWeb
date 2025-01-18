@@ -148,7 +148,8 @@ export default function MeGuilds() {
                             <div>
                                 <Dialog>
                                     <DialogContent>
-                                        <DialogTitle className='px-5'>Заполните форму, чтобы создать гильдию</DialogTitle>
+                                        <DialogTitle className='px-5 text-2xl'>Создание гильдии</DialogTitle>
+                                        <DialogDescription className='px-5'>Заполните форму и начните принимать новых игроков в свою гильдию</DialogDescription>
                                         <form className="text-sm p-5 bg-background rounded-xl text-gray-900 dark:text-gray-100" onSubmit={handleCreateSubmit}>
                                             <div className="mb-5 select-none">
                                                 <label htmlFor="name" className="block mb-2 font-medium">Название гильдии</label>
