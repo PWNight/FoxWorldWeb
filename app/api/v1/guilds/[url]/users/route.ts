@@ -73,6 +73,61 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }
 }
+export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
+    const {url} = await params;
+    const data = await request.json();
+    const session_token = data.session_token;
+    const user_id = data.user_id;
+    const permission = data.permission;
+
+    const userSchema = Joi.object({
+        session_token: Joi.required(),
+        user_id: Joi.required(),
+        permission: Joi.required()
+    })
+    const { error } = userSchema.validate(data);
+
+    if (error) {
+        return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
+    }
+
+    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+        method: "POST",
+        body: JSON.stringify({session_token}),
+    })
+
+    const json = await response.json()
+    if(!json.success){
+        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+    }
+    const user = json.profile;
+
+    try{
+        if(!user.in_guild){
+            return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
+        }
+        const userGuilds : any = await query('SELECT permission FROM guilds_members WHERE uid = ?', [user.id])
+        if (userGuilds.length == 0 || userGuilds[0].permission != 2){
+            return NextResponse.json({success: false, message: 'У вас нету доступа к этой гильдии'},{status:401})
+        }
+
+        const guildData:any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
+        if(guildData.length == 0){
+            return NextResponse.json({success: false, message: 'Гильдия не найдена'},{status:404})
+        }
+
+        if(permission == 2){
+            await query("UPDATE guilds_members SET uid = ? WHERE uid = ?",[user_id, guildData[0].owner_id])
+            await query("UPDATE guilds SET owner_id = ? WHERE owner_id = ?", [user_id, guildData[0].owner_id])
+            return NextResponse.json({success: true, message: 'Гильдия успешно передана новому главе'},{status:401})
+        }
+
+        await query("UPDATE guilds_members SET permission = ? WHERE uid = ?", [permission, user_id])
+        return NextResponse.json({ success: true, message: "Уровень доступа игрока обновлён" }, { status: 200 });
+    }catch (error: any){
+        return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
+    }
+}
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     const data = await request.json();
