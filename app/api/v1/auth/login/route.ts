@@ -1,41 +1,21 @@
 import { query } from '@/lib/mysql'; // Импортируем функцию для работы с MySQL
 import bcrypt from 'bcrypt';
 import { NextRequest, NextResponse } from "next/server";
+import Joi from 'joi';
 
 export async function POST(request: NextRequest) {
-    let hasErrors = false;
-    let errors = {
-        username: '',
-        password: '',
-    };
-
     const data = await request.json();
     const username = data.username;
     const password = data.password;
 
-    if (username == null || username === '' || typeof username !== 'string') {
-        hasErrors = true;
-        if (username == null || username === '') {
-            errors.username = 'Никнейм отсутствует';
-        } else {
-            if (typeof username !== 'string') {
-                errors.username = 'Никнейм должен быть строкой';
-            }
-        }
-    }
-    if (password == null || password === '' || typeof password !== 'string') {
-        hasErrors = true;
-        if (password == null || password === '') {
-            errors.password = 'Пароль отсутствует';
-        } else {
-            if (typeof password !== 'string') {
-                errors.password = 'Пароль должен быть строкой';
-            }
-        }
-    }
+    const userSchema = Joi.object({
+        username: Joi.string().required(),
+        password: Joi.string().required().pattern(/^[a-zA-Z0-9]+$/),
+    })
+    const { error } = userSchema.validate(data);
 
-    if (hasErrors) {
-        return NextResponse.json({ success: false, errors }, { status: 401 });
+    if (error) {
+        return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     } else {
         // Получение пользователя из базы данных
         const sql = 'SELECT * FROM librepremium_data WHERE last_nickname = ?';
