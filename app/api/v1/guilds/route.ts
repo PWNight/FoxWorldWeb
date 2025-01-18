@@ -5,9 +5,6 @@ import Joi from "joi";
 export async function GET(request: NextRequest) {
     try{
         let guildData:any = await query("SELECT * FROM guilds")
-        if(!guildData){
-            return NextResponse.json({success: true, data: {}}, {status:404})
-        }
         return NextResponse.json({success: true, data: guildData}, {status:200})
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
