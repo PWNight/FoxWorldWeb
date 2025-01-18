@@ -77,9 +77,11 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
     const {url} = await params;
     const data = await request.json();
     const session_token = data.session_token;
+    const user_id = data.user_id;
 
     const userSchema = Joi.object({
         session_token: Joi.required(),
+        user_id: Joi.required()
     })
     const { error } = userSchema.validate(data);
 
@@ -112,10 +114,9 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
             return NextResponse.json({success: false, message: 'У вас нету доступа к этой гильдии'},{status:401})
         }
 
-        await query("DELETE * FROM guilds WHERE id = ?", [guildData[0].id])
-        await query("DELETE * FROM guilds_members WHERE fk_guild = ?", [guildData[0].id])
+        await query("DELETE * FROM guilds_members WHERE fk_guild = ? AND uid = ?", [guildData[0].id, user_id])
 
-        return NextResponse.json({success: true, message: 'Гильдия удалена'},{status:200})
+        return NextResponse.json({success: true, message: 'Участник исключён из гильдии'},{status:200})
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }
