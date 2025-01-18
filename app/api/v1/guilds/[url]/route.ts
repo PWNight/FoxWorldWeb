@@ -57,6 +57,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
             guild_data.map(async(item:any) => {
                 await query("UPDATE guilds SET ? = ? WHERE url = ?", [item.name, item.value, url])
             })
+            return NextResponse.json({ success: true, message: "Информация о гильдии успешно обновлена" }, { status: 200 });
         }
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
@@ -104,7 +105,7 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         await query("DELETE * FROM guilds WHERE id = ?", [guildData[0].id])
         await query("DELETE * FROM guilds_members WHERE fk_guild = ?", [guildData[0].id])
 
-        return NextResponse.json({success: true, message: 'Гильдия удалена'},{status:200})
+        return NextResponse.json({success: true, message: 'Гильдия успешно удалена'},{status:200})
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
     }
