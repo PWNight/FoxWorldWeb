@@ -54,7 +54,7 @@ export default function MeGuilds() {
         getSession()
     },[router])
     if(Object.keys(userData).length != 0 && Object.keys(userGuilds).length != 0){
-        if (userGuilds.length == 0){
+        if (userGuilds.length != 0){
             return (
                 <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                     <NavMe/>
