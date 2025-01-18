@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     const userSchema = Joi.object({
         username: Joi.string().required(),
-        password: Joi.string().required().pattern(/^[a-zA-Z0-9]+$/),
+        password: Joi.string().required(),
     })
     const { error } = userSchema.validate(data);
 
