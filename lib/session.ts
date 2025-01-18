@@ -27,7 +27,7 @@ export async function createSession(token: any, expiresAt: any) {
     let cookiesStore = await cookies()
     return cookiesStore.set('s_token', token, {
         httpOnly: true,
-        secure: true,
+        //secure: true,
         expires: expiresAt,
         sameSite: 'lax',
         path: '/',
