@@ -4,12 +4,28 @@ import { useRouter } from "next/navigation";
 import {NavMe} from "@/components/navbar_me";
 import Image from "next/image";
 import Link from "next/link";
-import {Button, buttonVariants} from "@/components/ui/button";
-import {SearchX} from "lucide-react";
+import {buttonVariants} from "@/components/ui/button";
+import {LucideLoader, SearchX, UserPlusIcon} from "lucide-react";
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogTitle,
+    DialogDescription, DialogClose, DialogPortal,
+} from '@/components/ui/dialog'; // Import the dialog components
 
 export default function MeGuilds() {
     const [userData, setUserData] = useState(Object)
     const [userGuilds, setUserGuilds] = useState(Object)
+
+    const [name, setName] = useState('');
+    const [url, setUrl] = useState('');
+    const [info, setInfo] = useState('');
+    const [description, setDescription] = useState('');
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState('')
+
     const router = useRouter()
 
     useEffect(()=>{
@@ -53,8 +69,13 @@ export default function MeGuilds() {
         }
         getSession()
     },[router])
+
+    const handleCreateSubmit = async(e: any) => {
+
+    };
+
     if(Object.keys(userData).length != 0 && Object.keys(userGuilds).length != 0){
-        if (userGuilds.length != 0){
+        if (userGuilds.length == 0){
             return (
                 <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
                     <NavMe/>
@@ -124,7 +145,63 @@ export default function MeGuilds() {
                         <p className='text-lg'>Попробуйте вступить в одну из гильдий или создайте собственную</p>
                         <div className='flex flex-row gap-2 mt-6'>
                             <Link href='/guilds' className={buttonVariants({size: 'sm', variant: 'accent'})}>Найти гильдию</Link>
-                            <Button className={buttonVariants({size: 'sm', variant: 'accent'})}>Создать гильдию</Button>
+                            <div>
+                                <Dialog>
+                                    <DialogContent>
+                                        <DialogTitle className='px-5'>Заполните форму, чтобы создать гильдию</DialogTitle>
+                                        <form className="text-sm p-5 bg-background rounded-xl text-gray-900 dark:text-gray-100" onSubmit={handleCreateSubmit}>
+                                            <div className="mb-5 select-none">
+                                                <label htmlFor="name" className="block mb-2 font-medium">Название гильдии</label>
+                                                <input
+                                                    type="text"
+                                                    id="name"
+                                                    value={name}
+                                                    onChange={(e) => setName(e.target.value)}
+                                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                                />
+                                            </div>
+                                            <div className="mb-5 select-none">
+                                                <label htmlFor="url" className="block mb-2 font-medium">Введите краткую ссылку на гильдию</label>
+                                                <input
+                                                    type="text"
+                                                    id="url"
+                                                    value={url}
+                                                    onChange={(e) => setUrl(e.target.value)}
+                                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                                />
+                                            </div>
+                                            <div className="mb-5 select-none">
+                                                <label htmlFor="info" className="block mb-2 font-medium">Введите краткое описание гильдии (отображается вместо полного описания в списке гильдий)</label>
+                                                <input
+                                                    type="text"
+                                                    id="info"
+                                                    value={info}
+                                                    onChange={(e) => setInfo(e.target.value)}
+                                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                                />
+                                            </div>
+                                            <div className="mb-5 select-none">
+                                                <label htmlFor="description" className="block mb-2 font-medium">Введите полное описание гильдии</label>
+                                                <input
+                                                    type="text"
+                                                    id="description"
+                                                    value={description}
+                                                    onChange={(e) => setDescription(e.target.value)}
+                                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                                />
+                                            </div>
+                                            <div>
+                                                <button type="submit"
+                                                        className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <><LucideLoader/><p>Создаю гильдию</p></> : 'Создать гильдию'}</button>
+                                                {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
+                                            </div>
+                                        </form>
+                                    </DialogContent>
+                                    <DialogTrigger className={buttonVariants({size: 'sm', variant: 'accent'})}>
+                                        Создать гильдию
+                                    </DialogTrigger>
+                                </Dialog>
+                            </div>
                         </div>
                     </div>
                 </div>
