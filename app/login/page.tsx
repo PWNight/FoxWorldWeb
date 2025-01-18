@@ -14,6 +14,8 @@ export default function Login() {
     const [usernameError, setUsernameError] = useState('')
     const [passwordError, setPasswordError] = useState('')
 
+    const [showPassword, setShowPassword] = useState(false); // Состояние для видимости пароля
+
     const router = useRouter();
 
     useEffect(() => {
@@ -96,18 +98,9 @@ export default function Login() {
         }
     };
 
-    const showPassword = () => {
-        let checkbox = document.getElementById('show-password');
-        let inputPassword = document.getElementById('password');
-        // @ts-ignore
-        if(checkbox.toggleAttribute('checked')){
-            // @ts-ignore
-            inputPassword.type = 'text';
-        }else{
-            // @ts-ignore
-            inputPassword.type = 'password';
-        }
-    }
+    const togglePasswordVisibility = () => {
+        setShowPassword(!showPassword);
+    };
 
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
@@ -129,7 +122,7 @@ export default function Login() {
                 <div className="mb-5 select-none">
                     <label htmlFor="password" className="block mb-2 font-medium">Ваш пароль</label>
                     <input
-                        type="password"
+                        type={showPassword ? "text" : "password"}
                         autoComplete="current-password"
                         id="password"
                         value={password}
@@ -137,7 +130,7 @@ export default function Login() {
                         className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
                     />
                     {passwordError && <p className="text-red-400 mt-1 mb-5">{passwordError}</p>}
-                    <label><input id="show-password" type="checkbox" className="password-checkbox" onChange={()=>showPassword()}/> Показать пароль</label><br/>
+                    <label><input id="show-password" type="checkbox" className="password-checkbox" onChange={()=>togglePasswordVisibility()}/> Показать пароль</label><br/>
                     <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли
                         пароль?</Link>
                 </div>
