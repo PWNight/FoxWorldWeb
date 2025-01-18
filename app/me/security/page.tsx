@@ -160,7 +160,7 @@ export default function MeSecurity() {
                                 <h1 className="text-2xl">Изменение никнейма</h1>
                             </div>
                             <div className="flex flex-col my-2">
-                                <Link href='/docs/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый никнейм не должен нарушать</p>правила сервера</Link>
+                                <Link href='/wiki/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый никнейм не должен нарушать</p>правила сервера</Link>
                                 <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitUsername}>
                                     <input
                                         type="text"

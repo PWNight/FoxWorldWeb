@@ -148,7 +148,7 @@ export default function Login() {
                 </div>
                 <div className="flex items-center gap-2 mt-4">
                     <p>Впервые здесь?</p>
-                    <Link href='/docs/introduction/start-game' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
+                    <Link href='/wiki/introduction/start-game' className="text-orange-400 hover:text-orange-500 flex gap-2 items-center">Создайте аккаунт на сервере<UserPlusIcon/></Link>
                 </div>
             </form>
         </div>

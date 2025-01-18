@@ -71,7 +71,7 @@ export default function Me() {
                                 <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
                             </div>
                             <div className="flex flex-col gap-4 my-2">
-                                <Link href='/docs/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
+                                <Link href='/wiki/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
                                 <div className="flex 2xl:flex-row flex-col gap-2">
                                     <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
                                     <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>

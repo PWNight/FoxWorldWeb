@@ -11,13 +11,13 @@ import { Button } from "./ui/button";
 import { AlignLeftIcon } from "lucide-react";
 import { FooterButtons } from "./footer";
 import { DialogTitle } from "./ui/dialog";
-import DocsMenu from "./docs-menu";
+import WikiMenu from "./wiki-menu";
 
 export function Leftbar() {
   return (
     <aside className="md:flex hidden flex-[1] min-w-[230px] sticky top-16 flex-col overflow-y-auto">
       <ScrollArea className="py-4 text-lg">
-        <DocsMenu />
+        <WikiMenu />
       </ScrollArea>
     </aside>
   );
@@ -43,7 +43,7 @@ export function SheetLeftbar() {
             <NavMenu isSheet />
           </div>
           <div className="mx-2 px-5">
-            <DocsMenu isSheet />
+            <WikiMenu isSheet />
           </div>
           <div className="p-6 pb-4 flex gap-2.5">
             <FooterButtons />

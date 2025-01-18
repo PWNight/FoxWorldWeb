@@ -62,7 +62,7 @@ async function parseMdx<Frontmatter>(rawMdx: string) {
   });
 }
 
-// logic for docs
+// logic for wiki
 
 export type BaseMdxFrontmatter = {
   title: string;
@@ -70,9 +70,9 @@ export type BaseMdxFrontmatter = {
   update_date: string;
 };
 
-export async function getDocsForSlug(slug: string) {
+export async function getWikiForSlug(slug: string) {
   try {
-    const contentPath = getDocsContentPath(slug);
+    const contentPath = getWikiContentPath(slug);
     const rawMdx = await fs.readFile(contentPath, "utf-8");
     return await parseMdx<BaseMdxFrontmatter>(rawMdx);
   } catch (err) {
@@ -80,8 +80,8 @@ export async function getDocsForSlug(slug: string) {
   }
 }
 
-export async function getDocsTocs(slug: string) {
-  const contentPath = getDocsContentPath(slug);
+export async function getWikiTocs(slug: string) {
+  const contentPath = getWikiContentPath(slug);
   const rawMdx = await fs.readFile(contentPath, "utf-8");
   // captures between ## - #### can modify accordingly
   const headingsRegex = /^(#{2,4})\s(.+)$/gm;
@@ -113,8 +113,8 @@ function sluggify(text: string) {
   return slug.replace(/[^а-я0-9-]/g, "");
 }
 
-function getDocsContentPath(slug: string) {
-  return path.join(process.cwd(), "/contents/docs/", `${slug}/index.mdx`);
+function getWikiContentPath(slug: string) {
+  return path.join(process.cwd(), "/contents/wiki/", `${slug}/index.mdx`);
 }
 
 function justGetFrontmatterFromMD<Frontmatter>(rawMd: string): Frontmatter {
@@ -138,7 +138,7 @@ export async function getAllChilds(pathString: string) {
     page_routes_copy.map(async (it) => {
       const totalPath = path.join(
         process.cwd(),
-        "/contents/docs/",
+        "/contents/wiki/",
         prevHref,
         it.href,
         "index.mdx",
@@ -146,7 +146,7 @@ export async function getAllChilds(pathString: string) {
       const raw = await fs.readFile(totalPath, "utf-8");
       return {
         ...justGetFrontmatterFromMD<BaseMdxFrontmatter>(raw),
-        href: `/docs${prevHref}${it.href}`,
+        href: `/wiki${prevHref}${it.href}`,
       };
     }),
   );
