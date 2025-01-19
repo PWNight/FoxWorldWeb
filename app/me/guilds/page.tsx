@@ -117,7 +117,7 @@ export default function MeGuilds() {
             if(json.success){
                 setCreateModalOpen(false)
                 alert("Гильдия успешно создана")
-                getGuilds(userData)
+                await getGuilds(userData)
                 // return message
             }else{
                 setIsLoading(false);
