@@ -5,16 +5,19 @@ import {NavMe} from "@/components/navbar_me";
 import Image from "next/image";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
-import {LucideLoader, SearchX, UserPlusIcon} from "lucide-react";
+import {LucideLoader, SearchX} from "lucide-react";
 import {
     Dialog,
     DialogTrigger,
     DialogContent,
     DialogTitle,
-    DialogDescription, DialogClose, DialogPortal,
-} from '@/components/ui/dialog'; // Import the dialog components
+    DialogDescription,
+} from '@/components/ui/dialog';
 
 export default function MeGuilds() {
+    const [pageLoaded, setPageLoaded] = useState(false);
+    const [createModalOpen, setCreateModalOpen] = useState(false);
+
     const [userData, setUserData] = useState(Object)
     const [userGuilds, setUserGuilds] = useState(Object)
 
@@ -47,43 +50,91 @@ export default function MeGuilds() {
                 await getGuilds(json)
             }
         }
-        async function getGuilds(data:any){
-            const session_token = data.token
-            const response = await fetch("/api/v1/guilds/me",{
-                method: "POST",
-                body: JSON.stringify({session_token}),
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
-            }else{
-                setUserGuilds(json.data)
-                console.log(json.data)
-            }
-        }
         getSession()
     },[router])
 
-    const handleCreateSubmit = async(e: any) => {
+    async function getGuilds(data:any){
+        const session_token = data.token
+        const response = await fetch("/api/v1/guilds/me",{
+            method: "POST",
+            body: JSON.stringify({session_token}),
+        })
+        if(!response.ok){
+            // TODO: Implement error handler
+            console.log(response)
+            return
+        }
 
+        const json = await response.json()
+        if (!json.success) {
+            console.log(json.message)
+        }else{
+            setUserGuilds(json.data)
+            console.log(json.data)
+        }
+        setPageLoaded(true)
+    }
+
+    const handleCreateSubmit = async(e: any) => {
+        e.preventDefault();
+
+        setIsLoading(true);
+
+        // Сброс ошибок
+        setError('')
+        let hasError = false;
+
+        // Валидация элементов формы
+        if ('' === name) {
+            setError('Введите название гильдии');
+            setIsLoading(false);
+            hasError = true;
+        }
+        if ('' === url) {
+            setError('Введите ссылку на гильдию');
+            setIsLoading(false);
+            hasError = true;
+        }
+        if ('' === info) {
+            setError('Введите краткую информацию о гильдии');
+            setIsLoading(false);
+            hasError = true;
+        }
+        if ('' === description) {
+            setError('Введите полную информацию о гильдии');
+            setIsLoading(false);
+            hasError = true;
+        }
+
+        if (!hasError) {
+            const session_token = userData.token;
+            const result = await fetch('/api/v1/guilds',{
+                method: 'POST',
+                body: JSON.stringify({name,url,info,description,session_token}),
+            })
+            const json : any = await result.json()
+            console.log(json)
+            if(json.success){
+                setCreateModalOpen(false)
+                alert("Гильдия успешно создана")
+                getGuilds(userData)
+                // return message
+            }else{
+                setIsLoading(false);
+                setError(json.message)
+            }
+        }
     };
 
-    if(Object.keys(userData).length != 0 && Object.keys(userGuilds).length != 0){
-        if (userGuilds.length == 0){
-            return (
-                <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                    <NavMe/>
+    const GuildsBlock = () => {
+        if (pageLoaded) {
+            if (userGuilds.length != 0) {
+                return (
                     <div className='grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-8 gap-4'>
                         {userGuilds.map(function (guild:any) {
                             return (
                                 <div key={guild.url} id={guild.url}
-                                     className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-fit'>
+                                     className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all'>
                                     <div className='flex flex-col gap-2'>
                                         <div className="flex flex-row gap-1 items-center">
                                             <Image
@@ -133,20 +184,19 @@ export default function MeGuilds() {
                             )
                         })}
                     </div>
-                </div>
-            )
-        }else{
-            return (
-                <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                    <NavMe/>
-                    <div className='bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit h-fit flex flex-col gap-2'>
-                        <SearchX className='h-20 w-20'/>
-                        <h1 className='text-3xl'>Гильдии не найдены</h1>
-                        <p className='text-lg'>Попробуйте вступить в одну из гильдий или создайте собственную</p>
+                )
+            }else{
+                return (
+                    <div className='bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit flex flex-col h-fit justify-between gap-2'>
+                        <div>
+                            <SearchX className='h-20 w-20'/>
+                            <h1 className='text-3xl'>Гильдии не найдены</h1>
+                            <p>Попробуйте вступить в одну из гильдий или создайте собственную</p>
+                        </div>
                         <div className='flex flex-row gap-2 mt-6'>
                             <Link href='/guilds' className={buttonVariants({size: 'sm', variant: 'accent'})}>Найти гильдию</Link>
                             <div>
-                                <Dialog>
+                                <Dialog open={createModalOpen} onOpenChange={setCreateModalOpen}>
                                     <DialogContent>
                                         <DialogTitle className='px-5 text-2xl'>Создание гильдии</DialogTitle>
                                         <DialogDescription className='px-5'>Заполните форму и начните принимать новых игроков в свою гильдию</DialogDescription>
@@ -205,8 +255,37 @@ export default function MeGuilds() {
                             </div>
                         </div>
                     </div>
+                )
+            }
+        }else{
+            return (
+                <div className="animate-pulse flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-neutral-100 w-fit">
+                    <div className="flex flex-col gap-2 w-full"> {/* Добавил w-full для растягивания скелета */}
+                        <div className="flex flex-row gap-1 items-center w-full">
+                            <div className="rounded-full bg-gray-300 w-6 h-6"></div> {/* Скелет аватара */}
+                            <div className="bg-gray-300 h-4 w-20 rounded"></div> {/* Скелет имени */}
+                        </div>
+                        <div className="bg-gray-300 h-8 w-56 rounded"></div> {/* Скелет названия гильдии */}
+                        <div className="bg-gray-300 h-6 w-64 rounded"></div> {/* Скелет описания */}
+                        <ul className="list-inside w-full list-none">
+                            <li className="bg-gray-300 h-4 w-32 rounded my-1"></li> {/* Скелет пункта списка */}
+                            <li className="bg-gray-300 h-4 w-24 rounded my-1"></li> {/* Скелет пункта списка */}
+                            <li className="bg-gray-300 h-4 w-40 rounded my-1"></li> {/* Скелет пункта списка */}
+                            <li className="bg-gray-300 h-4 w-48 rounded my-1"></li> {/* Скелет пункта списка */}
+                        </ul>
+                    </div>
+                    <div className="flex flex-row gap-5 w-full justify-between"> {/* Расположение кнопок справа */}
+                        <div className="bg-gray-300 h-8 w-24 rounded"></div> {/* Скелет кнопки */}
+                        <div className="bg-gray-300 h-8 w-24 rounded"></div> {/* Скелет кнопки */}
+                    </div>
                 </div>
             )
         }
     }
+    return (
+        <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
+            <NavMe/>
+            <GuildsBlock/>
+        </div>
+    )
 }
