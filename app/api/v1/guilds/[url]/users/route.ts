@@ -68,6 +68,8 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
         }
 
         await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData[0].id, user_id, permission])
+        await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user_id])
+
         return NextResponse.json({ success: true, message: "Игрок успешно добавлен в гильдию" }, { status: 200 });
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
@@ -123,6 +125,8 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         }
 
         await query("UPDATE guilds_members SET permission = ? WHERE uid = ?", [permission, user_id])
+        await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user_id])
+
         return NextResponse.json({ success: true, message: "Уровень доступа игрока обновлён" }, { status: 200 });
     }catch (error: any){
         return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
@@ -170,6 +174,7 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         }
 
         await query("DELETE * FROM guilds_members WHERE fk_guild = ? AND uid = ?", [guildData[0].id, user_id])
+        await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [user_id])
 
         return NextResponse.json({success: true, message: 'Участник исключён из гильдии'},{status:200})
     }catch (error: any){

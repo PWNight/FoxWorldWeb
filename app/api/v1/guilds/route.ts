@@ -59,6 +59,7 @@ export async function POST(request: NextRequest) {
 
         const guild : any = await query("SELECT id FROM guilds WHERE url = ?", [url])
         await query('INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)', [guild[0].id, user.id, 2])
+        await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user.id])
 
         return NextResponse.json({success: true, message: 'Гильдия успешно создана'},{status:200})
     }catch (error: any){
