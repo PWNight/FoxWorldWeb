@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Гильдия с данной ссылкой уже существует'},{status:500})
         }
 
-        await query('INSERT INTO guilds (owner_id, url, name, description, info) VALUES (?, ?, ?, ?, ?) RETURNING id', [user.id, url, name, description, info]);
+        await query('INSERT INTO guilds (owner_id, url, name, description, info) VALUES (?, ?, ?, ?, ?)', [user.id, url, name, description, info]);
 
         const guild : any = await query("SELECT id FROM guilds WHERE url = ?", [url])
         await query('INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)', [guild[0].id, user.id, 2])
