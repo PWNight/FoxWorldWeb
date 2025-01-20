@@ -61,7 +61,6 @@ export default function Me() {
                                     <div className="xl:flex gap-2"><p className="text-muted-foreground">Ваш индекс активности</p><p>{statsData.info.activity_index}</p></div>
                                     <div className="xl:flex gap-2"><p className="text-muted-foreground">Вы создали аккаунт</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
                                     <div className="xl:flex gap-2"><p className="text-muted-foreground">Последний раз входили</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
-                                    
                                 </div>
                             </div>
                         </div>

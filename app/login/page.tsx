@@ -1,7 +1,7 @@
 "use client"
 import {LucideLoader, UserPlusIcon} from "lucide-react";
 import Link from "next/link";
-import { useRouter } from"next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from"react";
 
 export default function Login() {
