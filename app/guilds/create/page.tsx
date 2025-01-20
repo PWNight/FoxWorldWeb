@@ -1,8 +1,7 @@
 "use client"
-import {LucideLoader, UserPlusIcon} from "lucide-react";
-import Link from "next/link";
+import {LucideLoader} from "lucide-react";
 import { useRouter } from"next/navigation";
-import { useEffect, useState } from"react";
+import { useEffect, useState } from "react";
 
 export default function CreateGuild() {
     const [userData, setUserData] = useState(Object)
@@ -46,7 +45,6 @@ export default function CreateGuild() {
                     json.data.map((item:any) => {
                         if(item.permission == 2){
                             router.push('/guilds')
-                            return
                         }
                     })
                 }
@@ -55,7 +53,7 @@ export default function CreateGuild() {
         getSession();
     }, [router]);
 
-    const handleCreateSubmit = async(e: any) => {
+    const handleSubmit = async(e: any) => {
         e.preventDefault();
 
         setIsLoading(true);
@@ -95,8 +93,7 @@ export default function CreateGuild() {
             const json : any = await result.json()
             console.log(json)
             if(json.success){
-                alert("Гильдия успешно создана")
-                // return message
+                router.push('/me/guilds')
             }else{
                 setIsLoading(false);
                 setError(json.message)
@@ -106,7 +103,11 @@ export default function CreateGuild() {
 
     return (
         <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
-            <form className="text-sm p-5 bg-background rounded-xl text-gray-900 dark:text-gray-100" onSubmit={handleCreateSubmit}>
+            <form className="text-sm w-auto mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl p-5 text-gray-900 dark:text-gray-100" onSubmit={handleSubmit}>
+                <div className="flex flex-col gap-2 mb-5">
+                    <h1 className='text-3xl'>Создание гильдии</h1>
+                    <p>Заполните форму и начните принимать новых игроков в свою гильдию</p>
+                </div>
                 <div className="mb-5 select-none">
                     <label htmlFor="name" className="block mb-2 font-medium">Название гильдии</label>
                     <input
@@ -128,7 +129,7 @@ export default function CreateGuild() {
                     />
                 </div>
                 <div className="mb-5 select-none">
-                    <label htmlFor="info" className="block mb-2 font-medium">Введите краткое описание гильдии (отображается вместо полного описания в списке гильдий)</label>
+                    <label htmlFor="info" className="block mb-2 font-medium">Введите слоган вашей гильдии</label>
                     <input
                         type="text"
                         id="info"
@@ -138,7 +139,8 @@ export default function CreateGuild() {
                     />
                 </div>
                 <div className="mb-5 select-none">
-                    <label htmlFor="description" className="block mb-2 font-medium">Введите полное описание гильдии</label>
+                    <label htmlFor="description" className="block mb-2 font-medium">Введите полное описание
+                        гильдии</label>
                     <input
                         type="text"
                         id="description"
@@ -149,7 +151,9 @@ export default function CreateGuild() {
                 </div>
                 <div>
                     <button type="submit"
-                            disabled={isLoading} className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <><LucideLoader/><p>Создаю гильдию</p></> : 'Создать гильдию'}</button>
+                            disabled={isLoading}
+                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                        <LucideLoader/><p>Создаю гильдию</p></> : 'Создать гильдию'}</button>
                     {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                 </div>
             </form>
