@@ -1,6 +1,6 @@
 export default function GuildSkelet(){
     return (
-        <div className="animate-pulse flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-neutral-100 w-fit">
+        <div className="animate-pulse flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-neutral-100 dark:bg-neutral-800 w-fit">
             <div className="flex flex-col gap-2 w-full"> {/* Добавил w-full для растягивания скелета */}
                 <div className="flex flex-row gap-1 items-center w-full">
                     <div className="rounded-full bg-gray-300 w-6 h-6"></div> {/* Скелет аватара */}
