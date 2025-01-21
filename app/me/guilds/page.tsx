@@ -105,13 +105,7 @@ export default function MeGuilds() {
                                         })}>Открыть страницу
                                         </Link>
                                         {guild.permission == 2 && (
-                                            <button
-                                              className={buttonVariants({
-                                                variant: "accent",
-                                                className: "px-2",
-                                                size: "sm",
-                                              })}>Редактировать
-                                            </button>
+                                            <Link href={'/me/guilds/'+guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
                                         )}
                                     </div>
                                 </div>
