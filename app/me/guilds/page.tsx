@@ -68,7 +68,7 @@ export default function MeGuilds() {
                         {userGuilds.map(function (guild:any) {
                             return (
                                 <div key={guild.url} id={guild.url}
-                                     className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all'>
+                                     className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit'>
                                     <div className='flex flex-col gap-2'>
                                         <div className="flex flex-row gap-1 items-center">
                                             <Image
@@ -96,7 +96,7 @@ export default function MeGuilds() {
                                                 с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
                                         </ul>
                                     </div>
-                                    <div className='flex flex-row gap-5'>
+                                    <div className='flex sm:flex-row flex-col w-full gap-5'>
                                         <Link href={'/guilds/' + guild.url}
                                         className={buttonVariants({
                                             variant: "accent",
@@ -121,7 +121,7 @@ export default function MeGuilds() {
                             <h1 className='text-3xl'>Гильдии не найдены</h1>
                             <p>Попробуйте вступить в одну из гильдий или создайте собственную</p>
                         </div>
-                        <div className='flex flex-row gap-2 mt-6'>
+                        <div className='flex flex-col gap-2 mt-6'>
                             <Link href='/guilds' className={buttonVariants({size: 'sm', variant: 'accent'})}>Найти гильдию</Link>
                             <Link href='/guilds/create' className={buttonVariants({size: 'sm', variant: 'accent'})}>
                                 Создать гильдию
