@@ -6,7 +6,7 @@ export function Footer() {
     <footer className="border-t w-full p-5 container flex items-center sm:justify-between justify-center sm:gap-0 gap-4 text-muted-foreground text-sm flex-wrap sm:py-0 py-3 max-sm:px-4">
       <div className="flex flex-col">
           <p>
-              FoxWorld © 2021 - 2024
+              FoxWorld © 2021 - 2025
           </p>
           <p>
               v1.0.0-beta1 (In DEV)
