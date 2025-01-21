@@ -11,7 +11,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
         }
         return NextResponse.json({success: true, data: guildData}, {status:200})
     }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
+        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
     }
 }
 export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
@@ -108,6 +108,6 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
 
         return NextResponse.json({success: true, message: 'Гильдия успешно удалена'},{status:200})
     }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', data: {errno: error.errno, sqlState: error.sqlState}}, {status:500})
+        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
     }
 }
