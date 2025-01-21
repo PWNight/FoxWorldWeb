@@ -10,8 +10,6 @@ import GuildSkelet from "@/components/skelets/guild_skelet";
 
 export default function MeGuilds() {
     const [pageLoaded, setPageLoaded] = useState(false);
-
-    const [userData, setUserData] = useState(Object)
     const [userGuilds, setUserGuilds] = useState(Object)
 
     const router = useRouter()
@@ -31,7 +29,6 @@ export default function MeGuilds() {
             if (!json.success) {
                 router.push('/login')
             }else{
-                setUserData(json)
                 await getGuilds(json)
             }
         }

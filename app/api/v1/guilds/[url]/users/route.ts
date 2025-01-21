@@ -72,7 +72,7 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
 
         return NextResponse.json({ success: true, message: "Игрок успешно добавлен в гильдию" }, { status: 200 });
     }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error, {status:500})
+        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
     }
 }
 export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {

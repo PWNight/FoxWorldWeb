@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
         let guildData:any = await query("SELECT * FROM guilds")
         return NextResponse.json({success: true, data: guildData}, {status:200})
     }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}}, {status:500})
+        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
     }
 }
 export async function POST(request: NextRequest) {
