@@ -4,7 +4,7 @@ import { useEffect, useState } from"react";
 import {NavMe} from "@/components/navbar_me";
 import {CloudUpload, LucideLoader, Trash2} from "lucide-react";
 import Link from "next/link";
-import {Button} from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -35,12 +35,12 @@ export default function MyGuild(props: PageProps) {
                     router.push('/login');
                 }else {
                     setUserData(json);
-                    await getGuildUsers(json);
+                    await getUserGuild(json);
                 }
             }
         }
 
-        async function getGuildUsers(data:any) {
+        async function getUserGuild(data:any) {
             const params = await props.params
             const {url} = params;
 
@@ -102,7 +102,7 @@ export default function MyGuild(props: PageProps) {
     return (
         <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
             <NavMe/>
-            <div className="grid grid-flow-col gap-2 mb-6 w-fit">
+            <div className="grid sm:grid-flow-col gap-2 mb-6 w-fit">
                 <div className="bg-neutral-100 rounded-sm p-4 flex flex-col dark:bg-neutral-800 h-full w-fit">
                     <div className="text-sm w-fit bg-neutral-100 dark:bg-neutral-800 rounded-xl p-5 text-gray-900 dark:text-gray-100">
                         <div className="flex flex-col gap-2 mb-5">
@@ -195,7 +195,7 @@ export default function MyGuild(props: PageProps) {
                                 гильдии</p>
                         </div>
                         <div className="flex flex-col my-4">
-                            <form className="mb-5 select-none gap-2 flex flex-col xl:flex-row" onSubmit={handleUpdate}>
+                            <form className="mb-5 select-none gap-2 flex flex-col" onSubmit={handleUpdate}>
                                 <input
                                     type="text"
                                     id="description"
@@ -203,13 +203,15 @@ export default function MyGuild(props: PageProps) {
                                     onChange={(e) => setUpdateFormData({name: e.target.id, value: e.target.value})}
                                     className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
                                 />
-                                <button type="submit"
+                                <div className="flex flex-row gap-2">
+                                    <button type="submit"
                                         disabled={isLoading}
                                         className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                     <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
-                                {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
+                                    {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
+                                    <Button variant='destructive' className="flex gap-1"><Trash2/>Удалить сервер</Button>
+                                </div>
                             </form>
-                            <Button variant='destructive' className="flex gap-1"><Trash2/>Удалить сервер</Button>
                         </div>
                     </div>
                     <div
@@ -224,8 +226,8 @@ export default function MyGuild(props: PageProps) {
                         </div>
                     </div>
                     <div className="flex xl:flex-row flex-col gap-4">
-                        <Button variant='accent' className="flex gap-1 w-full">Управление участниками</Button>
-                        <Button variant='destructive' className="flex gap-1 w-full">Удалить гильдию</Button>
+                        <Link href={'/me/guilds/' + userGuild.url + '/users'} className={buttonVariants({variant: "accent"})}>Управление участниками</Link>
+                        <Button variant='destructive'>Удалить гильдию</Button>
                     </div>
                 </div>
             </div>
