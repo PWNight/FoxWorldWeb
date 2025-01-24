@@ -40,7 +40,7 @@ export default function Me() {
                 return
             }
             setUserData(r.data)
-            await getStats(r.data).then(r => {
+            getStats(r.data).then(r => {
                 if ( !r.success ) {
                     // TODO: Implement error handler when stats load failed
                     return
