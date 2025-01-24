@@ -9,25 +9,29 @@ export default function MeBank() {
     const router = useRouter()
 
     useEffect(()=>{
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
                 method: "GET"
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
+            });
+            if ( !response.ok ) {
+                return { success: false}
+            }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
+        }
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
                 return
             }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
-            }else{
-                setUserData(json)
-            }
-        }
-        getSession()
+            setUserData(r.data)
+        });
+        //TODO: Page loaded state update (in last async function)
     },[router])
+
     if(Object.keys(userData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">

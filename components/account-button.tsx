@@ -26,24 +26,26 @@ export function AccountButton() {
     }
 
     useEffect(() => {
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
                 method: "GET"
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                setUserData({})
+            });
+            if(response.ok){
+                const json = await response.json();
+                if(json.success){
+                    return {success: true, data: json}
+                }else{
+                    return {success: false}
+                }
             }else{
-                setUserData(json)
+                return {success: false};
             }
         }
-        getSession(); // Обновляем данные пользователя при монтировании компонента и изменении маршрута
+        getSession().then(r =>{
+            if(r.success){
+                setUserData(r.data)
+            }
+        });
     }, [pathname, router]);
     if (Object.keys(userData).length != 0) {
         return (
@@ -75,7 +77,7 @@ export function AccountButton() {
                             </div>
                             <div className="flex flex-col text-lg">
                                 <h1 className="text-2xl">{userData.profile.nick}</h1>
-                                {userData.profile.has_foxplus ?
+                                {userData.profile.have_fplus ?
                                     <p className='flex flex-row gap-1'><HandHeart/>Подписка активна</p>
                                     : null
                                 }

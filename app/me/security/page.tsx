@@ -23,37 +23,45 @@ export default function MeSecurity() {
     const router = useRouter()
 
     useEffect(()=>{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
+                method: "GET"
+            });
+            if ( !response.ok ) {
+                return { success: false}
+            }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
+        }
         async function getStats(data : any){
             const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
                 method: "GET"
             })
-            if(!response.ok){
-                console.error(response)
-                return 'Произошла неизвестная ошибка. Пожалуйста, сообщите об этом команде разработки, прикрепив сообщение ошибки из консоли разработчика (F12)'
+            if ( !response.ok ) {
+                return { success: false }
             }
-            const json = await response.json()
-            const sessions = json.sessions.slice(0,5)
-            setStatsData(sessions)
+            return { success: true, data: await response.json() };
         }
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
-                method: "GET"
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
+                return
+            }
+            setUserData(r.data)
+            await getStats(r.data).then(r => {
+                if ( !r.success ) {
+                    // TODO: Implement error handler when stats load failed
+                    return
+                }
+                setStatsData(r.data)
             })
-            if(!response.ok){
-                console.error(response)
-                return 'Произошла неизвестная ошибка. Пожалуйста, сообщите об этом команде разработки, прикрепив сообщение ошибки из консоли разработчика (F12)'
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
-            }else{
-                setUserData(json)
-                await getStats(json)
-            }
-        }
-        getSession()
+        });
+        //TODO: Page loaded state update (in last async function)
     },[router])
+
     // Обновление классов в зависимости от наличия ошибок
     const updateInputClass = (input: HTMLElement | null, error: boolean) => {
         if (error) {

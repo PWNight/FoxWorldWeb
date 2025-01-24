@@ -12,38 +12,45 @@ export default function Me() {
     const router = useRouter()
     
     useEffect(()=>{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
+                method: "GET"
+            });
+            if ( !response.ok ) {
+                return { success: false}
+            }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
+        }
         async function getStats(data : any){
             const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
                 method: "GET"
             })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
+            if ( !response.ok ) {
+                return { success: false }
+            }
+            return { success: true, data: await response.json() };
+        }
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
                 return
             }
-            const json = await response.json()
-            setStatsData(json)
-        }
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
-                method: "GET"
+            setUserData(r.data)
+            getStats(r.data).then(r => {
+                if ( !r.success ) {
+                    // TODO: Implement error handler when stats load failed
+                    return
+                }
+                setStatsData(r.data)
             })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
-            }else{
-                setUserData(json)
-                await getStats(json)
-            }
-        }
-        getSession()
+        });
+        //TODO: Page loaded state update (in last async function)
     },[router])
+
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
