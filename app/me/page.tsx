@@ -12,37 +12,46 @@ export default function Me() {
     const router = useRouter()
     
     useEffect(()=>{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
+                method: "GET"
+            });
+            if(response.ok){
+                const json = await response.json();
+                if(json.success){
+                    return {success: true, data: json}
+                }else{
+                    return {success: false}
+                }
+            }else{
+                return {success: false}
+            }
+        }
+        getSession().then(async r => {
+            if (r.success) {
+                setUserData(r.data)
+                await getStats(r.data).then(r => {
+                    if(r.success){
+                        setStatsData(r.data)
+                    }else{
+                        // Implement error handler when stats load failed
+                    }
+                })
+            } else {
+                router.push("/login")
+            }
+        });
+
         async function getStats(data : any){
             const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
                 method: "GET"
             })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-            const json = await response.json()
-            setStatsData(json)
-        }
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
-                method: "GET"
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
+            if(response.ok){
+                return {success: true, data: await response.json()};
             }else{
-                setUserData(json)
-                await getStats(json)
+                return {success: false}
             }
         }
-        getSession()
     },[router])
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (

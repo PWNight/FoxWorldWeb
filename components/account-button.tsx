@@ -33,14 +33,18 @@ export function AccountButton() {
             if(response.ok){
                 const json = await response.json();
                 if(json.success){
-                    return json
+                    return {success: true, data: json}
+                }else{
+                    return {success: false}
                 }
             }else{
-                return {}
+                return {success: false};
             }
         }
         getSession().then(r =>{
-            setUserData(r);
+            if(r.success){
+                setUserData(r.data)
+            }
         });
     }, [pathname, router]);
     if (Object.keys(userData).length != 0) {

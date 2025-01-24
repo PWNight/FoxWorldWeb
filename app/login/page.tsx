@@ -16,10 +16,10 @@ export default function Login() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            return response.ok
+            return {success: response.ok}
         }
         getSession().then(r =>{
-            if(r){
+            if(r.success){
                 router.push("/me");
             }
             setPageLoaded(true);
