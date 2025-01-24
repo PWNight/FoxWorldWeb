@@ -33,26 +33,7 @@ export async function createSession(token: any, expiresAt: any) {
         path: '/',
     })
 }
-/*
-export async function updateSession() {
-    let cookiesStore = await cookies()
-    const session = cookiesStore.get('s_token')?.value
-    const payload = await decrypt(session)
 
-    if (!session || !payload) {
-        return null
-    }
-
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    return cookiesStore.set('s_token', session, {
-      httpOnly: true,
-      secure: true,
-      expires: expires,
-      sameSite: 'lax',
-      path: '/',
-    })
-}
-*/
 export async function deleteSession() {
     let cookiesStore = await cookies()
     cookiesStore.delete('s_token')
