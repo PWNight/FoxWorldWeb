@@ -31,7 +31,7 @@ async function checkToken(token: any){
 export async function GET(request: NextRequest) {
     const session_token = request.cookies.get('s_token')
     if(session_token === undefined){
-        return NextResponse.json({success: false, message: "Отсутсвует токен сессии в куки браузера"}, { status: 200 })
+        return NextResponse.json({success: false, message: "Отсутсвует токен сессии в куки браузера"}, { status: 401 })
     }
 
     return await checkToken(session_token?.value)
