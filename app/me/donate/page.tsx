@@ -9,25 +9,31 @@ export default function MeDonate() {
     const router = useRouter()
 
     useEffect(()=>{
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
                 method: "GET"
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
+            });
+            if(response.ok){
+                const json = await response.json();
+                if(json.success){
+                    return {success: true, data: json}
+                }else{
+                    return {success: false}
+                }
             }else{
-                setUserData(json)
+                return {success: false}
             }
         }
-        getSession()
+        getSession().then(async r => {
+            if (r.success) {
+                setUserData(r.data)
+            } else {
+                router.push("/login")
+            }
+        });
+        //TODO: Page loaded state update (in last async function)
     },[router])
+
     if(Object.keys(userData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">

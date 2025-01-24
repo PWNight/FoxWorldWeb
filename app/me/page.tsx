@@ -27,6 +27,16 @@ export default function Me() {
                 return {success: false}
             }
         }
+        async function getStats(data : any){
+            const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
+                method: "GET"
+            })
+            if(response.ok){
+                return {success: true, data: await response.json()};
+            }else{
+                return {success: false}
+            }
+        }
         getSession().then(async r => {
             if (r.success) {
                 setUserData(r.data)
@@ -41,18 +51,9 @@ export default function Me() {
                 router.push("/login")
             }
         });
-
-        async function getStats(data : any){
-            const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
-                method: "GET"
-            })
-            if(response.ok){
-                return {success: true, data: await response.json()};
-            }else{
-                return {success: false}
-            }
-        }
+        //TODO: Page loaded state update (in last async function)
     },[router])
+
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
             <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">

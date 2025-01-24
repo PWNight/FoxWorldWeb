@@ -10,52 +10,56 @@ import GuildSkelet from "@/components/skelets/guild_skelet";
 
 export default function MeGuilds() {
     const [pageLoaded, setPageLoaded] = useState(false);
-    const [userGuilds, setUserGuilds] = useState(Object)
+    const [userGuilds, setUserGuilds] = useState([])
 
     const router = useRouter()
-
     useEffect(()=>{
-        async function getSession(){
-            const response = await fetch("/api/v1/users/me",{
+        async function getSession() {
+            const response = await fetch("/api/v1/users/me", {
                 method: "GET"
-            })
-            if(!response.ok){
-                // TODO: Implement error handler
-                console.log(response)
-                return
-            }
-
-            const json = await response.json()
-            if (!json.success) {
-                router.push('/login')
+            });
+            if(response.ok){
+                const json = await response.json();
+                if(json.success){
+                    return {success: true, data: json}
+                }else{
+                    return {success: false}
+                }
             }else{
-                await getGuilds(json)
+                return {success: false}
             }
         }
-        getSession()
+        async function getGuilds(data:any){
+            const session_token = data.token
+            const response = await fetch("/api/v1/guilds/me",{
+                method: "POST",
+                body: JSON.stringify({session_token}),
+            })
+            if (response.ok) {
+                const json = await response.json();
+                if (json.success) {
+                    return {success: true, data: json.data}
+                } else {
+                    return {success: false}
+                }
+            } else{
+                return {success: false}
+            }
+        }
+        getSession().then(async r => {
+            if (r.success) {
+                getGuilds(r.data).then((r) => {
+                    if(r.success){
+                        setUserGuilds(r.data);
+                    }
+                    setPageLoaded(true);
+                })
+            } else {
+                router.push("/login")
+            }
+        });
+
     },[router])
-
-    async function getGuilds(data:any){
-        const session_token = data.token
-        const response = await fetch("/api/v1/guilds/me",{
-            method: "POST",
-            body: JSON.stringify({session_token}),
-        })
-        if(!response.ok){
-            // TODO: Implement error handler
-            console.log(response)
-            return
-        }
-
-        const json = await response.json()
-        if (!json.success) {
-            console.log(json.message)
-        }else{
-            setUserGuilds(json.data)
-            console.log(json.data)
-        }
-        setPageLoaded(true)
-    }
 
     const GuildsBlock = () => {
         if (pageLoaded) {
