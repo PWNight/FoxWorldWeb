@@ -23,21 +23,20 @@ export default function MyGuild(props: PageProps) {
     const [error, setError] = useState('')
 
     const router = useRouter();
+
     useEffect(()=>{
         async function getSession() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            if(response.ok){
-                const json = await response.json();
-                if(json.success){
-                    return {success: true, data: json}
-                }else{
-                    return {success: false}
-                }
-            }else{
-                return {success: false}
+            if ( !response.ok ) {
+                return { success: false}
             }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
         }
         async function getUserGuild(data:any) {
             const params = await props.params
@@ -49,44 +48,45 @@ export default function MyGuild(props: PageProps) {
                 method: "POST",
                 body: JSON.stringify({session_token}),
             });
-            if( response.ok ){
-                const json = await response.json();
-                if (json.success) {
-                    let has_access = false
-                    let user_guild;
-                    json.data.map((item:any)=> {
-                        if (item.url == url) {
-                            if (item.permission == 2) {
-                                has_access = true
-                                user_guild = item
-                            }
-                        }
-                    })
-                    if (has_access) {
-                        return {success: true, data: user_guild}
-                    }else{
-                        return {success: false}
+
+            if ( !response.ok ) {
+                return { success: false }
+            }
+
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+
+            let has_access = false
+            let user_guild;
+            json.data.map((item:any)=> {
+                if (item.url == url) {
+                    if (item.permission == 2) {
+                        has_access = true
+                        user_guild = item
                     }
-                } else{
-                    return { success: false }
                 }
-            } else {
+            })
+
+            if (!has_access) {
                 return {success: false}
             }
+            return { success: true, data: user_guild }
         }
         getSession().then(async r => {
-            if (r.success) {
-                setUserData(r.data)
-                getUserGuild(r.data).then((r) => {
-                    if (r.success){
-                        setUserGuild(r.data)
-                    }else{
-                        router.push("/me/guilds")
-                    }
-                })
-            } else {
+            if ( !r.success ) {
                 router.push("/login")
+                return
             }
+            setUserData(r.data)
+            getUserGuild(r.data).then((r) => {
+                if ( !r.success ) {
+                    router.push("/me/guilds")
+                    return
+                }
+                setUserGuild(r.data)
+            })
         });
         //TODO: Page loaded state update (in last async function)
     },[router, props])

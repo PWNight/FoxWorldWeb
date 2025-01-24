@@ -13,23 +13,21 @@ export default function MeBank() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            if(response.ok){
-                const json = await response.json();
-                if(json.success){
-                    return {success: true, data: json}
-                }else{
-                    return {success: false}
-                }
-            }else{
-                return {success: false}
+            if ( !response.ok ) {
+                return { success: false}
             }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
         }
         getSession().then(async r => {
-            if (r.success) {
-                setUserData(r.data)
-            } else {
+            if ( !r.success ) {
                 router.push("/login")
+                return
             }
+            setUserData(r.data)
         });
         //TODO: Page loaded state update (in last async function)
     },[router])

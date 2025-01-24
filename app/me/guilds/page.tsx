@@ -13,21 +13,20 @@ export default function MeGuilds() {
     const [userGuilds, setUserGuilds] = useState([])
 
     const router = useRouter()
+
     useEffect(()=>{
         async function getSession() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            if(response.ok){
-                const json = await response.json();
-                if(json.success){
-                    return {success: true, data: json}
-                }else{
-                    return {success: false}
-                }
-            }else{
-                return {success: false}
+            if ( !response.ok ) {
+                return { success: false}
             }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
         }
         async function getGuilds(data:any){
             const session_token = data.token
@@ -35,30 +34,32 @@ export default function MeGuilds() {
                 method: "POST",
                 body: JSON.stringify({session_token}),
             })
-            if (response.ok) {
-                const json = await response.json();
-                if (json.success) {
-                    return {success: true, data: json.data}
-                } else {
-                    return {success: false}
-                }
-            } else{
-                return {success: false}
-            }
-        }
-        getSession().then(async r => {
-            if (r.success) {
-                getGuilds(r.data).then((r) => {
-                    if(r.success){
-                        setUserGuilds(r.data);
-                    }
-                    setPageLoaded(true);
-                })
-            } else {
-                router.push("/login")
-            }
-        });
 
+            if ( !response.ok ) {
+                return { success: false }
+            }
+
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+
+            return { success: true, data: json.data }
+        }
+
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
+                return
+            }
+            getGuilds(r.data).then((r) => {
+                if ( r.success ) {
+                    setUserGuilds(r.data);
+                }
+                setPageLoaded(true);
+            })
+        });
+        //TODO: Page loaded state update (in last async function)
     },[router])
 
     const GuildsBlock = () => {

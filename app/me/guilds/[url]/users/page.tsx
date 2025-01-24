@@ -11,61 +11,59 @@ type PageProps = {
 
 export default function MyGuildMembers(props: PageProps) {
     const [pageLoaded, setPageLoaded] = useState(false);
-    const [userGuild, setUserGuild] = useState(Object)
     const [guildUsers, setGuildUsers] = useState(Object)
 
     const router = useRouter();
-
-    useEffect(() => {
+   useEffect(()=>{
         async function getSession() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            if (response.ok) {
-                const json = await response.json();
-                if (!json.success) {
-                    router.push('/login');
-                }else {
-                    await getUserGuild(json);
-                }
+            if ( !response.ok ) {
+                return { success: false}
             }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return { success: true, data: json }
         }
-
         async function getUserGuild(data:any) {
             const params = await props.params
             const {url} = params;
 
             const session_token = data.token
+            // TODO: Rewrite get user guild by guild url and user id
             const response = await fetch(`/api/v1/guilds/me`, {
                 method: "POST",
                 body: JSON.stringify({session_token}),
             });
 
-            if (!response.ok){
-                router.push('/me/guilds');
-            }else{
-                const json = await response.json()
-                if(json.success){
-                    let has_access = false
-                    json.data.map(function (item:any){
-                        if(item.url == url){
-                            if(item.permission == 2){
-                                has_access = true
-                                setUserGuild(item)
-                            }
-                        }
-                    })
-                    if(!has_access){
-                        router.push('/me/guilds')
-                    }else{
-                        await getGuildUsers();
-                    }
-                } else{
-                    router.push('/me/guilds');
-                }
+            if ( !response.ok ) {
+                return { success: false }
             }
-        }
 
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+
+            let has_access = false
+            let user_guild;
+            json.data.map((item:any)=> {
+                if (item.url == url) {
+                    if (item.permission == 2) {
+                        has_access = true
+                        user_guild = item
+                    }
+                }
+            })
+
+            if (!has_access) {
+                return {success: false}
+            }
+            return { success: true, data: user_guild }
+        }
         async function getGuildUsers() {
             const params = await props.params
             const {url} = params;
@@ -73,20 +71,37 @@ export default function MyGuildMembers(props: PageProps) {
             const response = await fetch(`/api/v1/guilds/${url}/users`, {
                 method: "GET",
             });
-
-            if (!response.ok){
-                router.push('/me/guilds');
-            }else{
-                const json = await response.json()
-                console.log(json)
-
-                setGuildUsers(json.data)
-                setPageLoaded(true)
+            if ( !response.ok ) {
+                return { success: false }
             }
-        }
 
-        getSession();
-    }, [router, props]);
+            const json = await response.json()
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return { success: true, data: json.data }
+        }
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
+                return
+            }
+            getUserGuild(r.data).then((r) => {
+                if ( !r.success ) {
+                    router.push("/me/guilds")
+                    return
+                }
+                getGuildUsers().then((r) => {
+                    if ( !r.success ) {
+                        router.push("/me/guilds")
+                    }
+                    setGuildUsers(r.data)
+                    setPageLoaded(true)
+                })
+            })
+        });
+        //TODO: Page loaded state update (in last async function)
+    },[router, props])
 
     if(pageLoaded){
         return (

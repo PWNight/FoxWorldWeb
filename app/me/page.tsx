@@ -16,40 +16,37 @@ export default function Me() {
             const response = await fetch("/api/v1/users/me", {
                 method: "GET"
             });
-            if(response.ok){
-                const json = await response.json();
-                if(json.success){
-                    return {success: true, data: json}
-                }else{
-                    return {success: false}
-                }
-            }else{
-                return {success: false}
+            if ( !response.ok ) {
+                return { success: false}
             }
+            const json = await response.json();
+            if ( !json.success ) {
+                return { success: false }
+            }
+            return {success: true, data: json}
         }
         async function getStats(data : any){
             const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
                 method: "GET"
             })
-            if(response.ok){
-                return {success: true, data: await response.json()};
-            }else{
-                return {success: false}
+            if ( !response.ok ) {
+                return { success: false }
             }
+            return { success: true, data: await response.json() };
         }
         getSession().then(async r => {
-            if (r.success) {
-                setUserData(r.data)
-                await getStats(r.data).then(r => {
-                    if(r.success){
-                        setStatsData(r.data)
-                    }else{
-                        // Implement error handler when stats load failed
-                    }
-                })
-            } else {
+            if ( !r.success ) {
                 router.push("/login")
+                return
             }
+            setUserData(r.data)
+            await getStats(r.data).then(r => {
+                if ( !r.success ) {
+                    // TODO: Implement error handler when stats load failed
+                    return
+                }
+                setStatsData(r.data)
+            })
         });
         //TODO: Page loaded state update (in last async function)
     },[router])
