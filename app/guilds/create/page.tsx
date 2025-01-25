@@ -2,6 +2,7 @@
 import {LucideLoader} from "lucide-react";
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from "react";
+import {getSession} from "@/app/actions/getInfo";
 
 export default function CreateGuild() {
     const [userData, setUserData] = useState(Object)
@@ -17,20 +18,6 @@ export default function CreateGuild() {
     const router = useRouter();
 
     useEffect(() => {
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method:"GET"
-            });
-            if (response.ok) {
-                const json = await response.json();
-                if (!json.success) {
-                    router.push('/login');
-                }else{
-                    setUserData(json);
-                    await getGuilds(json);
-                }
-            }
-        }
         async function getGuilds(json : any){
             const session_token = json.token
             const response = await fetch("/api/v1/guilds/me", {
@@ -50,7 +37,14 @@ export default function CreateGuild() {
                 }
             }
         }
-        getSession();
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
+                return
+            }
+            setUserData(r.data)
+            await getGuilds(r.data);
+        });
     }, [router]);
 
     const handleSubmit = async(e: any) => {

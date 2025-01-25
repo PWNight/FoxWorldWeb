@@ -1,12 +1,12 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {NavMe} from "@/components/navbar_me";
 import Image from "next/image";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import {SearchX} from "lucide-react";
 import GuildSkelet from "@/components/skelets/guild_skelet";
+import {getAllMyGuilds, getSession} from "@/app/actions/getInfo";
 
 export default function MeGuilds() {
     const [pageLoaded, setPageLoaded] = useState(false);
@@ -15,44 +15,12 @@ export default function MeGuilds() {
     const router = useRouter()
 
     useEffect(()=>{
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            if ( !response.ok ) {
-                return { success: false}
-            }
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-            return {success: true, data: json}
-        }
-        async function getGuilds(data:any){
-            const session_token = data.token
-            const response = await fetch("/api/v1/guilds/me",{
-                method: "POST",
-                body: JSON.stringify({session_token}),
-            })
-
-            if ( !response.ok ) {
-                return { success: false }
-            }
-
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-
-            return { success: true, data: json.data }
-        }
-
         getSession().then(async r => {
             if ( !r.success ) {
                 router.push("/login")
                 return
             }
-            getGuilds(r.data).then((r) => {
+            getAllMyGuilds(r.data).then((r) => {
                 if ( r.success ) {
                     setUserGuilds(r.data);
                 }

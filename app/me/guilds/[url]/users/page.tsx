@@ -1,9 +1,9 @@
 "use client"
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
-import {NavMe} from "@/components/navbar_me";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
+import {getSession} from "@/app/actions/getInfo";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -15,19 +15,6 @@ export default function MyGuildMembers(props: PageProps) {
 
     const router = useRouter();
    useEffect(()=>{
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            if ( !response.ok ) {
-                return { success: false}
-            }
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-            return { success: true, data: json }
-        }
         async function getUserGuild(data:any) {
             const params = await props.params
             const {url} = params;

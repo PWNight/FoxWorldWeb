@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { CloudUpload, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import {NavMe} from "@/components/navbar_me";
+import {getSession, getStats} from "@/app/actions/getInfo";
 
 export default function Me() {
     const [userData, setUserData] = useState(Object)
@@ -12,28 +12,6 @@ export default function Me() {
     const router = useRouter()
     
     useEffect(()=>{
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            if ( !response.ok ) {
-                return { success: false}
-            }
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-            return {success: true, data: json}
-        }
-        async function getStats(data : any){
-            const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
-                method: "GET"
-            })
-            if ( !response.ok ) {
-                return { success: false }
-            }
-            return { success: true, data: await response.json() };
-        }
         getSession().then(async r => {
             if ( !r.success ) {
                 router.push("/login")
