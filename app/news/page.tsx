@@ -15,7 +15,7 @@ export default async function NewsIndexPage() {
   );
   return (
     <div className="w-full mx-auto flex flex-col gap-1">
-      <div className="mb-2 flex flex-col gap-2">
+      <div className="mb-2 flex flex-col gap-2 sm:px-2 px-4">
         <h1 className="text-3xl font-extrabold">
           Последние новости
         </h1>

@@ -158,68 +158,65 @@ export default function MeSecurity() {
 
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
-            <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                <NavMe/>
-                <div className="grid xl:grid-cols-[.7fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
-                    <div className="flex flex-col gap-2">
-                        <div
-                            className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
-                            <div className="border-b">
-                                <h1 className="text-2xl">Изменение никнейма</h1>
-                            </div>
-                            <div className="flex flex-col my-2">
-                                <Link href='/wiki/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый никнейм не должен нарушать</p>правила сервера</Link>
-                                <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitUsername}>
-                                    <input
-                                        type="text"
-                                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
-                                        placeholder="Введите никнейм"
-                                        autoComplete="username"
-                                        id="username"
-                                        value={username}
-                                        onChange={(e) => setUsername(e.target.value)}
-                                    />
-                                    <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
-                                </form>
-                                {hasError ? (
-                                    <p className="text-red-400 mt-1">{usernameMessage}</p>
-                                ) : (
-                                    <p className="text-green-500 mt-1">{usernameMessage}</p>
-                                )}
-                            </div>
+            <div className="grid xl:grid-cols-[.7fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
+                <div className="flex flex-col gap-2">
+                    <div
+                        className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
+                        <div className="border-b">
+                            <h1 className="text-2xl">Изменение никнейма</h1>
                         </div>
-                        <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
-                            <div className="border-b">
-                                <h1 className="text-2xl">Изменение пароля</h1>
-                            </div>
-                            <div className="flex flex-col my-2">
-                                <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitPassword}>
-                                    <input
-                                        type="text"
-                                        className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
-                                        placeholder="Введите новый пароль"
-                                        autoComplete="current-password"
-                                        id="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
-                                </form>
-                                {hasError ? (
-                                    <p className="text-red-400 mt-1">{passwordMessage}</p>
-                                ) : (
-                                    <p className="text-green-500 mt-1">{passwordMessage}</p>
-                                )}
-                                <Link href='/'
-                                      className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
-                                    <p className="text-muted-foreground">Забыли пароль?</p>Перейти к восстановлению
-                                </Link>
-                            </div>
+                        <div className="flex flex-col my-2">
+                            <Link href='/wiki/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый никнейм не должен нарушать</p>правила сервера</Link>
+                            <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitUsername}>
+                                <input
+                                    type="text"
+                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                    placeholder="Введите никнейм"
+                                    autoComplete="username"
+                                    id="username"
+                                    value={username}
+                                    onChange={(e) => setUsername(e.target.value)}
+                                />
+                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
+                            </form>
+                            {hasError ? (
+                                <p className="text-red-400 mt-1">{usernameMessage}</p>
+                            ) : (
+                                <p className="text-green-500 mt-1">{usernameMessage}</p>
+                            )}
                         </div>
                     </div>
-                    <div className="">
-                        <InDev/>
+                    <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
+                        <div className="border-b">
+                            <h1 className="text-2xl">Изменение пароля</h1>
+                        </div>
+                        <div className="flex flex-col my-2">
+                            <form className="flex 2xl:flex-row flex-col gap-2 2xl:items-center" onSubmit={handleSubmitPassword}>
+                                <input
+                                    type="text"
+                                    className="bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
+                                    placeholder="Введите новый пароль"
+                                    autoComplete="current-password"
+                                    id="password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
+                            </form>
+                            {hasError ? (
+                                <p className="text-red-400 mt-1">{passwordMessage}</p>
+                            ) : (
+                                <p className="text-green-500 mt-1">{passwordMessage}</p>
+                            )}
+                            <Link href='/'
+                                  className="text-orange-400 hover:text-orange-500 transition-all 2xl:flex gap-2">
+                                <p className="text-muted-foreground">Забыли пароль?</p>Перейти к восстановлению
+                            </Link>
+                        </div>
                     </div>
+                </div>
+                <div className="">
+                    <InDev/>
                 </div>
             </div>
         )
