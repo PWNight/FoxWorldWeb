@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import {LucideLoader, Pencil} from "lucide-react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
-import {NavMe} from "@/components/navbar_me";
 import InDev from "@/components/indev";
 import {getSession, getStats} from "@/app/actions/getInfo";
 

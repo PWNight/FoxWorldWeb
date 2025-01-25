@@ -1,7 +1,6 @@
 "use client"
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
-import {NavMe} from "@/components/navbar_me";
 import {CloudUpload, LucideLoader, Trash2} from "lucide-react";
 import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";

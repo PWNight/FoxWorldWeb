@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {NavMe} from "@/components/navbar_me";
 import InDev from "@/components/indev";
 import {getSession} from "@/app/actions/getInfo";
 
