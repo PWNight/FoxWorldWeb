@@ -11,6 +11,7 @@ export async function getSession() {
     }
     return {success: true, data: json}
 }
+
 export async function getStats(data : any){
     const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
         method: "GET"
@@ -19,4 +20,23 @@ export async function getStats(data : any){
         return { success: false }
     }
     return { success: true, data: await response.json() };
+}
+
+export async function getAllMyGuilds(data:any){
+    const session_token = data.token
+    const response = await fetch("/api/v1/guilds/me",{
+        method: "POST",
+        body: JSON.stringify({session_token}),
+    })
+
+    if ( !response.ok ) {
+        return { success: false }
+    }
+
+    const json = await response.json();
+    if ( !json.success ) {
+        return { success: false }
+    }
+
+    return { success: true, data: json.data }
 }
