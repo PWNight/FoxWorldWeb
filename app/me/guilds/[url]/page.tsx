@@ -4,7 +4,7 @@ import { useEffect, useState } from"react";
 import {CloudUpload, LucideLoader, Trash2} from "lucide-react";
 import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
-import {getSession} from "@/app/actions/getInfo";
+import {checkGuildAccess, getSession} from "@/app/actions/getInfo";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -12,7 +12,7 @@ type PageProps = {
 
 export default function MyGuild(props: PageProps) {
     const [userData, setUserData] = useState(Object)
-    const [userGuild, setUserGuild] = useState(Object)
+    const [userGuild, setuserGuild] = useState(Object)
 
     const [updateFormData, setUpdateFormData] = useState({
         name: '',
@@ -26,54 +26,21 @@ export default function MyGuild(props: PageProps) {
     const router = useRouter();
 
     useEffect(()=>{
-        async function getUserGuild(data:any) {
-            const params = await props.params
-            const {url} = params;
-
-            const session_token = data.token
-            // TODO: Rewrite get user guild by guild url and user id
-            const response = await fetch(`/api/v1/guilds/me`, {
-                method: "POST",
-                body: JSON.stringify({session_token}),
-            });
-
-            if ( !response.ok ) {
-                return { success: false }
-            }
-
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-
-            let has_access = false
-            let user_guild;
-            json.data.map((item:any)=> {
-                if (item.url == url) {
-                    if (item.permission == 2) {
-                        has_access = true
-                        user_guild = item
-                    }
-                }
-            })
-
-            if (!has_access) {
-                return {success: false}
-            }
-            return { success: true, data: user_guild }
-        }
         getSession().then(async r => {
             if ( !r.success ) {
                 router.push("/login")
                 return
             }
             setUserData(r.data)
-            getUserGuild(r.data).then((r) => {
+
+            const params = await props.params;
+            const {url} = params;
+            checkGuildAccess(url, r.data).then((r) => {
                 if ( !r.success ) {
                     router.push("/me/guilds")
                     return
                 }
-                setUserGuild(r.data)
+                setuserGuild(r.data)
                 setPageLoaded(true)
             })
         });
