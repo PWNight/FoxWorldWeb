@@ -31,18 +31,17 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
 
-    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-        method: "POST",
-        body: JSON.stringify({session_token}),
-    })
+    try {
+        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+            method: "POST",
+            body: JSON.stringify({session_token}),
+        })
 
-    const json = await response.json()
-    if(!json.success){
-        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
-    }
-    const user = json.profile;
-
-    try{
+        const json = await response.json()
+        if(!json.success){
+            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        }
+        const user = json.profile;
         if(user.in_guild){
             const userGuilds : any = await query('SELECT permission FROM guilds_members WHERE uid = ?', [user.id])
             if (userGuilds.length > 0 && userGuilds[0].permission == 2){

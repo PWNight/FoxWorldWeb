@@ -3,7 +3,7 @@ import { query } from "@/lib/mysql";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
-    try{
+    try {
         let [profile] : any = await query('SELECT * FROM profiles WHERE id = ?', [id])
 
         if ( !profile ) {

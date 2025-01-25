@@ -4,7 +4,7 @@ import Joi from "joi";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
-    try{
+    try {
         let guildUsers : any = await query(`SELECT profiles.nick AS nickname, permission, member_since FROM guilds_members 
             JOIN profiles ON guilds_members.uid = profiles.id 
             JOIN guilds ON guilds_members.fk_guild = guilds.id 
@@ -36,18 +36,18 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
 
-    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-        method: "POST",
-        body: JSON.stringify({session_token}),
-    })
+    try {
+        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+            method: "POST",
+            body: JSON.stringify({session_token}),
+        })
 
-    const json = await response.json()
-    if(!json.success){
-        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
-    }
-    const user = json.profile;
+        const json = await response.json()
+        if(!json.success){
+            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        }
+        const user = json.profile;
 
-    try{
         if( !user.in_guild ){
             return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
         }

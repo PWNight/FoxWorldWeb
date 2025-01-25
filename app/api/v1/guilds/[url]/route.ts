@@ -77,18 +77,18 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
 
-    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-        method: "POST",
-        body: JSON.stringify({session_token}),
-    })
+    try {
+        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+            method: "POST",
+            body: JSON.stringify({session_token}),
+        })
 
-    const json = await response.json()
-    if(!json.success){
-        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
-    }
-    const user = json.profile;
+        const json = await response.json()
+        if(!json.success){
+            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        }
+        const user = json.profile;
 
-    try{
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){
             return NextResponse.json({ success: false, message: 'Гильдия не найдена' },{status:404})

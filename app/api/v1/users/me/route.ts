@@ -10,7 +10,7 @@ async function checkToken(token: any){
         return NextResponse.json({ success: false, message: 'Токен некорректен' }, { status: 401 })
     }
 
-    try{
+    try {
         const {uuid} = data.data;
 
         let [profile] : any = await query('SELECT * FROM profiles WHERE fk_uuid = ?', [uuid])
