@@ -105,37 +105,34 @@ export default function MyGuildMembers(props: PageProps) {
 
     if(pageLoaded){
         return (
-            <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                <NavMe/>
-                <div className="flex flex-col gap-2 mb-6 w-fit">
-                    {guildUsers.map((user:any, key:any) => {
-                        return (
-                            <div key={key} className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit w-fit flex flex-col gap-4">
-                                <div className="flex items-center gap-2 w-fit ">
-                                    <Image
-                                        src={"https://cravatar.eu/helmavatar/" + user.nickname + "/50.png"}
-                                        alt={user.nickname}
-                                        width={50}
-                                        height={50}
-                                        quality={100}
-                                        className='rounded-lg'
-                                    />
-                                    <h1 className='text-2xl'>{user.nickname}</h1>
-                                </div>
-                                <div>
-                                    <p>Уровень доступа: {user.permission}</p>
-                                    <p>Участник с {new Date(user.member_since).toLocaleString("ru-RU")}</p>
-                                </div>
-                                {user.permission != 2 &&
-                                    <div className="flex items-center gap-2">
-                                        <Button>Изменить уровень</Button>
-                                        <Button>Исключить игрока</Button>
-                                    </div>
-                                }
+            <div className="flex flex-col gap-2 w-fit">
+                {guildUsers.map((user:any, key:any) => {
+                    return (
+                        <div key={key} className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit w-fit flex flex-col gap-4">
+                            <div className="flex items-center gap-2 w-fit ">
+                                <Image
+                                    src={"https://cravatar.eu/helmavatar/" + user.nickname + "/50.png"}
+                                    alt={user.nickname}
+                                    width={50}
+                                    height={50}
+                                    quality={100}
+                                    className='rounded-lg'
+                                />
+                                <h1 className='text-2xl'>{user.nickname}</h1>
                             </div>
-                        )
-                    })}
-                </div>
+                            <div>
+                                <p>Уровень доступа: {user.permission}</p>
+                                <p>Участник с {new Date(user.member_since).toLocaleString("ru-RU")}</p>
+                            </div>
+                            {user.permission != 2 &&
+                                <div className="flex items-center gap-2">
+                                    <Button>Изменить уровень</Button>
+                                    <Button>Исключить игрока</Button>
+                                </div>
+                            }
+                        </div>
+                    )
+                })}
             </div>
         )
     }

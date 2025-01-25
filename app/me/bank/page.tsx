@@ -34,11 +34,8 @@ export default function MeBank() {
 
     if(Object.keys(userData).length != 0){
         return (
-            <div className="grid sm:grid-cols-[300px,1fr] gap-6 mt-6">
-                <NavMe/>
-                <div className="">
-                    <InDev/>
-                </div>
+            <div className="">
+                <InDev/>
             </div>
         )
     }
