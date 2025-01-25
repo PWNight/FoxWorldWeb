@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="flex flex-col justify-center px-2 py-8 my-auto h-full">
+    <div className="flex flex-col justify-center px-4 py-8 my-auto h-full">
       <div className="flex flex-col m-auto gap-3">
         <Image
           src='/logo.png'
