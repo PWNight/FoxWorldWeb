@@ -3,7 +3,7 @@ import {query} from "@/lib/mysql";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string, id: number }> }) {
     const {url, id} = await params;
-    try{
+    try {
         let [guildUsers] : any = await query(`SELECT profiles.nick AS nickname, permission, member_since FROM guilds_members 
             JOIN profiles ON guilds_members.uid = profiles.id 
             JOIN guilds ON guilds_members.fk_guild = guilds.id 
