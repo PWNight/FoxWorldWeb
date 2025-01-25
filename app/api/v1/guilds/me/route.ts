@@ -9,8 +9,8 @@ export async function POST(request: NextRequest) {
     const userSchema = Joi.object({
         session_token: Joi.required(),
     })
-    const { error } = userSchema.validate(data);
 
+    const { error } = userSchema.validate(data);
     if (error) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
@@ -19,7 +19,6 @@ export async function POST(request: NextRequest) {
         method: "POST",
         body: JSON.stringify({session_token}),
     })
-
     const json = await response.json()
     if(!json.success){
         return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
