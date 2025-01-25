@@ -14,39 +14,32 @@ export async function POST(request: NextRequest) {
     })
     const { error } = userSchema.validate(data);
 
-    if (error) {
+    if ( error ) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     } else {
         // Получение пользователя из базы данных
-        const sql = 'SELECT * FROM librepremium_data WHERE last_nickname = ?';
-        const users: any = await query(sql, [username]);
-
-        if (users.length === 0) {
+        const [user] : any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [username]);
+        if ( !user ) {
             return NextResponse.json({ success: false, message: 'Неправильный никнейм или пароль' }, { status: 401 });
         }
 
-        const user = users[0];
-
+        // Сравнение паролей пользователя
         const rightSalt = `$2a$10$${user.salt}`;
-
         let hashedPassword = await bcrypt.hash(password, rightSalt);
         hashedPassword = hashedPassword.replace('$2a$','').replace(user.salt,'')
-        
-        if(user.hashed_password !== hashedPassword){
+
+        if( user.hashed_password !== hashedPassword ){
             return NextResponse.json({ success: false, message: "Неправильный никнейм или пароль" }, { status: 401 });
-        }else{
-            const {uuid, last_nickname} = user;
-
-            // Получение пользователя из базы данных
-            const sql = 'SELECT * FROM profiles WHERE fk_uuid = ?';
-            let profiles: any = await query(sql, [uuid]);
-
-            // Совместимость со сценарием, когда аккаунт зарегистрирован в игре
-            if (profiles.length === 0) {
-                const sql = 'INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)'
-                await query(sql, [last_nickname, uuid])
-            }
-            return NextResponse.json({ success: true, data: { uuid, last_nickname } }, { status: 200 });
         }
+
+        // Получение пользователя из базы данных
+        const {uuid, last_nickname} = user;
+        let [profile] : any = await query('SELECT * FROM profiles WHERE fk_uuid = ?', [uuid]);
+
+        // Совместимость со сценарием, когда аккаунт зарегистрирован в игре
+        if ( !profile ) {
+            await query('INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)', [last_nickname, uuid])
+        }
+        return NextResponse.json({ success: true, data: { uuid, last_nickname } }, { status: 200 });
     }
 }
