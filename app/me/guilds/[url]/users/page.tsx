@@ -3,7 +3,7 @@ import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
-import {getSession} from "@/app/actions/getInfo";
+import {checkGuildAccess, getGuildUsers, getSession} from "@/app/actions/getInfo";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -15,72 +15,23 @@ export default function MyGuildMembers(props: PageProps) {
 
     const router = useRouter();
    useEffect(()=>{
-        async function getUserGuild(data:any) {
-            const params = await props.params
-            const {url} = params;
-
-            const session_token = data.token
-            // TODO: Rewrite get user guild by guild url and user id
-            const response = await fetch(`/api/v1/guilds/me`, {
-                method: "POST",
-                body: JSON.stringify({session_token}),
-            });
-
-            if ( !response.ok ) {
-                return { success: false }
-            }
-
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-
-            let has_access = false
-            let user_guild;
-            json.data.map((item:any)=> {
-                if (item.url == url) {
-                    if (item.permission == 2) {
-                        has_access = true
-                        user_guild = item
-                    }
-                }
-            })
-
-            if (!has_access) {
-                return {success: false}
-            }
-            return { success: true, data: user_guild }
-        }
-        async function getGuildUsers() {
-            const params = await props.params
-            const {url} = params;
-
-            const response = await fetch(`/api/v1/guilds/${url}/users`, {
-                method: "GET",
-            });
-            if ( !response.ok ) {
-                return { success: false }
-            }
-
-            const json = await response.json()
-            if ( !json.success ) {
-                return { success: false }
-            }
-            return { success: true, data: json.data }
-        }
         getSession().then(async r => {
             if ( !r.success ) {
                 router.push("/login")
                 return
             }
-            getUserGuild(r.data).then((r) => {
+
+            const params = await props.params
+            const {url} = params;
+            checkGuildAccess(url, r.data).then((r) => {
                 if ( !r.success ) {
                     router.push("/me/guilds")
                     return
                 }
-                getGuildUsers().then((r) => {
+                getGuildUsers(url).then((r) => {
                     if ( !r.success ) {
                         router.push("/me/guilds")
+                        return
                     }
                     setGuildUsers(r.data)
                     setPageLoaded(true)

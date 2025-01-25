@@ -18,32 +18,19 @@ export default function CreateGuild() {
     const router = useRouter();
 
     useEffect(() => {
-        async function getGuilds(json : any){
-            const session_token = json.token
-            const response = await fetch("/api/v1/guilds/me", {
-                method: "POST",
-                body: JSON.stringify({session_token})
-            });
-            if (response.ok) {
-                const json = await response.json();
-                if (!json.success) {
-                    console.log(json.message)
-                }else{
-                    json.data.map((item:any) => {
-                        if(item.permission == 2){
-                            router.push('/guilds')
-                        }
-                    })
-                }
-            }
-        }
         getSession().then(async r => {
             if ( !r.success ) {
                 router.push("/login")
                 return
             }
+
+            if ( r.data.profile.in_guild ) {
+                router.push("/me/guilds")
+                return
+            }
+
             setUserData(r.data)
-            await getGuilds(r.data);
+
         });
     }, [router]);
 
