@@ -43,7 +43,7 @@ export default function CreateGuild() {
                 return
             }
             setUserData(r.data)
-            await getGuilds(json);
+            await getGuilds(r.data);
         });
     }, [router]);
 
