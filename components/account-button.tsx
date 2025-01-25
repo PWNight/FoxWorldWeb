@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {Ban, CircleUser, Gavel, HandHeart, LogOut} from "lucide-react";
+import {getSession} from "@/app/actions/getInfo";
 
 export function AccountButton() {
     const [userData, setUserData] = useState(Object);
@@ -26,21 +27,6 @@ export function AccountButton() {
     }
 
     useEffect(() => {
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            if(response.ok){
-                const json = await response.json();
-                if(json.success){
-                    return {success: true, data: json}
-                }else{
-                    return {success: false}
-                }
-            }else{
-                return {success: false};
-            }
-        }
         getSession().then(r =>{
             if(r.success){
                 setUserData(r.data)

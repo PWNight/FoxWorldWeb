@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { signup } from "@/app/actions/auth";
+import {getSession} from "@/app/actions/getInfo";
 
 export default function Login() {
     const [pageLoaded, setPageLoaded] = useState(false);
@@ -12,14 +13,8 @@ export default function Login() {
     const router = useRouter();
 
     useEffect(() => {
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            return {success: response.ok}
-        }
         getSession().then(r =>{
-            if(r.success){
+            if( r.success ){
                 router.push("/me");
             }
             setPageLoaded(true);

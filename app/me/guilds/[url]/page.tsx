@@ -5,6 +5,7 @@ import {NavMe} from "@/components/navbar_me";
 import {CloudUpload, LucideLoader, Trash2} from "lucide-react";
 import Link from "next/link";
 import {Button, buttonVariants} from "@/components/ui/button";
+import {getSession} from "@/app/actions/getInfo";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -26,19 +27,6 @@ export default function MyGuild(props: PageProps) {
     const router = useRouter();
 
     useEffect(()=>{
-        async function getSession() {
-            const response = await fetch("/api/v1/users/me", {
-                method: "GET"
-            });
-            if ( !response.ok ) {
-                return { success: false}
-            }
-            const json = await response.json();
-            if ( !json.success ) {
-                return { success: false }
-            }
-            return {success: true, data: json}
-        }
         async function getUserGuild(data:any) {
             const params = await props.params
             const {url} = params;
