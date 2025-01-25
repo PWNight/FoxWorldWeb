@@ -4,9 +4,9 @@ import { NextRequest, NextResponse } from "next/server";
 import Joi from "joi";
 
 async function checkToken(token: any){
-    const data:any = await decrypt(token)
+    const data : any = await decrypt(token)
 
-    if(data === null){
+    if( data === null ){
         return NextResponse.json({ success: false, message: 'Токен некорректен' }, { status: 401 })
     }
 
