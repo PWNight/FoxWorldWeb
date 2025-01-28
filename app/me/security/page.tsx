@@ -134,7 +134,7 @@ export default function MeSecurity() {
         )
     }else {
         return (
-            <div className="grid xl:grid-cols-[.7fr_1fr] lg:grid-cols-[1fr_1fr] gap-2">
+            <div className="grid xl:grid-cols-[.7fr,1fr] lg:grid-cols-[1fr,1fr] gap-2">
                 <div className="flex flex-col gap-2">
                     <div
                         className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">

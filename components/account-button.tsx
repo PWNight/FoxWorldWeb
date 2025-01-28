@@ -69,7 +69,7 @@ export function AccountButton() {
                                 }
                                 {!userData.profile.has_access ?
                                     <Link href='/access'
-                                      className = 'inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline'
+                                      className = 'inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline'
                                     ><Ban/>Заполните анкету</Link>
                                     : null
                                 }
