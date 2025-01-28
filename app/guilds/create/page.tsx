@@ -133,7 +133,7 @@ export default function CreateGuild() {
                 <div>
                     <button type="submit"
                             disabled={isLoading}
-                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                            className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                         <LucideLoader/><p>Создаю гильдию</p></> : 'Создать гильдию'}</button>
                     {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                 </div>

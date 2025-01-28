@@ -88,7 +88,7 @@ export default function MyGuild(props: PageProps) {
                             />
                             <button type="submit"
                                     disabled={isLoading}
-                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                 <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
                             {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                         </form>
@@ -103,7 +103,7 @@ export default function MyGuild(props: PageProps) {
                             />
                             <button type="submit"
                                     disabled={isLoading}
-                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                 <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
                             {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                         </form>
@@ -118,7 +118,7 @@ export default function MyGuild(props: PageProps) {
                             />
                             <button type="submit"
                                     disabled={isLoading}
-                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                 <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
                             {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                         </form>
@@ -133,7 +133,7 @@ export default function MyGuild(props: PageProps) {
                             />
                             <button type="submit"
                                     disabled={isLoading}
-                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                                    className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                 <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
                             {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                         </form>
@@ -175,7 +175,7 @@ export default function MyGuild(props: PageProps) {
                                 <div className="flex flex-row gap-2">
                                     <button type="submit"
                                         disabled={isLoading}
-                                        className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
+                                        className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1">{isLoading ? <>
                                     <LucideLoader/><p>Выполняю..</p></> : 'Изменить данные'}</button>
                                     {error && <p className="text-red-400 mt-1 mb-5">{error}</p>}
                                     <Button variant='destructive' className="flex gap-1"><Trash2/>Удалить сервер</Button>

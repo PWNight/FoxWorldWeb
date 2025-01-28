@@ -24,7 +24,7 @@ export default async function WikiPage(props: PageProps) {
       <div className="flex-[4.5] pt-10">
         <WikiBreadcrumb paths={slug} />
         <Typography>
-          <h1 className="text-3xl !-mt-0.5">{res.frontmatter.title}</h1>
+          <h1 className="text-3xl -mt-0.5!">{res.frontmatter.title}</h1>
           <p className="-mt-4 text-muted-foreground text-[16.5px]">
             {res.frontmatter.description}
           </p>
