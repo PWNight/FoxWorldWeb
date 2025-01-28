@@ -25,10 +25,16 @@ export async function signup(state: FormState, formData: FormData) {
     if(result.ok){
         const json : any = await result.json()
         const uuid = json.data.uuid
-        const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
-        const sessionToken = await encrypt({ data: { uuid, username }, expiresAt });
 
-        await createSession(sessionToken, expiresAt)
+        const response = await fetch('/api/v1/auth/create-session',{
+            method: 'POST',
+            body: JSON.stringify({ uuid, username })
+        })
+        if (!response.ok){
+            return {
+              message: 'Не удалось войти (err ' + response.status + ')',
+            }
+        }
         redirect("/me")
     }else{
         return {
