@@ -5,12 +5,13 @@ import {LucideLoader, Pencil} from "lucide-react";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 import InDev from "@/components/indev";
-import {getSession, getStats} from "@/app/actions/getInfo";
+import {getSession} from "@/app/actions/getInfo";
+import MeSettingsSkelet from "@/components/skelets/settings_skelet";
 
 export default function MeSecurity() {
     // Объявление хранилищ данных
+    const [pageLoaded, setPageLoaded] = useState(false);
     const [userData, setUserData] = useState(Object)
-    const [statsData, setStatsData] = useState(Object)
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
@@ -29,15 +30,8 @@ export default function MeSecurity() {
                 return
             }
             setUserData(r.data)
-            await getStats(r.data).then(r => {
-                if ( !r.success ) {
-                    // TODO: Implement error handler when stats load failed
-                    return
-                }
-                setStatsData(r.data)
-            })
+            setPageLoaded(true)
         });
-        //TODO: Page loaded state update (in last async function)
     },[router])
 
     // Обновление классов в зависимости от наличия ошибок
@@ -134,7 +128,11 @@ export default function MeSecurity() {
         setIsLoading(false);
     };
 
-    if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
+    if (!pageLoaded){
+        return (
+            <MeSettingsSkelet/>
+        )
+    }else {
         return (
             <div className="grid xl:grid-cols-[.7fr_1fr] lg:grid-cols-[1fr_1fr] gap-2">
                 <div className="flex flex-col gap-2">
