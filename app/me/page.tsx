@@ -31,7 +31,7 @@ export default function Me() {
 
     if(Object.keys(userData).length != 0 && Object.keys(statsData).length != 0){
         return (
-            <div className="grid lg:grid-cols-[.6fr,1fr] gap-2">
+            <div className="grid lg:grid-cols-[.6fr_1fr] gap-2">
                 <div className="flex flex-col gap-2 ">
                     <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
                         <div className="border-b">
