@@ -1,6 +1,8 @@
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
+/** @type {import('postcss-load-config').Config} */
+const config = {
   plugins: {
-    "@tailwindcss/postcss": {},
-  }
-}
+    tailwindcss: {},
+  },
+};
+
+export default config;
