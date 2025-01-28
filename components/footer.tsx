@@ -9,7 +9,7 @@ export function Footer() {
               FoxWorld © 2021 - 2025
           </p>
           <p>
-              v1.0.0-beta2
+              v1.0.0-beta2 (IN DEV)
           </p>
       </div>
       <div className="items-center md:flex">
