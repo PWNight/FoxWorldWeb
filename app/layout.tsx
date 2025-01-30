@@ -18,7 +18,7 @@ export default function RootLayout({
         <title>FoxWorld</title>
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-regular antialiased tracking-wide min-h-screen grid grid-rows-[64px,1fr,100px]`}
+        className={`${GeistSans.variable} ${GeistMono.variable} font-regular antialiased tracking-wide min-h-screen grid grid-rows-[64px,1fr,74px]`}
         suppressHydrationWarning
       >
         <ThemeProvider
