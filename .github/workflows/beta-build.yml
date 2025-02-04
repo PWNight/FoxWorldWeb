@@ -10,7 +10,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true # Проверяем, что PR был смержен
+    #if: github.event.pull_request.merged == true # Проверяем, что PR был смержен
     
     steps:
       - name: Checkout code
