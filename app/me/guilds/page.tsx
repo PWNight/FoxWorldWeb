@@ -41,7 +41,7 @@ export default function MeGuilds() {
                                 <div className='flex flex-col gap-2'>
                                     <div className="flex flex-row gap-1 items-center">
                                         <Image
-                                            src={"https://cravatar.eu/helmavatar/" + guild.owner_nickname + "/25.png"}
+                                            src={"https://minotar.net/helm/" + guild.owner_nickname + "/25.png"}
                                             alt={guild.owner_nickname}
                                             width={25}
                                             height={25}
