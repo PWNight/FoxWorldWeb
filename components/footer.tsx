@@ -28,9 +28,9 @@ export function Footer() {
                   <FooterButtons/>
                 </div>
                 <div className="flex items-center sm:justify-start gap-2 flex-wrap">
-                    <Link href="/" className={buttonVariants({variant: "link", className: "!px-0 !py-0", size: "xs"})}>Контакты</Link>
-                    <Link href="/" className={buttonVariants({variant: "link", className: "!px-0 !py-0", size: "xs"})}>Пользовательское соглашение</Link>
-                    <Link href="/" className={buttonVariants({variant: "link", className: "!px-0 !py-0", size: "xs"})}>Политика конфиденциальности</Link>
+                    <Link href="/" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Контакты</Link>
+                    <Link href="/" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Пользовательское соглашение</Link>
+                    <Link href="/" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Политика конфиденциальности</Link>
                 </div>
             </div>
         </div>
@@ -43,20 +43,20 @@ export function FooterButtons() {
     <>
         <Link
           href={`https://discord.gg/2yyeWQ5unZ`}
-          className={buttonVariants({ variant: "link", className: "!px-0", size: "xs" })}
+          className={buttonVariants({ variant: "link", className: "px-0!", size: "xs" })}
         >
           Discord
         </Link>
         <Link
           href="https://t.me/foxworldteam"
-          className={buttonVariants({ variant: "link", className: "!px-0", size: "xs",
+          className={buttonVariants({ variant: "link", className: "px-0!", size: "xs",
           })}
         >
           Telegram
         </Link>
         <Link
           href="https://vk.com/foxworldserver"
-          className={buttonVariants({ variant: "link", className: "!px-0", size: "xs",
+          className={buttonVariants({ variant: "link", className: "px-0!", size: "xs",
           })}
         >
           VK
