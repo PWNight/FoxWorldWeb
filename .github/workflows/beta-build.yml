@@ -21,7 +21,7 @@ jobs:
         with:
           host: ${{ secrets.HOST }} # IP или домен вашего сервера
           username: ${{ secrets.USERNAME }} # Имя пользователя на сервере
-          key: ${{ secrets.PRIVATE_KEY }} # Приватный SSH ключ для доступа к серверу
+          password: ${{ secrets.PASSWORD }} # Приватный SSH ключ для доступа к серверу
           script: |
             cd ~/domains/beta.foxworld.ru # Путь к папке проекта на сервере
             git pull origin main # Обновляем код из GitHub
