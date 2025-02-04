@@ -1,9 +1,11 @@
 name: BETA Build site
 
 on:
-  pull_request:
-    branches: [ "main" ] # Изменено на "main"
-    types: [closed] # Добавлено условие "closed"
+  push:
+    branches: [ "main" ] # Запускаем при каждом пуше в main
+  #pull_request:
+  #  branches: [ "main" ] # Изменено на "main"
+  #  types: [closed] # Добавлено условие "closed"
 
 jobs:
   deploy:
