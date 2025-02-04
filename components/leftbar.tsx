@@ -45,7 +45,7 @@ export function SheetLeftbar() {
           <div className="mx-2 px-5">
             <WikiMenu isSheet />
           </div>
-          <div className="mx-4 pb-4 flex gap-2.5">
+          <div className="flex gap-2.5 mt-3 mx-2 px-5">
             <FooterButtons />
           </div>
         </ScrollArea>
