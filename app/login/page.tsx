@@ -58,7 +58,7 @@ export default function Login() {
                     </div>
                     <div>
                         <button type="submit"
-                                className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><LucideLoader/><p>Выполняю вход</p></> : 'Войти'}</button>
+                                className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><LucideLoader/><p>Выполняю вход</p></> : 'Войти'}</button>
                         {state?.message && <p className="text-red-400 mt-1 mb-5">{state.message}</p>}
                     </div>
                     <div className="flex items-center gap-2 mt-4">
