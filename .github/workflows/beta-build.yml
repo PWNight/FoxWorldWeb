@@ -1,0 +1,26 @@
+name: BETA Build site
+
+on:
+  pull_request:
+    branches: [ "dev" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: SSH and deploy
+        uses: appleboy/ghaction-ssh@master
+        with:
+          host: ${{ secrets.HOST }} # IP или домен вашего сервера
+          username: ${{ secrets.USERNAME }} # Имя пользователя на сервере
+          key: ${{ secrets.PRIVATE_KEY }} # Приватный SSH ключ для доступа к серверу
+          script: |
+            cd ~/domains/beta.foxworld.ru # Путь к папке проекта на сервере
+            git pull origin main # Обновляем код из GitHub
+            npm install # Устанавливаем зависимости
+            npm run build # Собираем проект
+            mkdir -p ~/domains/beta.foxworld.ru/tmp && touch ~/domains/beta.foxworld.ru/tmp/restart.txt
