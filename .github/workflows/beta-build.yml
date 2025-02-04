@@ -2,12 +2,14 @@ name: BETA Build site
 
 on:
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main" ] # Изменено на "main"
+    types: [closed] # Добавлено условие "closed"
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.merged == true # Проверяем, что PR был смержен
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
