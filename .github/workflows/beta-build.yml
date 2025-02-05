@@ -10,21 +10,45 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    #if: github.event.pull_request.merged == true # Проверяем, что PR был смержен
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: SSH and deploy
-        uses: appleboy/ssh-action@master
+        uses: webfactory/ssh-action@v1 # или ssh-deploy-action
+
         with:
-          host: ${{ secrets.HOST }} # IP или домен вашего сервера
-          username: ${{ secrets.USERNAME }} # Имя пользователя на сервере
-          password: ${{ secrets.PASSWORD }} # Приватный SSH ключ для доступа к серверу
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          bastion: ${{ secrets.BASTION_HOST || '' }} # Опционально
+          port: ${{ secrets.PORT || 22 }} # Опционально
           script: |
-            cd ~/domains/beta.foxworld.ru # Путь к папке проекта на сервере
-            git pull origin main # Обновляем код из GitHub
-            npm install # Устанавливаем зависимости
-            npm run build # Собираем проект
+            # 1. Переходим в нужную папку
+            cd ~/domains/beta.foxworld.ru
+
+            # 2. Проверяем, есть ли репозиторий, и клонируем, если нужно
+            if [ ! -d ".git" ]; then
+              git clone <your_github_repo_url> .
+            fi
+
+            # 3. Обновляем код
+            git pull origin main
+
+            # 4. Устанавливаем Node.js и npm с помощью nvm (если не установлены)
+            if ! command -v nvm &> /dev/null
+            then
+              curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+              export NVM_DIR="$HOME/.nvm"
+              [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+              [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+              nvm install --lts
+            fi
+
+            # 5. Устанавливаем зависимости и собираем проект
+            npm install
+            npm run build
+
+            # 6. Создаем/обновляем файл restart.txt
             mkdir -p ~/domains/beta.foxworld.ru/tmp && touch ~/domains/beta.foxworld.ru/tmp/restart.txt
