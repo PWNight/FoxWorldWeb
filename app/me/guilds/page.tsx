@@ -87,8 +87,8 @@ export default function MeGuilds() {
             )
         }else{
             return (
-                <div className='bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit flex flex-col h-fit justify-between gap-2'>
-                    <div>
+                <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit flex flex-col h-fit justify-between gap-2'>
+                    <div className=''>
                         <SearchX className='h-20 w-20'/>
                         <h1 className='text-3xl'>Гильдии не найдены</h1>
                         <p>Попробуйте вступить в одну из гильдий или создайте собственную</p>
