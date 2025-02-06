@@ -71,6 +71,13 @@ export default function MeSecurity() {
             return
         }
 
+        if ( username == userData.profile.nick ) {
+            setHasError(true)
+            setUsernameMessage('Новый ник совпадает с текущим');
+            updateInputClass(usernameInput, true);
+            setIsLoading(false);
+            return
+        }
         const session_token = userData.token;
         const result = await fetch('/api/v1/users/me/change-username/',{
             method: 'POST',
