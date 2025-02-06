@@ -5,7 +5,7 @@ import Joi from "joi";
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     try {
-        let guildUsers : any = await query(`SELECT profiles.nick AS nickname, permission, member_since FROM guilds_members 
+        let guildUsers : any = await query(`SELECT uid, profiles.nick AS nickname, permission, member_since FROM guilds_members 
             JOIN profiles ON guilds_members.uid = profiles.id 
             JOIN guilds ON guilds_members.fk_guild = guilds.id 
             WHERE guilds.url = ?`,
