@@ -71,6 +71,13 @@ export default function MeSecurity() {
             return
         }
 
+        if ( username == userData.profile.nick ) {
+            setHasError(true)
+            setUsernameMessage('Новый ник совпадает с текущим');
+            updateInputClass(usernameInput, true);
+            setIsLoading(false);
+            return
+        }
         const session_token = userData.token;
         const result = await fetch('/api/v1/users/me/change-username/',{
             method: 'POST',
@@ -153,7 +160,7 @@ export default function MeSecurity() {
                                     value={username}
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
-                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
+                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader className="mr-2 animate-spin"/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
                             </form>
                             {hasError ? (
                                 <p className="text-red-400 mt-1">{usernameMessage}</p>
@@ -177,7 +184,7 @@ export default function MeSecurity() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
+                                <Button variant="accent" className="flex gap-1" disabled={isLoading}>{isLoading ? <><LucideLoader className="mr-2 animate-spin"/><p>Подождите</p></> : <><Pencil/>Изменить</>}</Button>
                             </form>
                             {hasError ? (
                                 <p className="text-red-400 mt-1">{passwordMessage}</p>
