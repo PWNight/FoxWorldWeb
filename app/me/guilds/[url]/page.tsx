@@ -5,6 +5,7 @@ import {CloudUpload, LucideLoader, Pencil, Trash2} from "lucide-react";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
+import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -19,6 +20,7 @@ export default function MyGuild(props: PageProps) {
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('')
+    const [deleteError, setDeleteError] = useState('')
 
     const router = useRouter();
 
@@ -87,6 +89,69 @@ export default function MyGuild(props: PageProps) {
         const { id, value } = e.target;
         setUpdateFormData({ ...updateFormData, [id]: value }); // Update specific field
     };
+
+    const GuildDeleteDialog = ({ guildName, onDelete }: { guildName: string; onDelete: () => void }) => {
+      const [open, setOpen] = useState(false);
+
+      const handleDeleteConfirm = () => {
+        onDelete();
+        setOpen(false);
+      };
+
+      return (
+        <Dialog open={open} onOpenChange={setOpen}>
+          <DialogTrigger asChild>
+            <button className={buttonVariants({ variant: "destructive", className: "w-full" })}>
+              Удалить гильдию
+            </button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Подтверждение удаления</DialogTitle>
+              <DialogDescription>
+                Вы уверены, что хотите удалить гильдию {guildName}? Это действие нельзя
+                отменить.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className='flex gap-2'>
+              <button
+                className={buttonVariants({ variant: "default" })}
+                onClick={() => setOpen(false)}
+              >
+                Отмена
+              </button>
+              <button
+                className={buttonVariants({ variant: "destructive" })}
+                onClick={handleDeleteConfirm}
+              >
+                Удалить
+              </button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      );
+    };
+
+    const handleDelete = async () => {
+        const session_token = userData.token;
+        const response = await fetch(`/api/v1/guilds/${userGuild.url}`,{
+            method: 'DELETE',
+            body: JSON.stringify({session_token}),
+        })
+
+        if (!response.ok) {
+            // TODO: Implement error handler
+            return
+        }
+
+        const json = await response.json()
+
+        if ( !json.success ) {
+            // TODO: Implement error handler
+        }
+        router.push('/me/guilds')
+
+    }
 
     if( pageLoaded ) {
         return (
@@ -203,8 +268,7 @@ export default function MyGuild(props: PageProps) {
                             </div>
                             <div className="mt-4 flex flex-col gap-2">
                                 <Link href={'/me/guilds/' + userGuild.url + '/users'} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
-                                <button className={buttonVariants({ variant: "destructive", className: "w-full" })}>Удалить гильдию</button>
-                            </div>
+                                <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />                            </div>
                         </div>
                     </div>
 
