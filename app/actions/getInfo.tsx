@@ -40,7 +40,21 @@ export async function getAllMyGuilds(data:any){
 
     return { success: true, data: json.data }
 }
+export async function getGuild(url: string){
+    const response = await fetch(`/api/v1/guilds/${url}`, {
+        method: "GET",
+    })
 
+    if ( !response.ok ) {
+        return { success: false }
+    }
+
+    const json = await response.json();
+    if ( !json.success ) {
+        return { success: false }
+    }
+    return { success: true, data: json.data};
+}
 export async function getGuildUsers(url: string) {
     const response = await fetch(`/api/v1/guilds/${url}/users`, {
         method: "GET",
