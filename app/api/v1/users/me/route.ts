@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 }
 export async function POST(request: NextRequest) {
     const data = await request.json();
-    const session_token = data.token;
+    const session_token = data.session_token;
 
     const userSchema = Joi.object({
         session_token: Joi.string().required(),
