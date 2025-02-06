@@ -157,7 +157,7 @@ export default function MyGuild(props: PageProps) {
                         </div>
                         <div className="p-4">
                             <div className="mb-4">
-                                <h3 className="text-lg font-medium mb-2">Эмблема гильдии (В разработке)</h3>
+                                <h3 className="text-lg font-medium mb-2">Эмблема гильдии (In DEV)</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Устанавливаемая эмблема не должна нарушать <Link href="/wiki/rules" className="text-orange-500">правила сервера</Link>
                                 </p>
@@ -171,7 +171,7 @@ export default function MyGuild(props: PageProps) {
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <h3 className="text-lg font-medium mb-2">Discord сервер</h3>
+                                <h3 className="text-lg font-medium mb-2">Discord сервер (In DEV)</h3>
                                 <input
                                     type="text"
                                     id="discord"
@@ -188,7 +188,7 @@ export default function MyGuild(props: PageProps) {
                                 </div>
                             </div>
                             <div className="mb-4">
-                                <h3 className="text-lg font-medium mb-2">Статус вступления</h3>
+                                <h3 className="text-lg font-medium mb-2">Статус вступления (In DEV)</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Здесь вы можете временно отключить возможность подавать заявку в гильдию.
                                 </p>
