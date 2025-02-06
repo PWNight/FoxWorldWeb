@@ -5,7 +5,7 @@ import Joi from "joi";
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
-    const session_token = data.token;
+    const session_token = data.session_token;
     const new_username = data.new_username;
 
     const userSchema = Joi.object({
