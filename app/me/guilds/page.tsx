@@ -24,6 +24,9 @@ export default function MeGuilds() {
                 if ( r.success ) {
                     setUserGuilds(r.data);
                 }
+                if ( r.data == null ) {
+                    setUserGuilds([]);
+                }
                 setPageLoaded(true);
             })
         });
