@@ -133,5 +133,24 @@ export default function MyGuildMembers(props: PageProps) {
         );
     }
 
-    return <div>Loading...</div>; // Display loading state while page is not loaded
+    return (
+        <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 sm:w-fit w-full">
+          {Array(5).fill(null).map((_, key) => ( // Render 5 skeleton items
+            <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
+              <div className="flex items-center gap-2 w-fit">
+                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
+                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+              </div>
+              <div>
+                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
+                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
+                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+              </div>
+            </div>
+          ))}
+        </div>
+    )
 }
