@@ -16,6 +16,17 @@ export default function MyGuildMembers(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const router = useRouter();
 
+    const fetchGuildUsers = (url: string) => {
+        getGuildUsers(url).then((r) => {
+            if (!r.success) {
+                router.push("/me/guilds");
+                return;
+            }
+            setGuildUsers(r.data);
+            setPageLoaded(true);
+        });
+    };
+
     useEffect(() => {
         getSession().then(async r => {
             if (!r.success) {
@@ -36,18 +47,7 @@ export default function MyGuildMembers(props: PageProps) {
                 fetchGuildUsers(url);
             });
         });
-    }, [router, props]);
-
-    const fetchGuildUsers = (url: string) => {
-        getGuildUsers(url).then((r) => {
-            if (!r.success) {
-                router.push("/me/guilds");
-                return;
-            }
-            setGuildUsers(r.data);
-            setPageLoaded(true);
-        });
-    };
+    }, [router, props, fetchGuildUsers]);
 
     const handleUpdateUser = async (user: any, newPermission: number) => {
         try {

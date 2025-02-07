@@ -1,6 +1,5 @@
 import { SignupFormSchema, FormState } from '@/lib/definitions'
 import {redirect} from "next/navigation";
-import {createSession, encrypt} from "@/lib/session";
 
 export async function signup(state: FormState, formData: FormData) {
     // Валидация полей авторизации

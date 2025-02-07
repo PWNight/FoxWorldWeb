@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +10,6 @@ type PageProps = {
 
 export default function GuildDetails(props: PageProps) {
     const [guild, setGuild] = useState(Object);
-    const router = useRouter();
 
     useEffect(() => {
         async function getGuild() {

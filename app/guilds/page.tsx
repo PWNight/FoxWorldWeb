@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +7,6 @@ import {buttonVariants} from "@/components/ui/button";
 export default function Guilds() {
     const [guilds, setGuilds] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const router = useRouter();
 
     useEffect(() => {
         async function getAll() {
