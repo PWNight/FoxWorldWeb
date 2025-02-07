@@ -64,8 +64,8 @@ export default function MeGuilds() {
                                             <li>Есть Discord сервер</li>
                                         )}
                                         <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                        <li>Вы состоите в гильдии
-                                            с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
+                                        <li>Вы состоите в гильдии с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
+                                        <li>{guild.member_count} участников</li>
                                     </ul>
                                 </div>
                                 <div className='flex sm:flex-row flex-col w-full gap-5'>
@@ -87,7 +87,7 @@ export default function MeGuilds() {
             )
         }else{
             return (
-                <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit flex flex-col h-fit justify-between gap-2'>
+                <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
                     <div className=''>
                         <SearchX className='h-20 w-20'/>
                         <h1 className='text-3xl'>Гильдии не найдены</h1>
