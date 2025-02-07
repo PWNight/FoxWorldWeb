@@ -20,7 +20,6 @@ export default function MyGuild(props: PageProps) {
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState('')
-    const [deleteError, setDeleteError] = useState('')
 
     const router = useRouter();
 
@@ -44,7 +43,6 @@ export default function MyGuild(props: PageProps) {
                 setPageLoaded(true)
             })
         });
-        //TODO: Page loaded state update (in last async function)
     },[router, props])
 
     const handleUpdate = async(e: any) => {

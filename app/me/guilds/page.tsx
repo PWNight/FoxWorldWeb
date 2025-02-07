@@ -30,7 +30,6 @@ export default function MeGuilds() {
                 setPageLoaded(true);
             })
         });
-        //TODO: Page loaded state update (in last async function)
     },[router])
 
     if (pageLoaded) {
@@ -77,7 +76,7 @@ export default function MeGuilds() {
                                     })}>Открыть страницу
                                     </Link>
                                     {guild.permission == 2 && (
-                                        <Link href={'/me/guilds/'+guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
+                                        <Link href={'/me/guilds/'+ guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
                                     )}
                                 </div>
                             </div>
