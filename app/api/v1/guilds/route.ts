@@ -4,7 +4,7 @@ import Joi from "joi";
 
 export async function GET(request: NextRequest) {
     try{
-        let guilds : any = await query("SELECT * FROM guilds")
+        let guilds : any = await query("SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count FROM guilds JOIN profiles ON guilds.owner_id = profiles.id");
         return NextResponse.json({ success: true, data: guilds }, {status:200})
     }catch (error: any){
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})

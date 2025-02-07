@@ -28,8 +28,7 @@ export async function POST(request: NextRequest) {
 
         // Получение пользователя из базы данных
         if(user.in_guild){
-            const guild_user: any = await query('SELECT guilds.id, url, profiles.nick as owner_nickname, ' +
-                'badge_url, name, description, info, is_recruit, discord_code, create_date, permission, member_since ' +
+            const guild_user: any = await query('SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count, guilds_members.permission, guilds_members.member_since ' +
                 'FROM guilds JOIN guilds_members ON guilds.id = guilds_members.fk_guild ' +
                 'JOIN profiles ON guilds.owner_id = profiles.id ' +
                 'WHERE guilds_members.uid = ?', [user.id]);

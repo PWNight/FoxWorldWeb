@@ -5,7 +5,7 @@ import Joi from "joi";
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     try{
-        let [guildData] :any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
+        let [guildData] :any = await query(`SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count FROM guilds JOIN profiles ON guilds.owner_id = profiles.id WHERE url = ?`,[url])
         if( !guildData ){
             return NextResponse.json({ success: false, message: "Гильдия не найдена" }, {status:404});
         }
