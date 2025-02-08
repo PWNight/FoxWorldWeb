@@ -48,24 +48,37 @@ export default function MeGuilds() {
                                             width={25}
                                             height={25}
                                             quality={100}
+                                            className={'rounded-md overflow-hidden'}
                                         />
                                         <h1>{guild.owner_nickname}</h1>
                                     </div>
-                                    <h1 className='text-3xl'>{guild.name}</h1>
-                                    <p>{guild.description}</p>
-                                    <ul className="list-inside list-disc">
-                                        {guild.is_recruit ? (
-                                            <li>Принимает заявки</li>
-                                        ) : (
-                                            <li>Не принимает заявки</li>
-                                        )}
-                                        {guild.discord_code && (
-                                            <li>Есть Discord сервер</li>
-                                        )}
-                                        <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                        <li>Вы состоите в гильдии с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
-                                        <li>{guild.member_count} участников</li>
-                                    </ul>
+                                    <div className="flex flex-row gap-1">
+                                        <div>
+                                            <h1 className='text-3xl'>{guild.name}</h1>
+                                            <p>{guild.info}</p>
+                                            <ul className="list-inside list-disc">
+                                                {guild.is_recruit ? (
+                                                    <li>Принимает заявки</li>
+                                                ) : (
+                                                    <li>Не принимает заявки</li>
+                                                )}
+                                                {guild.discord_code && (
+                                                    <li>Есть Discord сервер</li>
+                                                )}
+                                                <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
+                                                <li>Вы состоите в гильдии с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
+                                                <li>{guild.member_count} участников</li>
+                                            </ul>
+                                        </div>
+                                        <Image
+                                          src={`/guilds/badges/${guild.url}.png`}
+                                          alt={`Банер ${guild.url}`}
+                                          height={250}
+                                          width={150}
+                                          quality={100}
+                                          className={'rounded-md overflow-hidden'}
+                                        />
+                                    </div>
                                 </div>
                                 <div className='flex sm:flex-row flex-col w-full gap-5'>
                                     <Link href={'/guilds/' + guild.url}

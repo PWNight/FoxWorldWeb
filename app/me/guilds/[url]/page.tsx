@@ -6,6 +6,7 @@ import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
 import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
+import GuildUploadBadge from "@/components/func_blocks/guildUploadBadge";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -220,18 +221,11 @@ export default function MyGuild(props: PageProps) {
                         </div>
                         <div className="p-4">
                             <div className="mb-4">
-                                <h3 className="text-lg font-medium mb-2">Эмблема гильдии (In DEV)</h3>
+                                <h3 className="text-lg font-medium mb-2">Эмблема гильдии</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Устанавливаемая эмблема не должна нарушать <Link href="/wiki/rules" className="text-orange-500">правила сервера</Link>
                                 </p>
-                                <div className="flex gap-2">
-                                    <button className={buttonVariants({ variant: "accent" })}>
-                                        <CloudUpload className="mr-2" /> Выбрать файл
-                                    </button>
-                                    <button className={buttonVariants({ variant: "destructive" })}>
-                                        <Trash2 className="mr-2" /> Удалить
-                                    </button>
-                                </div>
+                                <GuildUploadBadge url={userGuild.url}/>
                             </div>
                             <div className="mb-4">
                                 <h3 className="text-lg font-medium mb-2">Discord сервер (In DEV)</h3>
@@ -269,7 +263,6 @@ export default function MyGuild(props: PageProps) {
                                 <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />                            </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         )
