@@ -71,7 +71,7 @@ export default function MeGuilds() {
                                             </ul>
                                         </div>
                                         <Image
-                                          src={`/guilds/badges/${guild.url}.png`}
+                                          src={`/guilds/badges/g_${guild.id}.png`}
                                           alt={`Банер ${guild.url}`}
                                           height={250}
                                           width={150}
