@@ -81,7 +81,6 @@ export default function MyGuild(props: PageProps) {
             return
         }
         setIsLoading(false)
-        router.push('/me/guilds')
     };
 
     const handleInputChange = (e: any) => {
@@ -154,9 +153,9 @@ export default function MyGuild(props: PageProps) {
 
     if( pageLoaded ) {
         return (
-            <div className="container mx-auto p-4">
+            <div>
                 <h1 className="text-3xl font-bold mb-4">Редактирование гильдии</h1>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-fit">
                     <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow h-fit">
                         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                             <h2 className="text-xl font-semibold">Основная информация</h2>
@@ -228,21 +227,22 @@ export default function MyGuild(props: PageProps) {
                                 <GuildUploadBadge url={userGuild.url}/>
                             </div>
                             <div className="mb-4">
-                                <h3 className="text-lg font-medium mb-2">Discord сервер (In DEV)</h3>
-                                <input
-                                    type="text"
-                                    id="discord"
-                                    placeholder="Введите ссылку на сервер"
-                                    className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
-                                />
-                                <div className="flex gap-2 mt-2">
-                                    <button className={buttonVariants({ variant: "accent" })}>
-                                         Сохранить ссылку
-                                    </button>
-                                    <button className={buttonVariants({ variant: "destructive" })}>
-                                        <Trash2 className="mr-2" /> Удалить
-                                    </button>
-                                </div>
+                                <h3 className="text-lg font-medium mb-2">Discord сервер</h3>
+                                <form onSubmit={handleUpdate}>
+                                    <input
+                                        type="text"
+                                        id="discord_code"
+                                        placeholder="Введите код приглашения (например 2yyeWQ5unZ)"
+                                        defaultValue={userGuild.discord_code}
+                                        onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
+                                    />
+                                    <div className="flex gap-2 mt-2">
+                                        <button disabled={isLoading} className={buttonVariants({ variant: "accent" })} type="submit">
+                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             <div className="mb-4">
                                 <h3 className="text-lg font-medium mb-2">Статус вступления (In DEV)</h3>
