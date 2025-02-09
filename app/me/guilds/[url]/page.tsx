@@ -214,7 +214,7 @@ export default function MyGuild(props: PageProps) {
                         </div>
                     </div>
 
-                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
+                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow h-fit">
                         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                             <h2 className="text-xl font-semibold">Дополнительные настройки</h2>
                         </div>
@@ -244,7 +244,7 @@ export default function MyGuild(props: PageProps) {
                                     </div>
                                 </form>
                             </div>
-                            <div className="mb-4">
+                            {/*<div className="mb-4">
                                 <h3 className="text-lg font-medium mb-2">Статус вступления (In DEV)</h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Здесь вы можете временно отключить возможность подавать заявку в гильдию.
@@ -258,9 +258,11 @@ export default function MyGuild(props: PageProps) {
                                     </button>
                                 </div>
                             </div>
+                            */}
                             <div className="mt-4 flex flex-col gap-2">
                                 <Link href={'/me/guilds/' + userGuild.url + '/users'} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
-                                <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />                            </div>
+                                <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />
+                            </div>
                         </div>
                     </div>
                 </div>
