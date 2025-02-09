@@ -73,7 +73,7 @@ export default function MeGuilds() {
                                         <Image
                                           src={`/guilds/badges/g_${guild.id}.png`}
                                           alt={`Банер ${guild.url}`}
-                                          height={250}
+                                          height={200}
                                           width={150}
                                           quality={100}
                                           className={'rounded-md overflow-hidden'}
