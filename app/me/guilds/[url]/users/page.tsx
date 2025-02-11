@@ -1,9 +1,10 @@
 "use client"
 import { useRouter } from "next/navigation";
-import {useCallback, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { checkGuildAccess, getGuildUsers, getSession } from "@/app/actions/getInfo";
+import {LucideLoader, Pencil, Trash} from "lucide-react";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -65,6 +66,14 @@ export default function MyGuildMembers(props: PageProps) {
             // TODO: Implement more robust error handling, show message to the user
             return;
         }
+        getGuildUsers(guildUrl).then((r)=>{
+            if (!r.success) {
+                router.push("/me/guilds");
+                return;
+            }
+            setGuildUsers(r.data);
+            setIsUpdating(false);
+        })
     };
 
     const handleDeleteUser = async (user: any) => {
@@ -84,13 +93,21 @@ export default function MyGuildMembers(props: PageProps) {
             // TODO: Implement error handler
             return;
         }
+        getGuildUsers(guildUrl).then((r)=>{
+            if (!r.success) {
+                router.push("/me/guilds");
+                return;
+            }
+            setGuildUsers(r.data);
+            setIsDeleting(false);
+        })
         // TODO: Implement success handler
     };
 
     if (pageLoaded) {
         return (
             <div className="flex flex-col gap-2 w-fit">
-                {guildUsers.map((user: any, key: any) => (
+                {guildUsers.map((user: any) => (
                     <div key={user.uid} className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit w-fit flex flex-col gap-4">
                         <div className="flex items-center gap-2 w-fit ">
                             <Image
@@ -109,11 +126,11 @@ export default function MyGuildMembers(props: PageProps) {
                         </div>
                         {user.permission !== 2 && (
                             <div className="flex items-center gap-2">
-                                <Button>
-                                    Передать гильдию
+                                <Button onClick={() => handleUpdateUser(user, 2)} disabled={isUpdating} variant={"accent"}>
+                                    {isUpdating ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Передать гильдию</>}
                                 </Button>
-                                <Button>
-                                    Исключить игрока
+                                <Button onClick={()=> handleDeleteUser(user)} disabled={isDeleting} variant={"accent"}>
+                                    {isDeleting ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Исключить</>}
                                 </Button>
                             </div>
                         )}
