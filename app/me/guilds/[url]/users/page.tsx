@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {useCallback, useEffect, useState} from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { checkGuildAccess, getGuildUsers, getSession } from "@/app/actions/getInfo";
@@ -14,18 +14,9 @@ export default function MyGuildMembers(props: PageProps) {
     const [guildUsers, setGuildUsers] = useState([]);
     const [guildUrl, setGuildUrl] = useState("");
     const [userData, setUserData] = useState(Object);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const router = useRouter();
-
-    const fetchGuildUsers = (url: string) => {
-        getGuildUsers(url).then((r) => {
-            if (!r.success) {
-                router.push("/me/guilds");
-                return;
-            }
-            setGuildUsers(r.data);
-            setPageLoaded(true);
-        });
-    };
 
     useEffect(() => {
         getSession().then(async r => {
@@ -39,69 +30,68 @@ export default function MyGuildMembers(props: PageProps) {
             const { url } = params;
             setGuildUrl(url);
 
-            checkGuildAccess(url, r.data).then((r) => {
+            const accessResult = await checkGuildAccess(url, r.data);
+            if (!accessResult.success) {
+                router.push("/me/guilds");
+                return;
+            }
+
+            getGuildUsers(url).then((r)=>{
                 if (!r.success) {
                     router.push("/me/guilds");
                     return;
                 }
-                fetchGuildUsers(url);
-            });
+                setGuildUsers(r.data);
+                setPageLoaded(true);
+            })
         });
-    }, [router, props, fetchGuildUsers]);
+    }, [guildUrl, props.params, router]);
+
 
     const handleUpdateUser = async (user: any, newPermission: number) => {
-        try {
-            const session_token = user.token;
-            const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ user_id: user.uid, permission: newPermission, session_token }),
-            });
+        setIsUpdating(true);
+        const session_token = userData.token;
+        const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: user.uid, permission: newPermission, session_token }),
+        });
 
-            if (!response.ok) {
-                // TODO: Implement error handler
-                return
-            }
-
-            fetchGuildUsers(guildUrl); // Refresh user list after update
-            // TODO: Implement success handler
-        } catch (error) {
-            // TODO: Implement error handler
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error updating user:", errorData);
+            // TODO: Implement more robust error handling, show message to the user
+            return;
         }
     };
 
-
     const handleDeleteUser = async (user: any) => {
-        try {
-            const session_token = userData.token
-            const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ user_id: user.uid, session_token}),
-            });
-            const json = await response.json();
-            console.log(json);
-            console.log(user)
-            if (!response.ok) {
-                // TODO: Implement error handler
-                return
-            }
-            fetchGuildUsers(guildUrl);
-            // TODO: Implement success handler
-        } catch (error) {
+        setIsDeleting(true);
+        const session_token = userData.token;
+        const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ user_id: user.uid, session_token }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Error deleting user:", errorData);
             // TODO: Implement error handler
+            return;
         }
+        // TODO: Implement success handler
     };
 
     if (pageLoaded) {
         return (
             <div className="flex flex-col gap-2 w-fit">
                 {guildUsers.map((user: any, key: any) => (
-                    <div key={key} className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit w-fit flex flex-col gap-4">
+                    <div key={user.uid} className="bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit w-fit flex flex-col gap-4">
                         <div className="flex items-center gap-2 w-fit ">
                             <Image
                                 src={"https://cravatar.eu/helmavatar/" + user.nickname + "/50.png"}
@@ -119,10 +109,10 @@ export default function MyGuildMembers(props: PageProps) {
                         </div>
                         {user.permission !== 2 && (
                             <div className="flex items-center gap-2">
-                                <Button onClick={() => handleUpdateUser(user, 2)}>
+                                <Button>
                                     Передать гильдию
                                 </Button>
-                                <Button onClick={() => handleDeleteUser(user)}>
+                                <Button>
                                     Исключить игрока
                                 </Button>
                             </div>
