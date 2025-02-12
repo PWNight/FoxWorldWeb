@@ -24,7 +24,6 @@ export async function guild_application(state: GuildApplicationFormState, formDa
             message: 'Не удалось отправить заявку (err ' + 'auth' + ')',
         }
     }
-    const userData = user_response.data;
 
     const guild_response = await getGuild(guildUrl)
     if (!guild_response.success) {
@@ -33,8 +32,14 @@ export async function guild_application(state: GuildApplicationFormState, formDa
         }
     }
 
+    const session_token = user_response.data.token;
     const response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
-        body: JSON.stringify({'user_id': userData.profile.id, guild_url: guildUrl, about_user, why_this_guild}),
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session_token}`,
+        },
+        body: JSON.stringify({about_user, why_this_guild}),
     })
     if ( !response.ok ){
         return {
