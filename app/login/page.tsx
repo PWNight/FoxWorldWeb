@@ -3,7 +3,7 @@ import { LucideLoader, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { signup } from "@/app/actions/auth";
+import { signup } from "@/app/actions/applications";
 import {getSession} from "@/app/actions/getInfo";
 
 export default function Login() {
