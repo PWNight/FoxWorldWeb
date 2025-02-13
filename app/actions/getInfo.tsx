@@ -85,3 +85,21 @@ export async function checkGuildAccess(url: string, data : any) {
     }
     return { success: true, data: json.data }
 }
+
+export async function getGuildApplications(url: string, token: string) {
+    const response = await fetch(`/api/v1/guilds/${url}/applications`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        method: "GET",
+    });
+    if ( !response.ok ) {
+        return { success: false }
+    }
+
+    const json = await response.json()
+    if ( !json.success ) {
+        return { success: false }
+    }
+    return { success: true, data: json.data }
+}
