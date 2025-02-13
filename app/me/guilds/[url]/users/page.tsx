@@ -5,6 +5,7 @@ import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import {checkGuildAccess, getGuildApplications, getGuildUsers, getSession} from "@/app/actions/getInfo";
 import {LucideLoader, Pencil, Trash} from "lucide-react";
+import ErrorMessage from "@/components/ui/error";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -17,6 +18,8 @@ export default function MyGuildMembers(props: PageProps) {
     const [guildUrl, setGuildUrl] = useState("");
     const [userData, setUserData] = useState(Object);
     const [isLoading, setIsLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
+    const [errorType, setErrorType] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -39,15 +42,21 @@ export default function MyGuildMembers(props: PageProps) {
 
             getGuildUsers(url).then((r)=>{
                 if (!r.success) {
-                    router.push("/me/guilds");
-                    return;
+                    setGuildUsers([]);
+                    setErrorType('error');
+                    setErrorMessage('Не удалось получить участников гильдии');
+                    setPageLoaded(true);
+                    return
                 }
                 setGuildUsers(r.data);
 
                 getGuildApplications(url, user_r.data.token).then((r)=>{
                     if ( !r.success ){
-                       router.push("/me/guilds");
-                       //TODO: Implement error handler
+                       setGuildApplications([]);
+                       setErrorType('error');
+                       setErrorMessage('Не удалось получить заявки в гильдию');
+                       setPageLoaded(true);
+                       return
                     }
                     setGuildApplications(r.data)
                     setPageLoaded(true);
@@ -70,14 +79,17 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error("Error updating user:", errorData);
-            // TODO: Implement more robust error handling, show message to the user
-            return;
+            setErrorType('error');
+            setErrorMessage('Произошла ошибка при повышении пользователя, подробнее в консоли разработчика (F12)');
+            console.error(errorData);
+            return
         }
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
-                router.push("/me/guilds");
-                return;
+                setGuildUsers([]);
+                setErrorType('error');
+                setErrorMessage('Не удалось получить участников гильдии');
+                return
             }
             setGuildUsers(r.data);
             setIsLoading(false);
@@ -97,30 +109,38 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error("Error deleting user:", errorData);
-            // TODO: Implement error handler
+            setErrorType('error');
+            setErrorMessage(`Произошла ошибка ${response.status} при удалении пользователя, подробнее в консоли разработчика (F12)`);
+            console.error(errorData);
             return;
         }
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
-                router.push("/me/guilds");
-                return;
+                setGuildUsers([]);
+                setErrorType('error');
+                setErrorMessage('Не удалось получить участников гильдии');
+                return
             }
             setGuildUsers(r.data);
+            setErrorType('success');
+            setErrorMessage('Пользователь успешно исключён');
             setIsLoading(false);
         })
-        // TODO: Implement success handler
     };
 
+    const handleClose = () => {
+        setErrorMessage('')
+    }
     if (pageLoaded) {
         return (
             <div className="flex flex-col gap-2">
-                <div className="h-fit w-fit">
+                {errorMessage && <ErrorMessage message={errorMessage} onClose={handleClose} type={errorType} />}
+                <div className="h-full w-full">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                         <h2 className="text-xl font-semibold">Участники</h2>
                     </div>
-                    <div className="my-2 grid sm:grid-cols-3">
-                        {guildUsers.map((user: any) => (
+                    <div className="my-2 grid sm:grid-cols-3 gap-2">
+                        {guildUsers.length != 0 ? guildUsers.map((user: any) => (
                             <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4">
                                 <div className="flex items-center gap-2 w-fit ">
                                     <Image
@@ -148,15 +168,32 @@ export default function MyGuildMembers(props: PageProps) {
                                     </div>
                                 )}
                             </div>
-                        ))}
+                        )) :
+                          Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                            <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
+                              <div className="flex items-center gap-2 w-fit">
+                                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                              </div>
+                              <div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                              </div>
+                            </div>
+                          ))
+                        }
                     </div>
                 </div>
-                <div className="h-fit w-fit">
+                <div className="h-full w-full">
                     <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                         <h2 className="text-xl font-semibold">Заявки</h2>
                     </div>
-                    <div className="my-2 grid sm:grid-cols-3">
-                        {guildApplications.map((application: any) => (
+                    <div className="my-2 grid sm:grid-cols-3 gap-2">
+                        {guildApplications.length != 0  ? guildApplications.map((application: any) => (
                             <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4">
                                 <div className="flex items-center gap-2 w-fit ">
                                     <Image
@@ -183,7 +220,25 @@ export default function MyGuildMembers(props: PageProps) {
                                     </Button>
                                 </div>
                             </div>
-                        ))}
+                        ))
+                        :
+                          Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                            <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
+                              <div className="flex items-center gap-2 w-fit">
+                                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                              </div>
+                              <div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                              </div>
+                              <div className="flex items-center gap-2">
+                                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                              </div>
+                            </div>
+                          ))
+                        }
                     </div>
                 </div>
             </div>
@@ -191,23 +246,57 @@ export default function MyGuildMembers(props: PageProps) {
     }
 
     return (
-        <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 sm:w-fit w-full">
-          {Array(5).fill(null).map((_, key) => ( // Render 5 skeleton items
-            <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
-              <div className="flex items-center gap-2 w-fit">
-                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
-                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
-              </div>
-              <div>
-                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
-                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
-                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
-              </div>
+        <div className="flex flex-col gap-2">
+            <div className="h-full w-full">
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold">Участники</h2>
+                </div>
+                <div className="my-2 grid sm:grid-cols-3 gap-2">
+                    {
+                      Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                        <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
+                          <div className="flex items-center gap-2 w-fit">
+                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                          </div>
+                          <div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                          </div>
+                        </div>
+                      ))
+                    }
+                </div>
             </div>
-          ))}
+            <div className="h-full w-full">
+                <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
+                    <h2 className="text-xl font-semibold">Заявки</h2>
+                </div>
+                <div className="my-2 grid sm:grid-cols-3 gap-2">
+                    {
+                      Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                        <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
+                          <div className="flex items-center gap-2 w-fit">
+                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                          </div>
+                          <div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                          </div>
+                        </div>
+                      ))
+                    }
+                </div>
+            </div>
         </div>
-    )
+    );
 }
