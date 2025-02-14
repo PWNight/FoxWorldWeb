@@ -12,14 +12,18 @@ type PageProps = {
 };
 
 export default function MyGuildMembers(props: PageProps) {
-    const [pageLoaded, setPageLoaded] = useState(false);
+    const [userData, setUserData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
     const [guildApplications, setGuildApplications] = useState([]);
+
     const [guildUrl, setGuildUrl] = useState("");
-    const [userData, setUserData] = useState(Object);
+
+    const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
+
     const router = useRouter();
 
     useEffect(() => {
