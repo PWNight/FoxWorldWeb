@@ -24,10 +24,12 @@ export default function MeGuilds() {
                 if ( r.success ) {
                     setUserGuilds(r.data);
                 }
+                if ( r.data == null ) {
+                    setUserGuilds([]);
+                }
                 setPageLoaded(true);
             })
         });
-        //TODO: Page loaded state update (in last async function)
     },[router])
 
     if (pageLoaded) {
@@ -38,7 +40,7 @@ export default function MeGuilds() {
                         return (
                             <div key={guild.url} id={guild.url}
                                  className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit'>
-                                <div className='flex flex-col gap-2'>
+                                <div className='flex flex-col gap-2 w-full'>
                                     <div className="flex flex-row gap-1 items-center">
                                         <Image
                                             src={"https://minotar.net/helm/" + guild.owner_nickname + "/25.png"}
@@ -46,24 +48,37 @@ export default function MeGuilds() {
                                             width={25}
                                             height={25}
                                             quality={100}
+                                            className={'rounded-md overflow-hidden'}
                                         />
                                         <h1>{guild.owner_nickname}</h1>
                                     </div>
-                                    <h1 className='text-3xl'>{guild.name}</h1>
-                                    <p>{guild.description}</p>
-                                    <ul className="list-inside list-disc">
-                                        {guild.is_recruit ? (
-                                            <li>Принимает заявки</li>
-                                        ) : (
-                                            <li>Не принимает заявки</li>
-                                        )}
-                                        {guild.discord_code && (
-                                            <li>Есть Discord сервер</li>
-                                        )}
-                                        <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                        <li>Вы состоите в гильдии
-                                            с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
-                                    </ul>
+                                    <div className="flex flex-row gap-1 justify-between">
+                                        <div>
+                                            <h1 className='text-3xl'>{guild.name}</h1>
+                                            <p>{guild.info}</p>
+                                            <ul className="list-inside list-disc">
+                                                {guild.is_recruit ? (
+                                                    <li>Принимает заявки</li>
+                                                ) : (
+                                                    <li>Не принимает заявки</li>
+                                                )}
+                                                {guild.discord_code && (
+                                                    <li>Есть Discord сервер</li>
+                                                )}
+                                                <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
+                                                <li>Вы состоите в гильдии с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
+                                                <li>{guild.member_count} участников</li>
+                                            </ul>
+                                        </div>
+                                        <Image
+                                          src={`/guilds/badges/g_${guild.id}.png`}
+                                          alt={`Банер ${guild.url}`}
+                                          height={200}
+                                          width={150}
+                                          quality={100}
+                                          className={'rounded-md overflow-hidden'}
+                                        />
+                                    </div>
                                 </div>
                                 <div className='flex sm:flex-row flex-col w-full gap-5'>
                                     <Link href={'/guilds/' + guild.url}
@@ -74,7 +89,7 @@ export default function MeGuilds() {
                                     })}>Открыть страницу
                                     </Link>
                                     {guild.permission == 2 && (
-                                        <Link href={'/me/guilds/'+guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
+                                        <Link href={'/me/guilds/'+ guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
                                     )}
                                 </div>
                             </div>
@@ -84,8 +99,8 @@ export default function MeGuilds() {
             )
         }else{
             return (
-                <div className='bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 w-fit flex flex-col h-fit justify-between gap-2'>
-                    <div>
+                <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
+                    <div className=''>
                         <SearchX className='h-20 w-20'/>
                         <h1 className='text-3xl'>Гильдии не найдены</h1>
                         <p>Попробуйте вступить в одну из гильдий или создайте собственную</p>

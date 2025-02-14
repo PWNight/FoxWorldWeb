@@ -4,7 +4,7 @@ import Joi from "joi";
 
 export async function GET(request: NextRequest) {
     try{
-        let guilds : any = await query("SELECT * FROM guilds")
+        let guilds : any = await query("SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count FROM guilds JOIN profiles ON guilds.owner_id = profiles.id");
         return NextResponse.json({ success: true, data: guilds }, {status:200})
     }catch (error: any){
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
@@ -44,21 +44,24 @@ export async function POST(request: NextRequest) {
         const user = json.profile;
         if(user.in_guild){
             const userGuilds : any = await query('SELECT permission FROM guilds_members WHERE uid = ?', [user.id])
-            if (userGuilds.length > 0 && userGuilds[0].permission == 2){
-                return NextResponse.json({ success: false, message: 'Вы уже являетесь главой одной из гильдий' },{status:401})
-            }
+            if ( userGuilds.length > 0 ){
+                userGuilds.map((guild: any) => {
+                    if ( guild.permission == 2 ) {
+                        return NextResponse.json({ success: false, message: 'Вы уже являетесь главой одной из гильдий' },{status:401})
+                    }
+                })}
         }
 
-        const [guildData] : any = await query('SELECT * FROM guilds WHERE url = ?', [url])
+        let [guildData] : any = await query('SELECT * FROM guilds WHERE url = ?', [url])
         if( guildData ){
             return NextResponse.json({ success: false, message: 'Гильдия с данной ссылкой уже существует' },{status:500})
         }
 
         await query('INSERT INTO guilds (owner_id, url, name, description, info) VALUES (?, ?, ?, ?, ?)', [user.id, url, name, description, info]);
 
-        const guild : any = await query("SELECT id FROM guilds WHERE url = ?", [url])
+        let [guild] : any = await query("SELECT id FROM guilds WHERE url = ?", [url])
 
-        await query('INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)', [guild[0].id, user.id, 2])
+        await query('INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)', [guild.id, user.id, 2])
         await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user.id])
 
         return NextResponse.json({success: true, message: 'Гильдия успешно создана'},{status:200})

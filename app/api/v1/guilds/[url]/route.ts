@@ -5,7 +5,7 @@ import Joi from "joi";
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     try{
-        let [guildData] :any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
+        let [guildData] :any = await query(`SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count FROM guilds JOIN profiles ON guilds.owner_id = profiles.id WHERE url = ?`,[url])
         if( !guildData ){
             return NextResponse.json({ success: false, message: "Гильдия не найдена" }, {status:404});
         }
@@ -51,14 +51,28 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
             return NextResponse.json({ success: false, message: 'Гильдия не найдена' },{status:404})
         }
 
-        const [userGuild] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user.id, guildData[0].id])
+        const [userGuild] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user.id, guildData.id])
         if ( !userGuild || userGuild.permission != 2 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии' },{status:401})
         }
 
-        await query(`UPDATE guilds SET ${formData.name} = ? WHERE url = ?`, [formData.value, url])
-        return NextResponse.json({ success: true, message: "Информация о гильдии успешно обновлена" }, { status: 200 });
+        const updates: string[] = []
+        const values: any = []
 
+        for (const key in formData) {
+            if (formData.hasOwnProperty(key)) {
+                updates.push(`${key} = ?`);
+                values.push(formData[key]);
+            }
+        }
+
+        if (updates.length === 0) {
+            return NextResponse.json({ success: false, message: "No fields to update" }, { status: 400 });
+        }
+
+        values.push(url);
+        await query(`UPDATE guilds SET ${updates.join(', ')} WHERE url = ?`, values)
+        return NextResponse.json({ success: true, message: "Информация о гильдии успешно обновлена" }, { status: 200 });
     }catch (error: any){
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
@@ -101,9 +115,9 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         if ( !userGuild || userGuild.permission != 2 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии' },{status:401})
         }
-
-        await query("DELETE * FROM guilds WHERE id = ?", [guildData[0].id])
-        await query("DELETE * FROM guilds_members WHERE fk_guild = ?", [guildData[0].id])
+        await query("DELETE FROM guilds_applications WHERE fk_guild = ?", [guildData.id])
+        await query("DELETE FROM guilds_members WHERE fk_guild = ?", [guildData.id])
+        await query("DELETE FROM guilds WHERE id = ?", [guildData.id])
         await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [user.id])
 
         return NextResponse.json({ success: true, message: 'Гильдия успешно удалена' },{status:200})

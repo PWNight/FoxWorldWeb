@@ -6,7 +6,7 @@ import Image from "next/image";
 export function Footer() {
   return (
     <footer className="w-full mx-auto border-t max-h-16 p-2 lg:px-14 px-2 bg-opacity-5 text-muted-foreground text-sm">
-        <div className="flex items-center sm:justify-between justify-start sm:gap-0 gap-4 flex-wrap sm:py-0 py-3 px-2">
+        <div className="flex items-center sm:justify-between justify-start sm:gap-0 gap-4 flex-wrap sm:py-0 py-3 sm:px-4">
             <div className="flex flex-col">
                 <div className="flex items-center gap-2">
                     <Image
@@ -19,7 +19,7 @@ export function Footer() {
                     />
                     <div className='flex flex-col'>
                         <p>FoxWorld © 2021 - 2025</p>
-                        <p>v1.0.0-beta2 (DEV-2)</p>
+                        <p>v1.0.0-beta2 (DEV-4 09.02.25)</p>
                     </div>
                 </div>
             </div>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="f62f6a92-b78f-4f3c-a3f4-fbeec9fa1e0e" name="Maincore Mapping">
+      <data-sources db="1c47fce8-4a98-4ed0-b6b0-efb3af540d20" ddl="cd8d00bd-2601-46e4-8b58-fa5de099f9ae" />
+      <scope>
+        <node negative="1">
+          <node kind="database" negative="1" />
+          <node kind="schema">
+            <name qname="information_schema" />
+            <name qname="performance_schema" />
+            <name qname="s79998_maincore" />
+          </node>
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>

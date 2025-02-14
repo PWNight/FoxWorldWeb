@@ -3,7 +3,7 @@ import { LucideLoader, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { signup } from "@/app/actions/auth";
+import { signup } from "@/app/actions/applications";
 import {getSession} from "@/app/actions/getInfo";
 
 export default function Login() {
@@ -26,8 +26,8 @@ export default function Login() {
     };
     if(pageLoaded){
         return (
-            <div className="flex sm:min-h-[91vh] min-h-[88vh] flex-col justify-center items-start sm:px-2 py-8 gap-10 w-full">
-                <form className="text-sm w-auto mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl px-5 py-20 text-gray-900 dark:text-gray-100" action={action}>
+            <div className="flex items-center flex-col justify-center w-full h-full">
+                <form className="text-sm w-auto mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl p-10 text-gray-900 dark:text-gray-100" action={action}>
                     <h1 className="text-3xl sm:text-4xl mb-5 select-none">Авторизация</h1>
                     <div className="mb-5 select-none">
                         <label htmlFor="username" className="block mb-2 font-medium">Ваш никнейм</label>
@@ -58,7 +58,7 @@ export default function Login() {
                     </div>
                     <div>
                         <button type="submit"
-                                className="select-none text-white bg-orange-400 hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><LucideLoader/><p>Выполняю вход</p></> : 'Войти'}</button>
+                                className="select-none text-white bg-[#F38F54] hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><LucideLoader className="mr-2 animate-spin"/><p>Выполняю вход</p></> : 'Войти'}</button>
                         {state?.message && <p className="text-red-400 mt-1 mb-5">{state.message}</p>}
                     </div>
                     <div className="flex items-center gap-2 mt-4">

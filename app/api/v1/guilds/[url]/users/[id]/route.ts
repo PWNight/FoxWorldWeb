@@ -9,7 +9,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
             JOIN guilds ON guilds_members.fk_guild = guilds.id 
             WHERE guilds.url = ? AND guilds_members.uid = ?`,
         [url, id])
-        if(guildUsers.length == 0){
+        if( !guildUsers ){
             return NextResponse.json({success: false, message: "Пользователь или гильдия не найдены"}, {status:404});
         }
         return NextResponse.json({success: true, data: guildUsers}, {status:200})
