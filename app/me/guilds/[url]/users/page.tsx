@@ -5,7 +5,7 @@ import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import {checkGuildAccess, getGuildApplications, getGuildUsers, getSession} from "@/app/actions/getInfo";
 import {LucideLoader, Pencil, SearchX, Trash} from "lucide-react";
-import ErrorMessage from "@/components/ui/error";
+import ErrorMessage from "@/components/ui/notify-alert";
 
 type PageProps = {
     params: Promise<{ url: string }>;
