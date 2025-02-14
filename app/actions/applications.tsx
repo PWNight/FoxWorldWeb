@@ -34,12 +34,11 @@ export async function guild_application(state: GuildApplicationFormState, formDa
 
     const session_token = user_response.data.token;
     const response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
-        method: "POST",
+        method: "PUT",
         headers: {
-            'Content-Type': 'application/json',
             'Authorization': `Bearer ${session_token}`,
         },
-        body: JSON.stringify({about_user, why_this_guild}),
+        body: JSON.stringify({ about_user, why_this_guild }),
     })
     if ( !response.ok ){
         return {
