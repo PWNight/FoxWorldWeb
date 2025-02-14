@@ -80,7 +80,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             setErrorType('error');
-            setErrorMessage('Произошла ошибка при повышении пользователя, подробнее в консоли разработчика (F12)');
+            setErrorMessage('Произошла ошибка при повышении пользователя');
             console.error(errorData);
             return
         }
@@ -110,7 +110,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             setErrorType('error');
-            setErrorMessage(`Произошла ошибка ${response.status} при удалении пользователя, подробнее в консоли разработчика (F12)`);
+            setErrorMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
             console.error(errorData);
             return;
         }
@@ -130,6 +130,37 @@ export default function MyGuildMembers(props: PageProps) {
 
     const handleClose = () => {
         setErrorMessage('')
+    }
+
+    const handleApplication = async (application: any, is_accepted: boolean) => {
+        setIsLoading(true);
+        const user_id = application.fk_profiles;
+        let status
+
+        if ( is_accepted ) {
+            status = 'Принята'
+        }else{
+            status = 'Отклонена'
+        }
+
+        const response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${userData.token}`,
+            },
+            body: JSON.stringify({ user_id, status }),
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            setErrorType('error');
+            setErrorMessage('Произошла ошибка при работе с заявками')
+            console.error(errorData);
+            setIsLoading(false);
+            return;
+        }
+        setErrorType('success');
+        setErrorMessage(`Статус заявки успешно изменён на "${status}"`)
+        setIsLoading(false);
     }
     if (pageLoaded) {
         return (
@@ -212,10 +243,10 @@ export default function MyGuildMembers(props: PageProps) {
                                     <p>Заявка создана {new Date(application.create_data).toLocaleString("ru-RU")}</p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <Button onClick={() => handleUpdateUser(application, 1)} disabled={isLoading} variant={"accent"} size={"sm"}>
+                                    <Button onClick={() => handleApplication(application, true)} disabled={isLoading} variant={"accent"} size={"sm"}>
                                         {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Принять</>}
                                     </Button>
-                                    <Button onClick={()=> handleUpdateUser(application, 0)} disabled={isLoading} variant={"destructive"} size={"sm"}>
+                                    <Button onClick={()=> handleApplication(application, false)} disabled={isLoading} variant={"destructive"} size={"sm"}>
                                         {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Отклонить</>}
                                     </Button>
                                 </div>
