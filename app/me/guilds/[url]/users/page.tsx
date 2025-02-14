@@ -18,8 +18,8 @@ export default function MyGuildMembers(props: PageProps) {
     const [guildUrl, setGuildUrl] = useState("");
     const [userData, setUserData] = useState(Object);
     const [isLoading, setIsLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [errorType, setErrorType] = useState('');
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
     const router = useRouter();
 
     useEffect(() => {
@@ -43,8 +43,8 @@ export default function MyGuildMembers(props: PageProps) {
             getGuildUsers(url).then((r)=>{
                 if (!r.success) {
                     setGuildUsers([]);
-                    setErrorType('error');
-                    setErrorMessage('Не удалось получить участников гильдии');
+                    setNotifyType('error');
+                    setNotifyMessage('Не удалось получить участников гильдии');
                     setPageLoaded(true);
                     return
                 }
@@ -53,8 +53,8 @@ export default function MyGuildMembers(props: PageProps) {
                 getGuildApplications(url, user_r.data.token).then((r)=>{
                     if ( !r.success ){
                        setGuildApplications([]);
-                       setErrorType('error');
-                       setErrorMessage('Не удалось получить заявки в гильдию');
+                       setNotifyType('error');
+                       setNotifyMessage('Не удалось получить заявки в гильдию');
                        setPageLoaded(true);
                        return
                     }
@@ -79,16 +79,16 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            setErrorType('error');
-            setErrorMessage('Произошла ошибка при повышении пользователя');
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при повышении пользователя');
             console.error(errorData);
             return
         }
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
                 setGuildUsers([]);
-                setErrorType('error');
-                setErrorMessage('Не удалось получить участников гильдии');
+                setNotifyType('error');
+                setNotifyMessage('Не удалось получить участников гильдии');
                 return
             }
             setGuildUsers(r.data);
@@ -109,33 +109,33 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            setErrorType('error');
-            setErrorMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
+            setNotifyType('error');
+            setNotifyMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
             console.error(errorData);
             return;
         }
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
                 setGuildUsers([]);
-                setErrorType('error');
-                setErrorMessage('Не удалось получить участников гильдии');
+                setNotifyType('error');
+                setNotifyMessage('Не удалось получить участников гильдии');
                 return
             }
             setGuildUsers(r.data);
-            setErrorType('success');
-            setErrorMessage('Пользователь успешно исключён');
+            setNotifyType('success');
+            setNotifyMessage('Пользователь успешно исключён');
             setIsLoading(false);
         })
     };
 
     const handleClose = () => {
-        setErrorMessage('')
+        setNotifyMessage('')
     }
 
     const handleApplication = async (application: any, is_accepted: boolean) => {
         setIsLoading(true);
         const user_id = application.fk_profile;
-        let status
+        let status;
 
         if ( is_accepted ) {
             status = 'Принята'
@@ -152,8 +152,8 @@ export default function MyGuildMembers(props: PageProps) {
         })
         if (!response.ok) {
             const errorData = await response.json();
-            setErrorType('error');
-            setErrorMessage('Произошла ошибка при работе с заявками')
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при работе с заявками')
             console.error(errorData);
             setIsLoading(false);
             return;
@@ -161,22 +161,22 @@ export default function MyGuildMembers(props: PageProps) {
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
                 setGuildUsers([]);
-                setErrorType('error');
-                setErrorMessage('Не удалось получить участников гильдии');
+                setNotifyType('error');
+                setNotifyMessage('Не удалось получить участников гильдии');
                 return
             }
             setGuildUsers(r.data);
-            setErrorType('success');
-            setErrorMessage(`Статус заявки успешно изменён на "${status}"`)
+            setNotifyType('success');
+            setNotifyMessage(`Статус заявки успешно изменён на "${status}"`)
             setIsLoading(false);
         })
     }
     if (pageLoaded) {
         return (
             <div className="flex flex-col gap-2">
-                {errorMessage && <ErrorMessage message={errorMessage} onClose={handleClose} type={errorType} />}
+                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                 { guildUsers.length != 0
-                    ?
+                    ? (
                         <div className="h-full w-full">
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                                 <h2 className="text-xl font-semibold">Участники</h2>
@@ -215,7 +215,8 @@ export default function MyGuildMembers(props: PageProps) {
                                 ))}
                             </div>
                         </div>
-                    :
+                    )
+                    : (
                         <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
                             <div className=''>
                                 <SearchX className='h-20 w-20'/>
@@ -223,9 +224,10 @@ export default function MyGuildMembers(props: PageProps) {
                                 <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
                             </div>
                         </div>
+                    )
                 }
                 { guildApplications.length != 0
-                    ?
+                    ? (
                         <div className="h-full w-full">
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                                 <h2 className="text-xl font-semibold">Заявки</h2>
@@ -261,7 +263,8 @@ export default function MyGuildMembers(props: PageProps) {
                                 ))}
                             </div>
                         </div>
-                    :
+                    )
+                    : (
                         <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
                             <div className=''>
                                 <SearchX className='h-20 w-20'/>
@@ -269,6 +272,7 @@ export default function MyGuildMembers(props: PageProps) {
                                 <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
                             </div>
                         </div>
+                    )
                 }
             </div>
         );
@@ -282,19 +286,19 @@ export default function MyGuildMembers(props: PageProps) {
                 </div>
                 <div className="my-2 grid sm:grid-cols-3 gap-2">
                     {
-                      Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                      Array(3).fill(null).map((_, key) => (
                         <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
                           <div className="flex items-center gap-2 w-fit">
-                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
                           </div>
                           <div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
                           </div>
                         </div>
                       ))
@@ -307,19 +311,19 @@ export default function MyGuildMembers(props: PageProps) {
                 </div>
                 <div className="my-2 grid sm:grid-cols-3 gap-2">
                     {
-                      Array(3).fill(null).map((_, key) => ( // Render 5 skeleton items
+                      Array(3).fill(null).map((_, key) => (
                         <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
                           <div className="flex items-center gap-2 w-fit">
-                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div> {/* Avatar placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div> {/* Nickname placeholder */}
+                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
                           </div>
                           <div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div> {/* Permission placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div> {/* Member since placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
                           </div>
                           <div className="flex items-center gap-2">
-                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div> {/* Button placeholder */}
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div> {/* Button placeholder */}
+                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
+                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
                           </div>
                         </div>
                       ))
