@@ -181,9 +181,9 @@ export default function MyGuildMembers(props: PageProps) {
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                                 <h2 className="text-xl font-semibold">Участники</h2>
                             </div>
-                            <div className="my-2 grid sm:grid-cols-3 gap-2">
+                            <div className="my-2 grid xl:grid-cols-3 gap-2 xl:w-fit">
                                 {guildUsers.map((user: any) => (
-                                    <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4">
+                                    <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
                                                 src={"https://cravatar.eu/helmavatar/" + user.nickname + "/50.png"}
@@ -199,16 +199,18 @@ export default function MyGuildMembers(props: PageProps) {
                                             <p>Уровень доступа: {user.permission}</p>
                                             <p>Участник с {new Date(user.member_since).toLocaleString("ru-RU")}</p>
                                         </div>
-                                        {user.permission != 2 && (
-                                            <div className="flex items-center gap-2">
-                                                <Button onClick={() => handleUpdateUser(user, 2)} disabled={isLoading} variant={"accent"} size={"sm"}>
+                                        <div className="flex items-center gap-2">
+                                            {user.permission == 0 && (
+                                                <Button onClick={() => handleUpdateUser(user, 1)} disabled={isLoading} variant={"accent"} size={"sm"}>
                                                     {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Повысить</>}
                                                 </Button>
+                                            )}
+                                            {user.permission != 2 && (
                                                 <Button onClick={()=> handleDeleteUser(user)} disabled={isLoading} variant={"destructive"} size={"sm"}>
                                                     {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Исключить</>}
                                                 </Button>
-                                            </div>
-                                        )}
+                                            )}
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -218,7 +220,7 @@ export default function MyGuildMembers(props: PageProps) {
                             <div className=''>
                                 <SearchX className='h-20 w-20'/>
                                 <h1 className='text-3xl'>Участники не найдены</h1>
-                                <p>Попробуйте активнее агетировать о существовании своей гильдии</p>
+                                <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
                             </div>
                         </div>
                 }
@@ -228,9 +230,9 @@ export default function MyGuildMembers(props: PageProps) {
                             <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
                                 <h2 className="text-xl font-semibold">Заявки</h2>
                             </div>
-                            <div className="my-2 grid sm:grid-cols-3 gap-2">
+                            <div className="my-2 grid xl:grid-cols-3 gap-2">
                                 {guildApplications.map((application: any) => (
-                                    <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4">
+                                    <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
                                                 src={"https://cravatar.eu/helmavatar/" + application.nick + "/50.png"}
@@ -264,7 +266,7 @@ export default function MyGuildMembers(props: PageProps) {
                             <div className=''>
                                 <SearchX className='h-20 w-20'/>
                                 <h1 className='text-3xl'>Заявки не найдены</h1>
-                                <p>Попробуйте активнее агетировать о существовании своей гильдии</p>
+                                <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
                             </div>
                         </div>
                 }
