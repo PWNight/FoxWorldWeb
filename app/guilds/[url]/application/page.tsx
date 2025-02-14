@@ -39,7 +39,6 @@ export default function GuildApplication(props: PageProps) {
                         return
                     }
                     getMyGuildsApplications(user_r.data).then((r)=>{
-                        console.log(r.data, r.data.length)
                         if ( r.data.length > 0 ) {
                             router.push('/me/guilds/');
                             return
