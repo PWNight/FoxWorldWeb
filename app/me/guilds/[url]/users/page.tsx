@@ -92,6 +92,8 @@ export default function MyGuildMembers(props: PageProps) {
                 return
             }
             setGuildUsers(r.data);
+            setNotifyType('success');
+            setNotifyMessage(`Пользователь успешно повышен до ${newPermission} уровня`);
             setIsLoading(false);
         })
     };
