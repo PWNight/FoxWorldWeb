@@ -8,6 +8,7 @@ import { getGuild, getSession} from "@/app/actions/getInfo";
 import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 import GuildUploadBadge from "@/components/func_blocks/guildUploadBadge";
 import ErrorMessage from "@/components/ui/notify-alert";
+import GuildEditSkelet from "@/components/skelets/guild_edit_skelet";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -279,6 +280,10 @@ export default function MyGuild(props: PageProps) {
                     </div>
                 </div>
             </div>
+        )
+    }else{
+        return (
+            <GuildEditSkelet/>
         )
     }
 }
