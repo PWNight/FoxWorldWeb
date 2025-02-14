@@ -115,9 +115,9 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         if ( !userGuild || userGuild.permission != 2 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии' },{status:401})
         }
-
-        await query("DELETE FROM guilds WHERE id = ?", [guildData.id])
+        await query("DELETE FROM guilds_applications WHERE fk_guild = ?", [guildData.id])
         await query("DELETE FROM guilds_members WHERE fk_guild = ?", [guildData.id])
+        await query("DELETE FROM guilds WHERE id = ?", [guildData.id])
         await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [user.id])
 
         return NextResponse.json({ success: true, message: 'Гильдия успешно удалена' },{status:200})
