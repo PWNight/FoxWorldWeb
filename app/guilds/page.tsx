@@ -92,13 +92,13 @@ export default function Guilds() {
                                     />
                                 </div>
                             </div>
-                            <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'> {/* Added margin-top */}
-                                <Link href={'/guilds/' + guild.url}
+                            <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'>
+                                <Link href={'/guilds/' + guild.url + '/application'}
                                       className={buttonVariants({
                                           variant: "accent",
-                                          className: "px-4 py-2", // Adjusted padding
+                                          className: "px-4 py-2",
                                           size: "sm",
-                                      })}>Открыть страницу
+                                      })}>Подать заявку
                                 </Link>
                             </div>
                         </div>
