@@ -40,7 +40,7 @@ export default function MeGuilds() {
                         return (
                             <div key={guild.url} id={guild.url}
                                  className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit'>
-                                <div className='flex flex-col gap-2'>
+                                <div className='flex flex-col gap-2 w-full'>
                                     <div className="flex flex-row gap-1 items-center">
                                         <Image
                                             src={"https://minotar.net/helm/" + guild.owner_nickname + "/25.png"}
@@ -52,7 +52,7 @@ export default function MeGuilds() {
                                         />
                                         <h1>{guild.owner_nickname}</h1>
                                     </div>
-                                    <div className="flex flex-row gap-1">
+                                    <div className="flex flex-row gap-1 justify-between">
                                         <div>
                                             <h1 className='text-3xl'>{guild.name}</h1>
                                             <p>{guild.info}</p>

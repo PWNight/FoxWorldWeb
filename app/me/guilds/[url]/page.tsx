@@ -1,12 +1,14 @@
 "use client"
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
-import {CloudUpload, LucideLoader, Pencil, Trash2} from "lucide-react";
+import {LucideLoader, Pencil} from "lucide-react";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
 import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
 import GuildUploadBadge from "@/components/func_blocks/guildUploadBadge";
+import ErrorMessage from "@/components/ui/notify-alert";
+import GuildEditSkelet from "@/components/skelets/guild_edit_skelet";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -20,7 +22,10 @@ export default function MyGuild(props: PageProps) {
 
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [error, setError] = useState('')
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
 
     const router = useRouter();
 
@@ -68,18 +73,22 @@ export default function MyGuild(props: PageProps) {
             return;
         }
 
-        const result = await fetch(`/api/v1/guilds/${url}`,{
+        const response = await fetch(`/api/v1/guilds/${url}`,{
             method: 'POST',
             body: JSON.stringify({session_token:session_token, formData: changedFormData}),
         })
 
-        const json : any = await result.json()
+        if ( !response.ok ) {
+            const errorData = await response.json()
+            console.error(errorData)
 
-        if (!json.success) {
+            setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
+            setNotifyType('error')
+            setError(errorData.message)
             setIsLoading(false);
-            setError(json.message);
             return
         }
+
         setIsLoading(false)
     };
 
@@ -138,24 +147,28 @@ export default function MyGuild(props: PageProps) {
         })
 
         if (!response.ok) {
-            // TODO: Implement error handler
+            const errorData = await response.json()
+            console.error(errorData)
+
+            setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
+            setNotifyType('error')
+
             return
         }
 
-        const json = await response.json()
-
-        if ( !json.success ) {
-            // TODO: Implement error handler
-        }
         router.push('/me/guilds')
+    }
 
+    const handleClose = () => {
+        setNotifyMessage('')
     }
 
     if( pageLoaded ) {
         return (
-            <div>
-                <h1 className="text-3xl font-bold mb-4">Редактирование гильдии</h1>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-fit">
+            <div className=''>
+                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+                <h1 className="text-3xl font-bold mb-4 sm:ml-0 ml-4">Редактирование гильдии</h1>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:w-fit">
                     <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow h-fit">
                         <div className="p-4 border-b border-gray-200 dark:border-gray-700">
                             <h2 className="text-xl font-semibold">Основная информация</h2>
@@ -209,7 +222,7 @@ export default function MyGuild(props: PageProps) {
                                 <button type="submit" disabled={isLoading} className={buttonVariants({ className: "w-full", variant: 'accent' })}>
                                     {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить изменения</>}
                                 </button>
-                                {error && <p className="text-red-400 mt-2">{error}</p>}
+
                             </form>
                         </div>
                     </div>
@@ -267,6 +280,10 @@ export default function MyGuild(props: PageProps) {
                     </div>
                 </div>
             </div>
+        )
+    }else{
+        return (
+            <GuildEditSkelet/>
         )
     }
 }

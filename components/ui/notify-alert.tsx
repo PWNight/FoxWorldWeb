@@ -2,18 +2,18 @@ import React from 'react';
 
 interface ErrorMessageProps {
   message: string;
-  type: 'error' | 'warning' | 'success';
+  type: string;
   onClose?: () => void;
 }
 
 function ErrorMessage({ message, type = 'error', onClose }: ErrorMessageProps) {
-  const alertClasses = {
+  const alertClasses : any = {
     error: 'bg-red-100 border border-red-400 text-red-700',
     warning: 'bg-yellow-100 border border-yellow-400 text-yellow-700',
     success: 'bg-green-100 border border-green-400 text-green-700',
   };
 
-  const alertClass = alertClasses[type] || alertClasses.error;
+  const alertClass = alertClasses[type];
 
   return (
     <div

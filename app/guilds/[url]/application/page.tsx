@@ -1,7 +1,7 @@
 "use client";
 import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {checkGuildAccess, getGuild, getSession} from "@/app/actions/getInfo";
+import {checkGuildAccess, getGuild, getMyGuildsApplications, getSession} from "@/app/actions/getInfo";
 import Link from "next/link";
 import {Castle, LucideLoader} from "lucide-react";
 import {guild_application} from "@/app/actions/applications";
@@ -35,10 +35,16 @@ export default function GuildApplication(props: PageProps) {
 
                 checkGuildAccess(guildUrl, user_r.data).then((r) => {
                     if ( r.success ){
-                        router.push("/guilds/" + guildUrl);
+                        router.push("/me/guilds/");
                         return
                     }
-                    setPageLoaded(true);
+                    getMyGuildsApplications(user_r.data).then((r)=>{
+                        if ( r.data.length > 0 ) {
+                            router.push('/me/guilds/');
+                            return
+                        }
+                        setPageLoaded(true);
+                    })
                 })
             })
 
@@ -84,9 +90,4 @@ export default function GuildApplication(props: PageProps) {
             </div>
         )
     }
-    return (
-        <>
-            <p>Loading</p>
-        </>
-    );
 }

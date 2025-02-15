@@ -1,25 +1,27 @@
 import { useState } from 'react';
 import { CloudUpload, Trash2 } from 'lucide-react';
 import { buttonVariants } from '../ui/button';
+import ErrorMessage from "@/components/ui/notify-alert";
 
 export default function GuildUploadBadge({url}: any) {
   const [selectedFile, setSelectedFile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [notifyMessage, setNotifyMessage] = useState('');
+  const [notifyType, setNotifyType] = useState('error');
 
   const handleFileChange = (event: any) => {
-    setErrorMessage(''); // Сбрасываем сообщение об ошибке при каждом новом выборе файла
+    setNotifyMessage(''); // Сбрасываем сообщение об ошибке при каждом новом выборе файла
     const file = event.target.files[0];
 
     // Проверяем тип файла
     if (!file.type.startsWith('image/')) {
-      setErrorMessage('Файл должен быть изображением');
+      setNotifyMessage('Произошла ошибка при загрузке эмблемы: файл должен быть изображением');
       return;
     }
 
     // Проверяем размер файла (в байтах)
     const maxSize = 2 * 1024 * 1024; // 2 МБ
     if (file.size > maxSize) {
-      setErrorMessage('Размер файла не должен превышать 2 МБ');
+      setNotifyMessage('Произошла ошибка при загрузке эмблемы: вес файла не должен превышать 2 мб');
       return;
     }
 
@@ -28,19 +30,14 @@ export default function GuildUploadBadge({url}: any) {
 
   const handleRemoveFile = () => {
     setSelectedFile(null);
-    setErrorMessage(''); // Сбрасываем сообщение об ошибке при удалении файла
+    setNotifyMessage('');
   };
 
   const handleSubmit = (event: any) => {
     event.preventDefault();
 
     if (!selectedFile) {
-      alert('Пожалуйста, выберите файл');
-      return;
-    }
-
-    if (errorMessage) { // Если есть сообщение об ошибке, не отправляем форму
-      alert(errorMessage);
+      setNotifyMessage('Произошла ошибка при загрузке эмблемы: выберите файл');
       return;
     }
 
@@ -53,20 +50,28 @@ export default function GuildUploadBadge({url}: any) {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.message === 'Success') {
-          alert('Файл успешно загружен!');
+        if ( data.success ) {
+          setNotifyMessage('Файл эмблемы успешно загружен');
+          setNotifyType('success');
           setSelectedFile(null);
         } else {
-          alert('Ошибка загрузки файла: ' + data.message);
+          setNotifyMessage('Произошла ошибка при загрузке эмблемы: выберите файл');
+          console.error(data)
         }
       })
       .catch(error => {
-        alert('Ошибка загрузки файла: ' + error);
+        setNotifyMessage('Произошла ошибка при загрузке эмблемы: выберите файл');
+        console.error(error)
       });
   };
 
+  const handleClose = () => {
+    setNotifyMessage('');
+  }
+
   return (
     <form onSubmit={handleSubmit}>
+      { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
       {selectedFile && <p className="mt-2">Выбранный файл: {selectedFile["name"]}</p>}
       <div className="flex gap-2">
         {selectedFile ? (
@@ -96,7 +101,6 @@ export default function GuildUploadBadge({url}: any) {
           </>
         )}
       </div>
-      {errorMessage && <p className="text-red-500 mt-2">{errorMessage}</p>} {/* Выводим сообщение об ошибке */}
     </form>
   );
 }
