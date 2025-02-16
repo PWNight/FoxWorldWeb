@@ -25,6 +25,14 @@ export const ROUTES: EachRoute[] = [
       { title: "Начать игру", href: "/start-game" },
     ],
   },
+  {
+    title: "Гайды",
+    href: "/guides",
+    noLink: true,
+    items: [
+      { title: "Управление эмблемами", href: "/emblems" },
+    ],
+  },
 ];
 
 type Page = { title: string; href: string };
