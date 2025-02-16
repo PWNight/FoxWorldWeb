@@ -72,7 +72,6 @@ export default function CreateGuild() {
                 body: JSON.stringify({name,url,info,description,session_token}),
             })
             const json : any = await result.json()
-            console.log(json)
             if(json.success){
                 router.push('/me/guilds')
             }else{
