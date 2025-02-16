@@ -235,7 +235,7 @@ export default function MyGuild(props: PageProps) {
                                     Устанавливаемая эмблема не должна нарушать <Link href="/wiki/rules" className="text-orange-500">правила сервера</Link>
                                 </p>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
-                                    Посмотрите гайд по <Link href="/wiki/guilds/emblem" className="text-orange-500">получению ссылки на вашу эмблему</Link>
+                                    Посмотрите гайд по <Link href="/wiki/guides/emblems" className="text-orange-500">получению ссылки на вашу эмблему</Link>
                                 </p>
                                 <form onSubmit={handleUpdate}>
                                     <input
