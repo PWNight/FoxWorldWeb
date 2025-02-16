@@ -19,7 +19,7 @@ export function Footer() {
                     />
                     <div className='flex flex-col'>
                         <p>FoxWorld © 2021 - 2025</p>
-                        <p>v1.0.0-beta2</p>
+                        <p>v1.0.0-beta2 (16.02.25)</p>
                     </div>
                 </div>
             </div>
