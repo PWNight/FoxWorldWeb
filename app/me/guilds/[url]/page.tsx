@@ -6,7 +6,6 @@ import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
 import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
-import GuildUploadBadge from "@/components/func_blocks/guildUploadBadge";
 import ErrorMessage from "@/components/ui/notify-alert";
 import GuildEditSkelet from "@/components/skelets/guild_edit_skelet";
 
@@ -237,7 +236,24 @@ export default function MyGuild(props: PageProps) {
                                 <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                                     Устанавливаемая эмблема не должна нарушать <Link href="/wiki/rules" className="text-orange-500">правила сервера</Link>
                                 </p>
-                                <GuildUploadBadge url={userGuild.url}/>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                                    Посмотрите гайд по <Link href="/wiki/guilds/emblem" className="text-orange-500">получению ссылки на вашу эмблему</Link>
+                                </p>
+                                <form onSubmit={handleUpdate}>
+                                    <input
+                                        type="text"
+                                        id="badge_url"
+                                        placeholder="Введите ссылку на эмблему с planetminecraft"
+                                        defaultValue={userGuild.badge_url}
+                                        onChange={handleInputChange}
+                                        className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-neutral-700 dark:border-gray-600 dark:text-white"
+                                    />
+                                    <div className="flex gap-2 mt-2">
+                                        <button disabled={isLoading} className={buttonVariants({ variant: "accent" })} type="submit">
+                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
                             <div className="mb-4">
                                 <h3 className="text-lg font-medium mb-2">Discord сервер</h3>
