@@ -22,7 +22,6 @@ export default function MyGuild(props: PageProps) {
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [error, setError] = useState('')
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
 
@@ -53,7 +52,6 @@ export default function MyGuild(props: PageProps) {
     const handleUpdate = async(e: any) => {
         e.preventDefault();
         setIsLoading(true);
-        setError('');
 
         const session_token = userData.token;
         const params = await props.params
@@ -67,7 +65,8 @@ export default function MyGuild(props: PageProps) {
         }, {});
 
         if (Object.keys(changedFormData).length === 0) {
-            setError("Внесите изменения, чтобы сохранить");
+            setNotifyMessage(`Внесите изменения, чтобы сохранить`)
+            setNotifyType('warning')
             setIsLoading(false);
             return;
         }
@@ -83,7 +82,6 @@ export default function MyGuild(props: PageProps) {
 
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
             setNotifyType('error')
-            setError(errorData.message)
             setIsLoading(false);
             return
         }
