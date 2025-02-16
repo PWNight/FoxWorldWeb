@@ -86,6 +86,9 @@ export default function MyGuild(props: PageProps) {
             return
         }
 
+        setNotifyMessage(`Информация о гильдии успешно обновлена`)
+        setNotifyType('success')
+
         setIsLoading(false)
     };
 
