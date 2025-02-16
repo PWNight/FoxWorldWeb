@@ -83,13 +83,6 @@ export default function MeGuilds() {
                                     </div>
                                 </div>
                                 <div className='flex sm:flex-row flex-col w-full gap-5'>
-                                    <Link href={'/guilds/' + guild.url}
-                                    className={buttonVariants({
-                                        variant: "accent",
-                                        className: "px-2",
-                                        size: "sm",
-                                    })}>Открыть страницу
-                                    </Link>
                                     {guild.permission == 2 && (
                                         <Link href={'/me/guilds/'+ guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
                                     )}
