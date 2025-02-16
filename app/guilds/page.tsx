@@ -82,14 +82,16 @@ export default function Guilds() {
                                            <li>{guild.member_count} участников</li>
                                         </ul>
                                     </div>
-                                    <Image
-                                      src={`/guilds/badges/g_${guild.id}.png`}
-                                      alt={`Банер ${guild.url}`}
-                                      height={200}
-                                      width={150}
-                                      quality={100}
-                                      className={'rounded-md overflow-hidden'}
-                                    />
+                                    {guild.badge_url && (
+                                        <Image
+                                          src={guild.badge_url}
+                                          alt={`Эмблема ${guild.url}`}
+                                          height={200}
+                                          width={150}
+                                          quality={100}
+                                          className={'rounded-md overflow-hidden'}
+                                        />
+                                    )}
                                 </div>
                             </div>
                             <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'>
