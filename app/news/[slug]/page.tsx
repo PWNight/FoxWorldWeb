@@ -24,6 +24,7 @@ export async function generateMetadata(props: PageProps) {
     return {
         title: `FW - ${frontmatter.title}`,
         description: frontmatter.description,
+        //@ts-ignore
         cover: frontmatter.cover
     };
 }
