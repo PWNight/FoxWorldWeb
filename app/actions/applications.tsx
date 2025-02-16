@@ -41,12 +41,15 @@ export async function guild_application(state: GuildApplicationFormState, formDa
         body: JSON.stringify({ about_user, why_this_guild }),
     })
     if ( !response.ok ){
+        const errorData = await response.json()
+        console.error(errorData)
         return {
             message: 'Не удалось отправить заявку (err ' + response.status + ')',
         }
     }
     const json = await response.json()
     if ( !json.success ){
+        console.error(json)
         return {
             message: 'Не удалось отправить заявку (err ' + response.status + ')',
         }
@@ -85,12 +88,16 @@ export async function signup(state: FormState, formData: FormData) {
             body: JSON.stringify({ uuid, username })
         })
         if (!response.ok){
+            const errorData = await response.json()
+            console.error(errorData)
             return {
               message: 'Не удалось войти (err ' + response.status + ')',
             }
         }
         redirect("/me")
     }else{
+        const errorData = await result.json()
+        console.error(errorData)
         return {
           message: 'Не удалось войти (err ' + result.status + ')',
         }
