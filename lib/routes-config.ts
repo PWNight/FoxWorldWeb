@@ -20,9 +20,20 @@ export const ROUTES: EachRoute[] = [
     noLink: true,
     items: [
       { title: "О нас", href: "/about" },
-      { title: "Команды", href: "/commands" },
       { title: "FAQ", href: "/faq" },
       { title: "Начать игру", href: "/start-game" },
+    ],
+  },
+  {
+    title: "Minecraft",
+    href: "/minecraft",
+    noLink: true,
+    items: [
+      { title: "QoL улучшения", href: "/qol" },
+      { title: "Команды", href: "/commands" },
+      { title: "Кастомизация", href: "/customization" },
+      { title: "Голосовой чат, эмоции и пластинки", href: "/social" },
+      { title: "Стойки для брони", href: "/armorstand" },
     ],
   },
   {
@@ -31,6 +42,7 @@ export const ROUTES: EachRoute[] = [
     noLink: true,
     items: [
       { title: "Управление эмблемами", href: "/emblems" },
+      { title: "Как сварить свой первый напиток и не умереть", href: "/brewery" },
     ],
   },
 ];
