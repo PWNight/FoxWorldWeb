@@ -43,6 +43,7 @@ export const ROUTES: EachRoute[] = [
     items: [
       { title: "Управление эмблемами", href: "/emblems" },
       { title: "Как сварить свой первый напиток и не умереть", href: "/brewery" },
+      { title: "Улучшенные крафты камнереза", href: "/mastercutter" },
     ],
   },
 ];
