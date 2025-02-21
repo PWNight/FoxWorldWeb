@@ -10,16 +10,15 @@ export async function GET(request: NextRequest) {
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
 }
+
 export async function POST(request: NextRequest) {
     const data = await request.json();
     const url = data.url;
     const name = data.name;
     const description = data.description;
     const info = data.info;
-    const session_token = data.session_token;
 
     const userSchema = Joi.object({
-        session_token: Joi.required(),
         url: Joi.string().required(),
         name: Joi.string().required(),
         description: Joi.string().required(),
@@ -31,17 +30,30 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
 
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
+    }
+    const token = authHeader.split(" ")[1];
+
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
             method: "POST",
-            body: JSON.stringify({session_token}),
+            body: JSON.stringify({session_token: token}),
         })
 
-        const json = await response.json()
-        if(!json.success){
-            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        if ( !response.ok ){
+            const errorData = await response.json()
+            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
+
+        const json = await response.json()
+        if( !json.success ){
+            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+
         const user = json.profile;
+
         if(user.in_guild){
             const userGuilds : any = await query('SELECT permission FROM guilds_members WHERE uid = ?', [user.id])
             if ( userGuilds.length > 0 ){

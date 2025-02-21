@@ -2,28 +2,29 @@ import { query } from '@/lib/mysql';
 import { NextRequest, NextResponse } from "next/server";
 import Joi from "joi";
 
-export async function POST(request: NextRequest) {
-    const data = await request.json();
-    const session_token = data.session_token;
-
-    const userSchema = Joi.object({
-        session_token: Joi.required(),
-    })
-
-    const { error } = userSchema.validate(data);
-    if (error) {
-        return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
+export async function GET(request: NextRequest) {
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
     }
+    const token = authHeader.split(" ")[1];
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
             method: "POST",
-            body: JSON.stringify({session_token}),
+            body: JSON.stringify({session_token: token}),
         })
-        const json = await response.json()
-        if(!json.success){
-            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+
+        if ( !response.ok ){
+            const errorData = await response.json()
+            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
+
+        const json = await response.json()
+        if( !json.success ){
+            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+
         const user = json.profile;
 
         // Получение пользователя из базы данных
