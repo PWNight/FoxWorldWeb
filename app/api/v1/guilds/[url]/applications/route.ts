@@ -81,8 +81,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
 
-        const user = json.profile;
-
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){
             return NextResponse.json({ success: false, message: 'Гильдия не найдена' },{status: 400})
