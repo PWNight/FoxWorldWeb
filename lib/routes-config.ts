@@ -35,7 +35,6 @@ export const ROUTES: EachRoute[] = [
     items: [
       { title: "QoL улучшения", href: "/qol" },
       { title: "Команды", href: "/commands" },
-      { title: "Кастомизация", href: "/customization" },
       { title: "Голосовой чат, эмоции и пластинки", href: "/social" },
       { title: "Стойки для брони", href: "/armorstand" },
     ],
