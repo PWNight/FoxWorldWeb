@@ -1,7 +1,6 @@
 import { query } from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
-import Joi from "joi";
 
 async function checkToken(token: any){
     const data : any = await decrypt(token)

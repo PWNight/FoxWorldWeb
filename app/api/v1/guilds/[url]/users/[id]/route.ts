@@ -90,7 +90,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
 
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ url: string, id: number }> }) {
     const {url, id} = await params;
-    const data = await request.json();
 
     const authHeader = request.headers.get("authorization");
     if (!authHeader) {

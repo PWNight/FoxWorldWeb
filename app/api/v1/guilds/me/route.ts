@@ -1,6 +1,5 @@
 import { query } from '@/lib/mysql';
 import { NextRequest, NextResponse } from "next/server";
-import Joi from "joi";
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get("authorization");
