@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
+import ErrorMessage from "@/components/ui/notify-alert";
 
 export default function Guilds() {
     const [guilds, setGuilds] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
+
+    const [pageLoaded, setPageLoaded] = useState(false);
 
     useEffect(() => {
         async function getAll() {
@@ -14,14 +20,17 @@ export default function Guilds() {
                 method: "GET"
             });
             if (!response.ok) {
-                // TODO: Implement error handler
-                return;
+                setNotifyMessage(`Произошла ошибка при загрузке гильдий`)
+                setNotifyType('error')
+                setGuilds([])
+                setPageLoaded(true)
             }
 
             const json = await response.json();
             if (!json.success) {
-                // TODO: Implement error handler
-                return;
+                setNotifyMessage(`Произошла ошибка при загрузке гильдий`)
+                setNotifyType('error')
+                setGuilds([])
             }
             setGuilds(json.data);
         }
@@ -35,78 +44,89 @@ export default function Guilds() {
         return guilds.filter((guild: any) => guild.name.toLowerCase().includes(searchQuery.toLowerCase()));
     };
 
-    if (guilds.length === 0) {
-        return <></>;
-    } else {
-        return (
-            <div className="flex flex-col min-h-screen px-4 sm:w-[90%] w-full mx-auto container">
-                <div className="flex mt-4 flex-col gap-4 select-none">
-                    <h1 className="text-3xl font-bold">Гильдии</h1>
-                    <input
-                        className="p-3 border border-gray-600 rounded-lg outline-none"
-                        type="text"
-                        onChange={e => setSearchQuery(e.target.value)}
-                        placeholder="Поиск"
-                    />
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
-                    {filteredGuilds().map((guild: any) => (
-                        <div key={guild.url} id={guild.url}
-                             className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit w-full'>
-                            <div className='flex flex-col gap-2 w-full'>
-                                <div className="flex flex-row gap-1 items-center">
-                                    <Image
-                                        src={"https://minotar.net/helm/" + guild.owner_nickname + "/25.png"}
-                                        alt={guild.owner_nickname}
-                                        width={25}
-                                        height={25}
-                                        quality={100}
-                                        className={'rounded-md overflow-hidden'}
-                                    />
-                                    <h1>{guild.owner_nickname}</h1>
-                                </div>
-                                <div className="flex gap-1 justify-between">
-                                    <div>
-                                        <h1 className='text-3xl'>{guild.name}</h1>
-                                        <p>{guild.info}</p>
-                                        <ul className="list-inside list-disc">
-                                            {guild.is_recruit ? (
-                                                <li>Принимает заявки</li>
-                                            ) : (
-                                                <li>Не принимает заявки</li>
-                                            )}
-                                            {guild.discord_code && (
-                                                <li>Есть Discord сервер</li>
-                                            )}
-                                            <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                           <li>{guild.member_count} участников</li>
-                                        </ul>
-                                    </div>
-                                    {guild.badge_url && (
+    const handleClose = () => {
+        setNotifyMessage('')
+    }
+
+    if (pageLoaded) {
+        if (guilds.length === 0) {
+            return (
+                <>
+                    { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+                </>
+            )
+        } else {
+            return (
+                <div className="flex flex-col min-h-screen px-4 sm:w-[90%] w-full mx-auto container">
+                    { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+                    <div className="flex mt-4 flex-col gap-4 select-none">
+                        <h1 className="text-3xl font-bold">Гильдии</h1>
+                        <input
+                            className="p-3 border border-gray-600 rounded-lg outline-none"
+                            type="text"
+                            onChange={e => setSearchQuery(e.target.value)}
+                            placeholder="Поиск"
+                        />
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+                        {filteredGuilds().map((guild: any) => (
+                            <div key={guild.url} id={guild.url}
+                                 className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit w-full'>
+                                <div className='flex flex-col gap-2 w-full'>
+                                    <div className="flex flex-row gap-1 items-center">
                                         <Image
-                                          src={guild.badge_url}
-                                          alt={`Эмблема ${guild.url}`}
-                                          height={200}
-                                          width={150}
-                                          quality={100}
-                                          className={'rounded-md overflow-hidden'}
+                                            src={"https://minotar.net/helm/" + guild.owner_nickname + "/25.png"}
+                                            alt={guild.owner_nickname}
+                                            width={25}
+                                            height={25}
+                                            quality={100}
+                                            className={'rounded-md overflow-hidden'}
                                         />
-                                    )}
+                                        <h1>{guild.owner_nickname}</h1>
+                                    </div>
+                                    <div className="flex gap-1 justify-between">
+                                        <div>
+                                            <h1 className='text-3xl'>{guild.name}</h1>
+                                            <p>{guild.info}</p>
+                                            <ul className="list-inside list-disc">
+                                                {guild.is_recruit ? (
+                                                    <li>Принимает заявки</li>
+                                                ) : (
+                                                    <li>Не принимает заявки</li>
+                                                )}
+                                                {guild.discord_code && (
+                                                    <li>Есть Discord сервер</li>
+                                                )}
+                                                <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
+                                                <li>{guild.member_count} участников</li>
+                                            </ul>
+                                        </div>
+                                        {guild.badge_url && (
+                                            <Image
+                                                src={guild.badge_url}
+                                                alt={`Эмблема ${guild.url}`}
+                                                height={200}
+                                                width={150}
+                                                quality={100}
+                                                className={'rounded-md overflow-hidden'}
+                                            />
+                                        )}
+                                    </div>
+                                </div>
+                                <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'>
+                                    <Link href={'/guilds/' + guild.url + '/application'}
+                                          className={buttonVariants({
+                                              variant: "accent",
+                                              className: "px-4 py-2",
+                                              size: "sm",
+                                          })}>Подать заявку
+                                    </Link>
                                 </div>
                             </div>
-                            <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'>
-                                <Link href={'/guilds/' + guild.url + '/application'}
-                                      className={buttonVariants({
-                                          variant: "accent",
-                                          className: "px-4 py-2",
-                                          size: "sm",
-                                      })}>Подать заявку
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
                 </div>
-            </div>
-        );
+            );
+        }
     }
 }
