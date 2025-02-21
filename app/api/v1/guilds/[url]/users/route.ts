@@ -42,8 +42,8 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "POST",
-            body: JSON.stringify({session_token: token}),
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}
         })
 
         if ( !response.ok ){
