@@ -4,11 +4,9 @@ import Joi from "joi";
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
-    const session_token = data.session_token;
     const new_password = data.new_password;
 
     const userSchema = Joi.object({
-        session_token: Joi.string().required(),
         new_password: Joi.string().required(),
     })
 
@@ -16,20 +14,34 @@ export async function POST(request: NextRequest) {
     if ( error ) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, {status: 401});
     }
+
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
+    }
+    const token = authHeader.split(" ")[1];
+
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
             method: "POST",
-            body: JSON.stringify({session_token}),
+            body: JSON.stringify({session_token: token}),
         })
-        const json = await response.json()
-        if(!json.success){
-            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+
+        if ( !response.ok ){
+            const errorData = await response.json()
+            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const nickname = json.profile.nick;
+        const json = await response.json()
+        if( !json.success ){
+            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+
+        const user = json.profile;
+
         const result = await fetch('https://foxworld.ru/api/v1/auth/login',{
             method: 'POST',
-            body: JSON.stringify({username:nickname,password:new_password}),
+            body: JSON.stringify({username: user.nick, password: new_password}),
         })
         if(result.ok){
             return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
