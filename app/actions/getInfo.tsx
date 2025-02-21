@@ -1,6 +1,6 @@
 export async function getSession() {
     const response = await fetch("/api/v1/users/me", {
-        method: "GET"
+        method: "GET",
     });
     if ( !response.ok ) {
         return { success: false}
@@ -25,8 +25,8 @@ export async function getStats(data : any){
 export async function getAllMyGuilds(data:any){
     const session_token = data.token
     const response = await fetch("/api/v1/guilds/me",{
-        method: "POST",
-        body: JSON.stringify({session_token}),
+        method: "GET",
+        headers: {"Authorization": `Bearer ${session_token}`},
     })
 
     if ( !response.ok ) {

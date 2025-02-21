@@ -77,8 +77,9 @@ export default function MyGuildMembers(props: PageProps) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${session_token}`,
             },
-            body: JSON.stringify({ user_id: user.uid, permission: newPermission, session_token }),
+            body: JSON.stringify({ user_id: user.uid, permission: newPermission }),
         });
 
         if (!response.ok) {
@@ -109,8 +110,9 @@ export default function MyGuildMembers(props: PageProps) {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
+                "Authorization": `Bearer ${session_token}`,
             },
-            body: JSON.stringify({ user_id: user.uid, session_token }),
+            body: JSON.stringify({ user_id: user.uid }),
         });
 
         if (!response.ok) {

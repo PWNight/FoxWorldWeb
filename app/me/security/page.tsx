@@ -81,7 +81,8 @@ export default function MeSecurity() {
         const session_token = userData.token;
         const result = await fetch('/api/v1/users/me/change-username/',{
             method: 'POST',
-            body: JSON.stringify({new_username : username, session_token})
+            headers: {"Authorization": `Bearer ${session_token}`},
+            body: JSON.stringify({new_username: username})
         })
         const json : any = await result.json()
         if(result.ok){
@@ -122,7 +123,8 @@ export default function MeSecurity() {
         const session_token = userData.token;
         const result = await fetch('/api/v1/users/me/change-password/',{
             method: 'POST',
-            body: JSON.stringify({new_password:password, session_token})
+            headers: {"Authorization": `Bearer ${session_token}`},
+            body: JSON.stringify({new_password: password})
         })
         const json : any = await result.json()
         if(result.ok){
