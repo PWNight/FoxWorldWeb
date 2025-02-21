@@ -66,10 +66,11 @@ export default function CreateGuild() {
         }
 
         if (!hasError) {
-            const session_token = userData.token;
+            const token = userData.token;
             const result = await fetch('/api/v1/guilds',{
                 method: 'POST',
-                body: JSON.stringify({name,url,info,description,session_token}),
+                headers: {"Authorization": `Bearer ${token}`},
+                body: JSON.stringify({name,url,info,description}),
             })
             const json : any = await result.json()
             if(json.success){

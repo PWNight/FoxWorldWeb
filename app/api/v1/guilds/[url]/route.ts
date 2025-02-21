@@ -17,11 +17,9 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
 export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     const data = await request.json();
-    const session_token = data.session_token;
     const formData = data.formData;
 
     const userSchema = Joi.object({
-        session_token: Joi.string().required(),
         formData: Joi.required(),
     })
 
@@ -30,18 +28,30 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
     }
 
-    let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-        method: "POST",
-        body: JSON.stringify({session_token}),
-    })
-
-    const json = await response.json()
-    if(!json.success){
-        return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
     }
-    const user = json.profile;
+    const token = authHeader.split(" ")[1];
 
     try{
+        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`},
+        })
+
+        if ( !response.ok ){
+            const errorData = await response.json()
+            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        }
+
+        const json = await response.json()
+        if( !json.success ){
+            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+
+        const user = json.profile;
+
         if(!user.in_guild){
             return NextResponse.json({ success: false, message: 'Вы не состоите в гильдии' },{status:401})
         }
@@ -79,28 +89,29 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
 }
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
-    const data = await request.json();
-    const session_token = data.session_token;
 
-    const userSchema = Joi.object({
-        session_token: Joi.required(),
-    })
-    const { error } = userSchema.validate(data);
-
-    if ( error ) {
-        return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
     }
+    const token = authHeader.split(" ")[1];
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "POST",
-            body: JSON.stringify({session_token}),
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`},
         })
 
-        const json = await response.json()
-        if(!json.success){
-            return NextResponse.json({ success: false, message: "Не удалось получить данные сессии" }, { status: 401 });
+        if ( !response.ok ){
+            const errorData = await response.json()
+            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
+
+        const json = await response.json()
+        if( !json.success ){
+            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+
         const user = json.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
@@ -115,6 +126,7 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         if ( !userGuild || userGuild.permission != 2 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии' },{status:401})
         }
+
         await query("DELETE FROM guilds_applications WHERE fk_guild = ?", [guildData.id])
         await query("DELETE FROM guilds_members WHERE fk_guild = ?", [guildData.id])
         await query("DELETE FROM guilds WHERE id = ?", [guildData.id])

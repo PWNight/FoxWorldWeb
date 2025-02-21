@@ -18,8 +18,8 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "POST",
-            body: JSON.stringify({session_token: token}),
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}
         })
 
         if ( !response.ok ){
@@ -67,8 +67,8 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "POST",
-            body: JSON.stringify({session_token: token}),
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}
         })
 
         if ( !response.ok ){
@@ -80,8 +80,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         if( !json.success ){
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
-
-        const user = json.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){
@@ -130,8 +128,8 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
 
     try {
         let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "POST",
-            body: JSON.stringify({session_token: token}),
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`}
         })
 
         if ( !response.ok ){

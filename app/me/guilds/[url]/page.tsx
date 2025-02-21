@@ -73,7 +73,8 @@ export default function MyGuild(props: PageProps) {
 
         const response = await fetch(`/api/v1/guilds/${url}`,{
             method: 'POST',
-            body: JSON.stringify({session_token:session_token, formData: changedFormData}),
+            headers: {"Authorization": `Bearer ${session_token}`},
+            body: JSON.stringify({formData: changedFormData}),
         })
 
         if ( !response.ok ) {
@@ -143,7 +144,7 @@ export default function MyGuild(props: PageProps) {
         const session_token = userData.token;
         const response = await fetch(`/api/v1/guilds/${userGuild.url}`,{
             method: 'DELETE',
-            body: JSON.stringify({session_token}),
+            headers: {"Authorization": `Bearer ${session_token}`}
         })
 
         if (!response.ok) {

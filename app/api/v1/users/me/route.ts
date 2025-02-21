@@ -1,7 +1,6 @@
 import { query } from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
-import Joi from "joi";
 
 async function checkToken(token: any){
     const data : any = await decrypt(token)
@@ -31,24 +30,14 @@ async function checkToken(token: any){
 }
 
 export async function GET(request: NextRequest) {
-    const session_token = request.cookies.get('s_token')
-    if( session_token === undefined ){
-        return NextResponse.json({ success: false, message: "Отсутсвует токен сессии в куки браузера" }, { status: 401 })
+    const authHeader = request.headers.get("authorization");
+    if (!authHeader) {
+        const session_token = request.cookies.get('s_token')
+        if( session_token === undefined ){
+            return NextResponse.json({ success: false, message: "Отсутсвует заголовок авторизации" }, { status: 401 })
+        }else{
+            return await checkToken(session_token?.value)
+        }
     }
-    return await checkToken(session_token?.value)
-}
-export async function POST(request: NextRequest) {
-    const data = await request.json();
-    const session_token = data.session_token;
-
-    const userSchema = Joi.object({
-        session_token: Joi.string().required(),
-    })
-
-    const { error } = userSchema.validate(data);
-    if ( error ) {
-        return NextResponse.json({success: false, message: "Отсутствуют некоторые параметры", error}, {status: 401});
-    }
-
-    return await checkToken(session_token)
+    return await checkToken(authHeader.split(" ")[1])
 }
