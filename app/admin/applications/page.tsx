@@ -1,0 +1,47 @@
+"use client"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import {getSession} from "@/app/actions/getInfo";
+import MeSkelet from "@/components/skelets/me_skelet";
+import InDev from "@/components/indev";
+
+export default function Me() {
+    const [userData, setUserData] = useState(Object)
+
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
+
+    const [pageLoaded, setPageLoaded] = useState(false);
+
+    const router = useRouter()
+
+    useEffect(()=>{
+        getSession().then(async r => {
+            if ( !r.success ) {
+                router.push("/login")
+                return
+            }
+
+            if ( !['dev','staff'].includes(r.data.group) ){
+                router.push("/")
+                return
+            }
+            setUserData(r.data)
+            setPageLoaded(true)
+        });
+    },[router])
+
+    const handleClose = () => {
+        setNotifyMessage('')
+    }
+
+    if (!pageLoaded) {
+        return (
+            <MeSkelet/>
+        )
+    }else{
+        return (
+            <InDev/>
+        )
+    }
+}

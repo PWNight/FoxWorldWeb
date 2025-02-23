@@ -21,7 +21,13 @@ export default function Me() {
                 router.push("/login")
                 return
             }
+
+            if ( !['dev','staff'].includes(r.data.group) ){
+                router.push("/")
+                return
+            }
             setUserData(r.data)
+            setPageLoaded(true)
         });
     },[router])
 
