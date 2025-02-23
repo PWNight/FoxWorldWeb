@@ -7,7 +7,7 @@ export default function Pagination({ pathname }: { pathname: string }) {
   const res = getPreviousNext(pathname);
 
   return (
-    <div className="grid grid-cols-2 grow sm:py-10 py-7 gap-3">
+    <div className="grid sm:grid-cols-2 grow sm:py-10 py-7 gap-3">
       <div>
         {res.prev && (
           <Link
@@ -22,7 +22,9 @@ export default function Pagination({ pathname }: { pathname: string }) {
               <ChevronLeftIcon className="w-[1rem] h-[1rem] mr-1" />
               Предыдущее
             </span>
-            <span className="mt-1 ml-1">{res.prev.title}</span>
+            <span className="mt-1 ml-1 break-words"> {/* Key change: break-words */}
+              {res.prev.title}
+            </span>
           </Link>
         )}
       </div>
@@ -36,11 +38,13 @@ export default function Pagination({ pathname }: { pathname: string }) {
             })}
             href={`/wiki${res.next.href}`}
           >
-            <span className="flex items-center text-muted-foreground text-xs">
+            <span className="flex items-center text-muted-foreground text-xs break-words">
               Следующее
               <ChevronRightIcon className="w-[1rem] h-[1rem] ml-1" />
             </span>
-            <span className="mt-1 mr-1">{res.next.title}</span>
+            <span className="mt-1 mr-1">
+              {res.next.title}
+            </span>
           </Link>
         )}
       </div>
