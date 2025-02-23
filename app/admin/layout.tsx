@@ -1,5 +1,4 @@
 import { PropsWithChildren } from "react";
-import {NavMe} from "@/components/navbar_me";
 import {NavAdmin} from "@/components/navbar_admin";
 
 export default function MeLayout({ children }: PropsWithChildren) {

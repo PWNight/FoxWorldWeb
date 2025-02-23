@@ -1,12 +1,8 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CloudUpload, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import {getSession, getStats} from "@/app/actions/getInfo";
-import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
-import ErrorMessage from "@/components/ui/notify-alert";
+import {getSession} from "@/app/actions/getInfo";
+import MeSkelet from "@/components/skelets/me_skelet";
 import InDev from "@/components/indev";
 
 export default function Me() {
