@@ -2,45 +2,45 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import React from "react";
 import Image from "next/image";
-import {LifeBuoy, MailIcon} from "lucide-react";
+import {LifeBuoy} from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="w-full mx-auto border-t max-h-16 p-2 lg:px-14 px-2 bg-opacity-5 text-muted-foreground text-sm">
-        <div className="flex items-center sm:justify-between justify-start sm:gap-0 gap-4 flex-wrap sm:py-0 py-3 sm:px-4">
-            <div className="flex flex-col gap-2 w-full">
-                <div className="flex items-center gap-2">
-                    <Image
-                      src='/logo.png'
-                      alt='logo'
-                      width={35}
-                      height={35}
-                      quality={100}
-                      className=""
-                    />
-                    <div className="w-full grid grid-cols-[1fr_.1fr] items-center justify-between">
-                        <div className='flex flex-col'>
-                            <p>FoxWorld © 2021 - 2025</p>
-                            <p>v1.0.0-beta3 (DEV-4 22.02.25)</p>
-                        </div>
-                        <div className='flex gap-2 justify-end items-center'>
-                            <Link href="/legal/contacts" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Контакты</Link>
-                            <Link href="/legal/terms" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Условия пользования</Link>
-                            <Link href="/legal/privacy" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Политика конфиденциальности</Link>
-                            <Link href="/legal/refund" className={buttonVariants({variant: "link", className: "px-0! py-0!", size: "xs"})}>Политика возврата средств</Link>
-                            <div className='flex gap-2 ml-2'>
-                                <FooterButtons/>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-                <div className='flex justify-between items-center pb-4'>
-                    <p>We are in no way affiliated with or endorsed by Mojang, AB.</p>
-                    <p>НДП Гошев Родион Александрович (ИНН 290410201401)</p>
-                </div>
+    <footer className="w-full border-t p-4 lg:px-14 bg-opacity-5 text-muted-foreground text-sm">
+      <div className="container mx-auto"> {/* Use container for consistent spacing */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"> {/* Stack on smaller screens */}
+          <div className="flex items-center gap-2 justify-center">
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={35}
+              height={35}
+              quality={100}
+            />
+            <div className="flex flex-col">
+              <p>FoxWorld © 2021 - 2025</p>
+              <p>v1.0.0-beta3 (DEV-4 22.02.25)</p>
             </div>
+          </div>
+
+          <div className="flex flex-col md:flex-row md:items-center gap-4"> {/* Links and buttons group */}
+            <div className="flex flex-wrap gap-2 justify-center md:justify-end"> {/* Wrap links on smaller screens */}
+              <Link href="/legal/contacts" className={buttonVariants({ variant: "link", size: "xs" })}>Контакты</Link>
+              <Link href="/legal/terms" className={buttonVariants({ variant: "link", size: "xs" })}>Условия пользования</Link>
+              <Link href="/legal/privacy" className={buttonVariants({ variant: "link", size: "xs" })}>Политика конфиденциальности</Link>
+              <Link href="/legal/refund" className={buttonVariants({ variant: "link", size: "xs" })}>Политика возврата средств</Link>
+            </div>
+            <div className="flex gap-2 justify-center md:justify-end"> {/* Footer buttons */}
+              <FooterButtons />
+            </div>
+          </div>
         </div>
+
+        <div className="mt-4 pt-4 border-t flex flex-col md:flex-row md:items-center md:justify-between text-center md:text-left pb-2"> {/* Separator line and legal info */}
+          <p className="text-sm">We are in no way affiliated with or endorsed by Mojang, AB.</p>
+          <p className="text-sm">НДП Гошев Родион Александрович (ИНН 290410201401)</p>
+        </div>
+      </div>
     </footer>
   );
 }
