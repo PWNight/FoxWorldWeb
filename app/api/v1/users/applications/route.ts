@@ -83,8 +83,6 @@ export async function POST(request: NextRequest) {
 
         if ( status == 'Принята' ) {
             await query('UPDATE profiles SET has_access = 1 WHERE nick = ?', [nickname])
-        }else{
-            await query('UPDATE verify_applications SET reason = ? WHERE id = ?',[reason, application_id])
         }
 
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
