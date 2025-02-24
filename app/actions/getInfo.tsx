@@ -125,3 +125,21 @@ export async function getGuildApplications(url: string, token: string) {
     }
     return { success: true, data: json.data }
 }
+
+export async function getVerifyApplications(token: string) {
+    const response = await fetch(`/api/v1/users/applications`, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        },
+        method: "GET",
+    });
+    if ( !response.ok ) {
+        return { success: false }
+    }
+
+    const json = await response.json()
+    if ( !json.success ) {
+        return { success: false }
+    }
+    return { success: true, data: json.data }
+}
