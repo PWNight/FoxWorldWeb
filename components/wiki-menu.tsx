@@ -10,6 +10,7 @@ export default function WikiMenu({ isSheet = false }) {
 
   return (
     <div className="flex flex-col gap-3.5 mt-5 pr-2 pb-6">
+      {isSheet && <h1 className='text-xl'>Навигация по вики:</h1>}
       {ROUTES.map((item, index) => {
         const modifiedItems = {
           ...item,

@@ -1,4 +1,4 @@
-import { query } from "@/lib/mysql";
+import {permsQuery, query} from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,7 +23,9 @@ async function checkToken(token: any){
         }
 
         const { premium_uuid, joined, last_seen } = user;
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, token }, {status:200})
+
+        let [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
+        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, token }, {status:200})
     }catch (error: any){
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }

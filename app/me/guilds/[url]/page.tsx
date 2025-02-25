@@ -1,11 +1,11 @@
 "use client"
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
-import {LucideLoader, Pencil} from "lucide-react";
+import { LucideLoader, Pencil } from "lucide-react";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
-import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import ErrorMessage from "@/components/ui/notify-alert";
 import GuildEditSkelet from "@/components/skelets/guild_edit_skelet";
 
@@ -291,7 +291,7 @@ export default function MyGuild(props: PageProps) {
                             </div>
                             */}
                             <div className="mt-4 flex flex-col gap-2">
-                                <Link href={'/me/guilds/' + userGuild.url + '/users'} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
+                                <Link href={`/me/guilds/${userGuild.url}/users`} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
                                 <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />
                             </div>
                         </div>

@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "deploy": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt\"",
-    "deploy-beta": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/beta.foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/beta.foxworld.ru/tmp && touch ~/domains/beta.foxworld.ru/tmp/restart.txt\""
+    "deploy-dev": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/dev.foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/dev.foxworld.ru/tmp && touch ~/domains/dev.foxworld.ru/tmp/restart.txt\""
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.0",
@@ -41,7 +41,7 @@
     "rehype-prism-plus": "^2.0.0",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.0",
-    "tailwind-merge": "^3.0.1",
+    "tailwind-merge": "^3.0.2",
     "tailwindcss": "^4.0.8",
     "tailwindcss-animate": "^1.0.7",
     "unist-util-visit": "^5.0.0",

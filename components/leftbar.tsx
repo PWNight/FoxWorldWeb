@@ -34,15 +34,16 @@ export function SheetLeftbar() {
       <SheetContent className="flex flex-col gap-4 px-0" side="left">
         <DialogTitle className="sr-only">Меню</DialogTitle>
         <SheetHeader>
-          <SheetClose className="px-5" asChild>
+          <SheetClose className="px-6" asChild>
             <Logo />
           </SheetClose>
         </SheetHeader>
         <ScrollArea className="flex flex-col gap-4">
           <div className="flex flex-col gap-2.5 mt-3 mx-2 px-5">
+            <h1 className='text-xl'>Навигация по сайту:</h1>
             <NavMenu isSheet />
           </div>
-          <div className="mx-2 px-5">
+          <div className="mx-2 px-5 mt-4">
             <WikiMenu isSheet />
           </div>
           <div className="flex gap-2.5 mt-3 mx-2 px-5">

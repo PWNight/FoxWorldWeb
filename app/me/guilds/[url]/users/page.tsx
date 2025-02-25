@@ -73,13 +73,13 @@ export default function MyGuildMembers(props: PageProps) {
     const handleUpdateUser = async (user: any, newPermission: number) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
+        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 "Authorization": `Bearer ${session_token}`,
             },
-            body: JSON.stringify({ user_id: user.uid, permission: newPermission }),
+            body: JSON.stringify({ permission: newPermission }),
         });
 
         if (!response.ok) {
@@ -106,13 +106,12 @@ export default function MyGuildMembers(props: PageProps) {
     const handleDeleteUser = async (user: any) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users`, {
+        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 "Authorization": `Bearer ${session_token}`,
-            },
-            body: JSON.stringify({ user_id: user.uid }),
+            }
         });
 
         if (!response.ok) {

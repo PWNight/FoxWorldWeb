@@ -6,7 +6,7 @@ import Anchor from "./anchor";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {Ban, CircleUser, Gavel, HandHeart, LogOut} from "lucide-react";
+import {Ban, CircleUser, Gavel, HandHeart, IdCard, LogOut} from "lucide-react";
 import {getSession} from "@/app/actions/getInfo";
 
 export function AccountButton() {
@@ -56,7 +56,7 @@ export function AccountButton() {
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
-                        <DropdownMenuItem className="text-xl" onClick={() => router.push('/me')}>
+                        <DropdownMenuItem className="text-xl">
                             <div className="flex items-center gap-5">
                                 <div className="w-14 h-14 flex items-center flex-col justify-center">
                                     <Image
@@ -91,6 +91,11 @@ export function AccountButton() {
                             <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
                                 <p className='flex flex-row gap-1'><CircleUser/>Личный кабинет</p>
                             </DropdownMenuItem>
+                            {['dev','staff'].includes(userData.group) && (
+                                <DropdownMenuItem onClick={() => router.push('/admin')} className="text-xl">
+                                    <p className='flex flex-row gap-1'><IdCard/>Кабинет разработчика</p>
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => logOut()} className="text-xl">
                                 <p className='flex flex-row gap-1'><LogOut/>Выйти</p>
                             </DropdownMenuItem>
