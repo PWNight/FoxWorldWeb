@@ -18,7 +18,6 @@ export default function AccessApplications() {
                 router.push('/login')
                 return
             }
-            console.log(user_r.data.profile)
             if ( user_r.data.profile.has_access ){
                 router.push('/me')
                 return
@@ -59,9 +58,8 @@ export default function AccessApplications() {
                     </div>
                     <div className="mb-5 select-none">
                         <label htmlFor="about" className="block mb-2 font-medium">Расскажите немного о вас</label>
-                        <input
+                        <textarea
                             id="about"
-                            type="text"
                             name="about"
                             placeholder={'Чем увлекаетесь, что умеете'}
                             className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
@@ -81,9 +79,8 @@ export default function AccessApplications() {
                     </div>
                     <div className="mb-5 select-none">
                         <label htmlFor="plans" className="block mb-2 font-medium">Чем планируете заняться на сервере?</label>
-                        <input
+                        <textarea
                             id="plans"
-                            type="text"
                             name="plans"
                             placeholder={'Вступлю в гильдию, стану президентом и т.п.'}
                             className="mb-1 bg-gray-50 border border-gray-300 rounded-lg focus:ring-orange-300 focus:border-orange-400 block w-full p-2.5 dark:bg-neutral-800 dark:border-gray-600 dark:placeholder-gray-400  dark:focus:ring-orange-300 dark:focus:border-orange-400"
