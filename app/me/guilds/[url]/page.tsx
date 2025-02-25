@@ -291,7 +291,7 @@ export default function MyGuild(props: PageProps) {
                             </div>
                             */}
                             <div className="mt-4 flex flex-col gap-2">
-                                <Link href={'/me/guilds/' + userGuild.url + '/users'} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
+                                <Link href={`/me/guilds/${userGuild.url}/users`} className={buttonVariants({ variant: "accent", className: "w-full" })}>Управление участниками</Link>
                                 <GuildDeleteDialog guildName={userGuild.url} onDelete={handleDelete} />
                             </div>
                         </div>

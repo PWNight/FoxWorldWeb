@@ -114,7 +114,7 @@ export default function Guilds() {
                                     </div>
                                 </div>
                                 <div className='flex sm:flex-row flex-col w-full gap-5 mt-4'>
-                                    <Link href={'/guilds/' + guild.url + '/application'}
+                                    <Link href={`/guilds/${guild.url}/application`}
                                           className={buttonVariants({
                                               variant: "accent",
                                               className: "px-4 py-2",
