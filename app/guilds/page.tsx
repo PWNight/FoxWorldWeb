@@ -33,6 +33,7 @@ export default function Guilds() {
                 setGuilds([])
             }
             setGuilds(json.data);
+            setPageLoaded(true)
         }
         getAll();
     }, []);
@@ -68,10 +69,10 @@ export default function Guilds() {
                             placeholder="Поиск"
                         />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
                         {filteredGuilds().map((guild: any) => (
                             <div key={guild.url} id={guild.url}
-                                 className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit w-full'>
+                                 className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-full'>
                                 <div className='flex flex-col gap-2 w-full'>
                                     <div className="flex flex-row gap-1 items-center">
                                         <Image
@@ -105,8 +106,8 @@ export default function Guilds() {
                                             <Image
                                                 src={guild.badge_url}
                                                 alt={`Эмблема ${guild.url}`}
-                                                height={200}
-                                                width={150}
+                                                height={150}
+                                                width={100}
                                                 quality={100}
                                                 className={'rounded-md overflow-hidden'}
                                             />
