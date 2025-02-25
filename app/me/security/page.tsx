@@ -7,6 +7,7 @@ import {Button} from "@/components/ui/button";
 import InDev from "@/components/indev";
 import {getSession} from "@/app/actions/getInfo";
 import MeSettingsSkelet from "@/components/skelets/settings_skelet";
+import ErrorMessage from "@/components/ui/notify-alert";
 
 export default function MeSecurity() {
     // Объявление хранилищ данных
@@ -20,6 +21,9 @@ export default function MeSecurity() {
     const [hasError, setHasError] = useState(false);
     const [usernameMessage, setUsernameMessage] = useState('')
     const [passwordMessage, setPasswordMessage] = useState('')
+
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
 
     const router = useRouter()
 
@@ -60,6 +64,8 @@ export default function MeSecurity() {
             setHasError(true)
             setUsernameMessage('Введите никнейм');
             updateInputClass(usernameInput, true);
+            setNotifyMessage(`Произошла ошибка при смене ника`)
+            setNotifyType('warning')
             setIsLoading(false);
             return
         }
@@ -67,6 +73,8 @@ export default function MeSecurity() {
             setHasError(true)
             setUsernameMessage('Длина никнейма должна быть не менее 4 символов');
             updateInputClass(usernameInput, true);
+            setNotifyMessage(`Произошла ошибка при смене ника`)
+            setNotifyType('warning')
             setIsLoading(false);
             return
         }
@@ -75,6 +83,8 @@ export default function MeSecurity() {
             setHasError(true)
             setUsernameMessage('Новый ник совпадает с текущим');
             updateInputClass(usernameInput, true);
+            setNotifyMessage(`Произошла ошибка при смене ника`)
+            setNotifyType('warning')
             setIsLoading(false);
             return
         }
@@ -107,8 +117,10 @@ export default function MeSecurity() {
         // Валидация пароля
         if ('' === password) {
             setHasError(true)
-            setPasswordMessage('Введите никнейм');
+            setPasswordMessage('Введите новый пароль');
             updateInputClass(passwordInput, true);
+            setNotifyMessage(`Произошла ошибка при смене пароля`)
+            setNotifyType('warning')
             setIsLoading(false);
             return
         }
@@ -116,6 +128,8 @@ export default function MeSecurity() {
             setHasError(true)
             setPasswordMessage('Длина пароля должна быть не менее 8 символов');
             updateInputClass(passwordInput, true);
+            setNotifyMessage(`Произошла ошибка при смене пароля`)
+            setNotifyType('warning')
             setIsLoading(false);
             return
         }
@@ -137,6 +151,10 @@ export default function MeSecurity() {
         setIsLoading(false);
     };
 
+    const handleClose = () => {
+        setNotifyMessage('')
+    }
+
     if (!pageLoaded){
         return (
             <MeSettingsSkelet/>
@@ -144,6 +162,7 @@ export default function MeSecurity() {
     }else {
         return (
             <div className="grid xl:grid-cols-[.7fr_1fr] lg:grid-cols-[1fr_1fr] gap-2">
+                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                 <div className="flex flex-col gap-2">
                     <div
                         className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">

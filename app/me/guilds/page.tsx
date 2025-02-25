@@ -5,12 +5,16 @@ import Image from "next/image";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import {SearchX} from "lucide-react";
-import GuildSkelet from "@/components/skelets/guild_skelet";
 import {getAllMyGuilds, getSession} from "@/app/actions/getInfo";
+import ErrorMessage from "@/components/ui/notify-alert";
+import GuildSkelet from "@/components/skelets/guild_skelet";
 
 export default function MeGuilds() {
     const [pageLoaded, setPageLoaded] = useState(false);
     const [userGuilds, setUserGuilds] = useState([])
+
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
 
     const router = useRouter()
 
@@ -21,9 +25,12 @@ export default function MeGuilds() {
                 return
             }
             getAllMyGuilds(r.data).then((r) => {
-                if ( r.success ) {
-                    setUserGuilds(r.data);
+                if ( !r.success ){
+                    setNotifyMessage(`Произошла ошибка при загрузке списка гильдий`)
+                    setNotifyType('error')
+                    return
                 }
+                setUserGuilds(r.data);
                 if ( r.data == null ) {
                     setUserGuilds([]);
                 }
@@ -32,10 +39,15 @@ export default function MeGuilds() {
         });
     },[router])
 
+    const handleClose = () => {
+        setNotifyMessage('')
+    }
+
     if (pageLoaded) {
         if (userGuilds.length != 0) {
             return (
                 <div className='grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-8 gap-4'>
+                    { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                     {userGuilds.map(function (guild:any) {
                         return (
                             <div key={guild.url} id={guild.url}
@@ -95,6 +107,7 @@ export default function MeGuilds() {
         }else{
             return (
                 <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
+                    { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                     <div className=''>
                         <SearchX className='h-20 w-20'/>
                         <h1 className='text-3xl'>Гильдии не найдены</h1>
@@ -111,7 +124,10 @@ export default function MeGuilds() {
         }
     }else{
         return (
-            <GuildSkelet/>
+            <>
+                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+                <GuildSkelet/>
+            </>
         )
     }
 }

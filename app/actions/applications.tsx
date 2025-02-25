@@ -1,4 +1,10 @@
-import {SignupFormSchema, FormState, GuildApplicationFormSchema, GuildApplicationFormState} from '@/lib/definitions'
+import {
+    SignupFormSchema,
+    FormState,
+    GuildApplicationFormSchema,
+    GuildApplicationFormState,
+    VerifyApplicationFormState, VerifyApplicationFormSchema
+} from '@/lib/definitions'
 import {redirect} from "next/navigation";
 import {getGuild, getSession} from "@/app/actions/getInfo";
 
@@ -102,4 +108,62 @@ export async function signup(state: FormState, formData: FormData) {
           message: 'Не удалось войти (err ' + result.status + ')',
         }
     }
+}
+
+export async function verify_application(state: VerifyApplicationFormState, formData: FormData) {
+    // Валидация полей авторизации
+    const validatedFields = VerifyApplicationFormSchema.safeParse({
+        nickname: formData.get('nickname'),
+        age: formData.get('age'),
+        about: formData.get('about'),
+        where_find: formData.get('where_find'),
+        plans: formData.get('plans'),
+    })
+
+    // Если найдена ошибка, возвращаем ответ с ошибкой
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        }
+    }
+
+    const {nickname, age, about, where_find, plans} = validatedFields.data
+    const user_response = await getSession()
+    if (!user_response.success) {
+        return {
+            message: 'Не удалось отправить заявку (err ' + 'auth' + ')',
+        }
+    }
+
+    const userData = user_response.data
+    if ( userData.profile.has_access ){
+        redirect('/me')
+    }
+
+    const session_token = user_response.data.token;
+    const response = await fetch(`/api/v1/users/applications`, {
+        method: "PUT",
+        headers: {
+            'Authorization': `Bearer ${session_token}`,
+        },
+        body: JSON.stringify({ nickname, age, about, where_find, plans }),
+    })
+
+    if ( !response.ok ){
+        const errorData = await response.json()
+        console.error(errorData)
+        return {
+            message: 'Не удалось отправить заявку (err ' + response.status + ')',
+        }
+    }
+
+    const json = await response.json()
+    if ( !json.success ){
+        console.error(json)
+        return {
+            message: 'Не удалось отправить заявку (err ' + response.status + ')',
+        }
+    }
+
+    redirect('/me/applications')
 }

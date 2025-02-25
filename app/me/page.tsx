@@ -6,12 +6,18 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {getSession, getStats} from "@/app/actions/getInfo";
 import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
+import ErrorMessage from "@/components/ui/notify-alert";
 
 export default function Me() {
-    const [pageLoaded, setPageLoaded] = useState(false);
-    const [statisticLoadError, setStatisticLoadError] = useState(false);
     const [userData, setUserData] = useState(Object)
     const [statsData, setStatsData] = useState(Object)
+
+    const [notifyMessage, setNotifyMessage] = useState('');
+    const [notifyType, setNotifyType] = useState('');
+
+    const [pageLoaded, setPageLoaded] = useState(false);
+    const [statisticLoadError, setStatisticLoadError] = useState(false);
+
     const router = useRouter()
     
     useEffect(()=>{
@@ -24,6 +30,8 @@ export default function Me() {
             getStats(r.data).then(r => {
                 if ( !r.success ) {
                     setStatisticLoadError(true);
+                    setNotifyMessage(`Произошла ошибка при загрузке игровой статистики`)
+                    setNotifyType('warning')
                 }else{
                     setStatsData(r.data)
                 }
@@ -32,6 +40,10 @@ export default function Me() {
         });
     },[router])
 
+    const handleClose = () => {
+        setNotifyMessage('')
+    }
+
     if (!pageLoaded) {
         return (
             <MeSkelet/>
@@ -39,6 +51,7 @@ export default function Me() {
     }else{
         return (
             <div className="grid lg:grid-cols-[.6fr_1fr] gap-2">
+                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                 <div className="flex flex-col gap-2 ">
                     <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
                         <div className="border-b">
