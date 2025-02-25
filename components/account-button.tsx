@@ -6,7 +6,7 @@ import Anchor from "./anchor";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {Ban, CircleUser, Gavel, HandHeart, LogOut} from "lucide-react";
+import {Ban, CircleUser, Gavel, HandHeart, IdCard, LogOut} from "lucide-react";
 import {getSession} from "@/app/actions/getInfo";
 
 export function AccountButton() {
@@ -91,6 +91,11 @@ export function AccountButton() {
                             <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
                                 <p className='flex flex-row gap-1'><CircleUser/>Личный кабинет</p>
                             </DropdownMenuItem>
+                            {['dev','staff'].includes(userData.group) && (
+                                <DropdownMenuItem onClick={() => router.push('/admin')} className="text-xl">
+                                    <p className='flex flex-row gap-1'><IdCard/>Кабинет разработчика</p>
+                                </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => logOut()} className="text-xl">
                                 <p className='flex flex-row gap-1'><LogOut/>Выйти</p>
                             </DropdownMenuItem>
