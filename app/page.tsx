@@ -13,10 +13,10 @@ export default function Home() {
       <Image
         src='/background.png'
         alt='background'
-        layout='fill'
-        objectFit='cover'
+        width='10000'
+        height='10000'
         quality={100}
-        className="brightness-40"
+        className="brightness-40 object-cover "
       />
       <div className="absolute flex flex-col sm:items-start items-center text-center sm:text-left justify-center gap-3"> {/* Текст выравнивается по левому краю */}
         <div className="flex text-4xl sm:text-6xl font-bold gap-2 sm:items-center sm:flex-row flex-col text-white">
