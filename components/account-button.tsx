@@ -46,7 +46,7 @@ export function AccountButton() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                             <Image
-                                src={"https://minotar.net/helm/" + userData.profile.nick + "/50.png"}
+                                src={`https://minotar.net/helm/${userData.profile.nick}/25.png`}
                                 alt={userData.profile.nick}
                                 width={50}
                                 height={50}
@@ -60,7 +60,7 @@ export function AccountButton() {
                             <div className="flex items-center gap-5">
                                 <div className="w-14 h-14 flex items-center flex-col justify-center">
                                     <Image
-                                        src={"https://minotar.net/helm/" + userData.profile.nick + "/50.png"}
+                                        src={`https://minotar.net/helm/${userData.profile.nick}/25.png`}
                                         alt={userData.profile.nick}
                                         width={50}
                                         height={50}

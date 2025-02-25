@@ -193,7 +193,7 @@ export default function MyGuildMembers(props: PageProps) {
                                     <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
-                                                src={"https://cravatar.eu/helmavatar/" + user.nickname + "/50.png"}
+                                                src={`https://minotar.net/helm/${user.nickname}/50.png`}
                                                 alt={user.nickname}
                                                 width={50}
                                                 height={50}
@@ -244,7 +244,7 @@ export default function MyGuildMembers(props: PageProps) {
                                     <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
-                                                src={"https://cravatar.eu/helmavatar/" + application.nick + "/50.png"}
+                                                src={`https://minotar.net/helm/${application.nick}/25.png`}
                                                 alt={application.nick}
                                                 width={50}
                                                 height={50}
