@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import Joi from "joi";
 
 export async function POST(request: NextRequest) {
-
     const data = await request.json();
     const uuid = data.uuid;
     const username = data.username;
@@ -16,12 +15,19 @@ export async function POST(request: NextRequest) {
 
     if (error) {
         return NextResponse.json({ success: false, message: "Отсутствуют некоторые параметры", error }, { status: 401 });
-    } else {
+    }
+
+    try {
         // Заносим UUID и Никнейм в сессию, остальную информация будет поступать из БД
         const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
-        const sessionToken = await encrypt({ data:{ uuid, username}, expiresAt });
+
+        const sessionToken = await encrypt({ data: { uuid, username}, expiresAt });
 
         await createSession(sessionToken, expiresAt)
         return NextResponse.json({ success: true }, { status: 200 });
+
+    }catch (error: any){
+        console.log(error)
+        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
     }
 }
