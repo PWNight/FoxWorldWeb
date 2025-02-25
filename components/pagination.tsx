@@ -22,7 +22,7 @@ export default function Pagination({ pathname }: { pathname: string }) {
               <ChevronLeftIcon className="w-[1rem] h-[1rem] mr-1" />
               Предыдущее
             </span>
-            <span className="mt-1 ml-1 break-words"> {/* Key change: break-words */}
+            <span className="mt-1 ml-1 w-full text-wrap"> {/* Key change: break-words */}
               {res.prev.title}
             </span>
           </Link>
@@ -38,11 +38,11 @@ export default function Pagination({ pathname }: { pathname: string }) {
             })}
             href={`/wiki${res.next.href}`}
           >
-            <span className="flex items-center text-muted-foreground text-xs break-words">
+            <span className="flex items-center text-muted-foreground text-xs">
               Следующее
               <ChevronRightIcon className="w-[1rem] h-[1rem] ml-1" />
             </span>
-            <span className="mt-1 mr-1">
+            <span className="mt-1 ml-1 w-full text-wrap text-end"> {/* Key change: break-words */}
               {res.next.title}
             </span>
           </Link>
