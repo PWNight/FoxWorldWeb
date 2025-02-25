@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import Joi from "joi";
 import {query} from "@/lib/mysql";
+import {rconQuery} from "@/lib/rcon";
 
 const applicationSchema = Joi.object({
     nickname: Joi.string().required(),
@@ -32,7 +33,6 @@ export async function GET(request: NextRequest) {
         if( !json.success ){
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
-
         if ( !['dev','staff'].includes(json.group) ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
-    const { application_id, status, nickname, reason } = data;
+    const { application_id, status, nickname } = data;
     if ( !application_id || !status || !nickname ) {
         return NextResponse.json({ success: false, message: 'Ошибка валидации' }, { status: 400 });
     }
@@ -86,6 +86,7 @@ export async function POST(request: NextRequest) {
 
         if ( status == 'Принята' ) {
             await query('UPDATE profiles SET has_access = 1 WHERE nick = ?', [nickname])
+            await rconQuery(`easywl add ${nickname}`)
         }
 
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
