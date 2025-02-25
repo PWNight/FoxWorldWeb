@@ -33,8 +33,9 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
 
-        const user = json.profile;
-        //TODO: Implement admin check
+        if ( !['dev','staff'].includes(json.group) ){
+            return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
+        }
 
         const verifyApplications : any = await query(`SELECT * FROM verify_applications WHERE status = 'Рассматривается'`)
         return NextResponse.json({ success: true, data: verifyApplications }, { status: 200 });
@@ -72,7 +73,9 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
         const user = json.profile;
-        //TODO: Implement admin check
+        if ( !['dev','staff'].includes(json.group) ){
+            return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
+        }
 
         const [verifyApplication] : any = await query('SELECT * FROM verify_applications WHERE id = ?',[application_id])
         if ( !verifyApplication ){
@@ -121,6 +124,9 @@ export async function PUT(request: NextRequest) {
         const json = await response.json()
         if( !json.success ){
             return NextResponse.json({ success: false, message: json.message }, { status: 401 });
+        }
+        if ( !['dev','staff'].includes(json.group) ){
+            return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
