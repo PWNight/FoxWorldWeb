@@ -4,7 +4,7 @@ import {NavAdmin} from "@/components/navbar_admin";
 import {getSession} from "@/app/actions/getInfo";
 import {useRouter} from "next/navigation";
 
-export default function MeLayout({ children }: PropsWithChildren) {
+export default function AdminMeLayout({ children }: PropsWithChildren) {
     const router = useRouter()
     const [pageLoaded, setPageLoaded] = useState(false);
 

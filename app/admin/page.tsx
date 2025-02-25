@@ -5,7 +5,7 @@ import {getSession} from "@/app/actions/getInfo";
 import MeSkelet from "@/components/skelets/me_skelet";
 import InDev from "@/components/indev";
 
-export default function Me() {
+export default function AdminMe() {
     const [userData, setUserData] = useState(Object)
 
     const [notifyMessage, setNotifyMessage] = useState('');

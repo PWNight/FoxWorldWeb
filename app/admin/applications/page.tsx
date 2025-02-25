@@ -5,8 +5,6 @@ import {getSession, getVerifyApplications} from "@/app/actions/getInfo";
 import {LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
-import Link from "next/link";
-import {buttonVariants} from "@/components/ui/button";
 
 export default function VerifyApplications() {
     const [userData, setUserData] = useState(Object)
