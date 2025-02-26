@@ -25,10 +25,10 @@ export function Footer() {
 
           <div className="flex flex-col md:flex-row md:items-center gap-4"> {/* Links and buttons group */}
             <div className="flex flex-wrap gap-2 justify-center md:justify-end"> {/* Wrap links on smaller screens */}
-              <Link href="/legal/contacts" className={buttonVariants({ variant: "link", size: "xs" })}>Контакты</Link>
-              <Link href="/legal/terms" className={buttonVariants({ variant: "link", size: "xs" })}>Условия пользования</Link>
-              <Link href="/legal/privacy" className={buttonVariants({ variant: "link", size: "xs" })}>Политика конфиденциальности</Link>
-              <Link href="/legal/refund" className={buttonVariants({ variant: "link", size: "xs" })}>Политика возврата средств</Link>
+                {/*<Link href="/legal/contacts" className={buttonVariants({variant: "link", size: "xs"})}>Контакты</Link>*/}
+              <Link href="/wiki/legal/terms" className={buttonVariants({ variant: "link", size: "xs" })}>Условия пользования</Link>
+              <Link href="/wiki/legal/privacy" className={buttonVariants({ variant: "link", size: "xs" })}>Политика конфиденциальности</Link>
+              <Link href="/wiki/legal/refund" className={buttonVariants({ variant: "link", size: "xs" })}>Политика возврата средств</Link>
             </div>
             <div className="flex gap-2 justify-center md:justify-end"> {/* Footer buttons */}
               <FooterButtons />

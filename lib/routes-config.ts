@@ -49,6 +49,16 @@ export const ROUTES: EachRoute[] = [
       { title: "Улучшенные крафты камнереза", href: "/mastercutter" },
     ],
   },
+  {
+    title: "Юр. документы",
+    href: "/legal",
+    noLink: true,
+    items: [
+      { title: "Условия использования", href: "/terms" },
+      { title: "Политика конфиденциальности", href: "/privacy" },
+      { title: "Политика возврата средств", href: "/refund" },
+    ],
+  },
 ];
 
 type Page = { title: string; href: string };
