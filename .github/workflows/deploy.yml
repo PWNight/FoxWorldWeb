@@ -10,39 +10,53 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Проверяем код из репозитория с субмодулями
+    # 1. Checkout repository with submodules
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        submodules: true # Добавляем поддержку субмодулей
+        submodules: true
 
-    # 2. Устанавливаем Node.js
+    # 2. Setup Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
 
-    # 3. Устанавливаем зависимости
+    # 3. Install dependencies
     - name: Install dependencies
       run: npm install
 
-    # 4. Собираем билд локально
+    # 4. Build Next.js app
     - name: Build Next.js app
       run: npm run build
 
-    # 5. Устанавливаем sshpass
+    # 5. Install sshpass
     - name: Install sshpass
       run: sudo apt-get update && sudo apt-get install -y sshpass
 
-    # 6. Деплоим на сервер с использованием sshpass
+    # 6. Verify .next folder exists
+    - name: Check build output
+      run: ls -la .next || echo ".next folder not found!"
+
+    # 7. Deploy to Jino via SSH with debugging
     - name: Deploy to Jino via SSH
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       run: |
-        # Копируем папку .next на сервер
-        sshpass -p "$SSH_PASSWORD" scp -r .next/* $SSH_USERNAME@$SSH_HOST:~/domains/foxworld.ru/.next
+        # Test SSH connection first
+        echo "Testing SSH connection..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
 
-        # Перезапускаем сервер
-        sshpass -p "$SSH_PASSWORD" ssh $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt"
+        # Ensure remote directory exists
+        echo "Creating remote directory if it doesn't exist..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/.next"
+
+        # Copy .next folder contents
+        echo "Copying .next folder to server..."
+        sshpass -p "$SSH_PASSWORD" scp -r -o StrictHostKeyChecking=no .next/* $SSH_USERNAME@$SSH_HOST:~/domains/foxworld.ru/.next || { echo "SCP failed"; exit 1; }
+
+        # Restart server
+        echo "Restarting server..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt"
