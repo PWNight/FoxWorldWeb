@@ -4,47 +4,63 @@ on:
   push:
     branches:
       - main
+  # Trigger on submodule updates
+  workflow_dispatch: # Optional: allows manual triggering
+  repository_dispatch: # Optional: for external triggers if needed
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+    # 1. Checkout repository with submodules and fetch updates
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        submodules: true
+        submodules: recursive # Fetch all submodules recursively
+        fetch-depth: 0 # Full history to detect submodule changes
 
+    # 2. Update submodules to latest commit
+    - name: Update submodules
+      run: git submodule update --remote --merge
+
+    # 3. Setup Node.js with caching
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'npm'
 
+    # 4. Cache Next.js build artifacts
     - name: Cache Next.js build
       uses: actions/cache@v3
       with:
         path: |
           ~/.npm
           .next/cache
-        key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json', '.gitmodules', '**/.git/HEAD') }}
         restore-keys: |
           ${{ runner.os }}-nextjs-
 
+    # 5. Install dependencies
     - name: Install dependencies
       run: npm ci
 
+    # 6. Build Next.js app
     - name: Build Next.js app
       run: npm run build
       env:
         NODE_OPTIONS: '--max-old-space-size=4096'
 
+    # 7. Install sshpass and rsync
     - name: Install sshpass and rsync
       run: sudo apt-get update && sudo apt-get install -y sshpass rsync
 
+    # 8. Verify .next folder exists
     - name: Check build output
       run: ls -la .next || echo ".next folder not found!"
 
+    # 9. Deploy to Jino via SSH
     - name: Deploy to Jino via SSH
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
@@ -57,15 +73,12 @@ jobs:
         echo "Creating remote directory if it doesn’t exist..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/.next"
 
-        # Compress .next folder
         echo "Compressing .next folder..."
         tar -czf next.tar.gz .next
 
-        # Upload compressed file
         echo "Uploading compressed .next folder..."
         sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no next.tar.gz $SSH_USERNAME@$SSH_HOST:~/domains/foxworld.ru/
 
-        # Decompress on server and clean up
         echo "Decompressing on server..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "tar -xzf ~/domains/foxworld.ru/next.tar.gz -C ~/domains/foxworld.ru/ && rm ~/domains/foxworld.ru/next.tar.gz"
 
