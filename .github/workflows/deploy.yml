@@ -1,0 +1,46 @@
+name: Deploy to Jino
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Проверяем код из репозитория
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 2. Устанавливаем Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20' # Укажи нужную версию Node.js
+
+    # 3. Устанавливаем зависимости
+    - name: Install dependencies
+      run: npm install
+
+    # 4. Собираем билд локально
+    - name: Build Next.js app
+      run: npm run build
+
+    # 5. Устанавливаем sshpass
+    - name: Install sshpass
+      run: sudo apt-get update && sudo apt-get install -y sshpass
+
+    # 6. Деплоим на сервер с использованием sshpass
+    - name: Deploy to Jino via SSH
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      run: |
+        # Копируем папку .next на сервер
+        sshpass -p "$SSH_PASSWORD" scp -r .next/* $SSH_USERNAME@$SSH_HOST:~/domains/foxworld.ru/.next
+
+        # Перезапускаем сервер
+        sshpass -p "$SSH_PASSWORD" ssh $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt"
