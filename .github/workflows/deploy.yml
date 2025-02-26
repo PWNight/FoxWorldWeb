@@ -16,47 +16,57 @@ jobs:
       with:
         submodules: true
 
-    # 2. Setup Node.js
+    # 2. Setup Node.js with caching
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: 'npm' # Cache npm dependencies to avoid full reinstalls
 
-    # 3. Install dependencies
+    # 3. Cache Next.js build artifacts
+    - name: Cache Next.js build
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+          .next/cache
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-nextjs-
+
+    # 4. Install dependencies (only if cache misses)
     - name: Install dependencies
-      run: npm install
+      run: npm ci # Faster than npm install, uses package-lock.json
 
-    # 4. Build Next.js app
+    # 5. Build Next.js app with optimization
     - name: Build Next.js app
       run: npm run build
+      env:
+        NODE_OPTIONS: '--max-old-space-size=4096' # Prevents memory issues during build
 
-    # 5. Install sshpass
+    # 6. Install sshpass (only if needed)
     - name: Install sshpass
       run: sudo apt-get update && sudo apt-get install -y sshpass
 
-    # 6. Verify .next folder exists
+    # 7. Verify .next folder exists
     - name: Check build output
       run: ls -la .next || echo ".next folder not found!"
 
-    # 7. Deploy to Jino via SSH with debugging
+    # 8. Deploy to Jino via SSH with debugging
     - name: Deploy to Jino via SSH
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       run: |
-        # Test SSH connection first
         echo "Testing SSH connection..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
 
-        # Ensure remote directory exists
-        echo "Creating remote directory if it doesn't exist..."
+        echo "Creating remote directory if it doesn’t exist..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/.next"
 
-        # Copy .next folder contents
         echo "Copying .next folder to server..."
         sshpass -p "$SSH_PASSWORD" scp -r -o StrictHostKeyChecking=no .next/* $SSH_USERNAME@$SSH_HOST:~/domains/foxworld.ru/.next || { echo "SCP failed"; exit 1; }
 
-        # Restart server
         echo "Restarting server..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt"
