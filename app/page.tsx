@@ -13,13 +13,12 @@ export default function Home() {
       <Image
         src='/background.png'
         alt='background'
-        width='10000'
-        height='10000'
+        layout='fill'
         quality={100}
         className="brightness-40 object-cover "
       />
-      <div className="absolute flex flex-col sm:items-start items-center text-center sm:text-left justify-center gap-3"> {/* Текст выравнивается по левому краю */}
-        <div className="flex text-4xl sm:text-6xl font-bold gap-2 sm:items-center sm:flex-row flex-col text-white">
+      <div className="absolute flex flex-col sm:items-start justify-center gap-3 px-3"> {/* Текст выравнивается по левому краю */}
+        <div className="flex text-4xl sm:text-5xl font-bold gap-2 sm:items-center sm:flex-row flex-col text-white">
           <h1 className="text-[#F38F54]">FoxWorld</h1>
           <h1 className="sm:flex hidden">:</h1>
           <h1>Новое начало</h1>
