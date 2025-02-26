@@ -10,15 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Проверяем код из репозитория
+    # 1. Проверяем код из репозитория с субмодулями
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        submodules: true # Добавляем поддержку субмодулей
 
     # 2. Устанавливаем Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20' # Укажи нужную версию Node.js
+        node-version: '20'
 
     # 3. Устанавливаем зависимости
     - name: Install dependencies
