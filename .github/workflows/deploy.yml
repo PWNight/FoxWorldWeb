@@ -32,7 +32,7 @@ jobs:
           git push
         fi
       env:
-        GITHUB_TOKEN: ${{ secrets.TOKEN }} # For pushing changes
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For pushing changes
 
     # 3. Setup Node.js with caching
     - name: Setup Node.js
