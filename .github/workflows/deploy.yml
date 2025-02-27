@@ -25,8 +25,8 @@ jobs:
         git submodule update --remote --merge
         # If triggered by dispatch, commit the updated submodule reference
         if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
+          git config user.name "PWNight"
+          git config user.email "rodionvarzymov@outlook.com"
           git add .
           git commit -m "Update submodule to latest commit [skip ci]" || echo "No changes to commit"
           git push
