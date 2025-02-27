@@ -66,11 +66,7 @@ jobs:
     - name: Install sshpass and rsync
       run: sudo apt-get update && sudo apt-get install -y sshpass rsync
 
-    # 8. Verify .next folder exists
-    - name: Check build output
-      run: ls -la .next  echo ".next folder not found!"
-
-    # 9. Deploy to Jino via SSH
+    # 8. Deploy to Jino via SSH
     - name: Deploy to Jino via SSH
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
