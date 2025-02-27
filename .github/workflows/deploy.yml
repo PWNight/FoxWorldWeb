@@ -4,25 +4,35 @@ on:
   push:
     branches:
       - main
-  # Trigger on submodule updates
-  workflow_dispatch: # Optional: allows manual triggering
-  repository_dispatch: # Optional: for external triggers if needed
+  repository_dispatch:
+    types: [submodule-updated] # Trigger on submodule update event
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Checkout repository with submodules and fetch updates
+    # 1. Checkout repository with full history
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
-        submodules: recursive # Fetch all submodules recursively
-        fetch-depth: 0 # Full history to detect submodule changes
+        submodules: recursive
+        fetch-depth: 0 # Full history for submodule updates
 
     # 2. Update submodules to latest commit
     - name: Update submodules
-      run: git submodule update --remote --merge
+      run: |
+        git submodule update --remote --merge
+        # If triggered by dispatch, commit the updated submodule reference
+        if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Update submodule to latest commit [skip ci]"  echo "No changes to commit"
+          git push
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # For pushing changes
 
     # 3. Setup Node.js with caching
     - name: Setup Node.js
@@ -58,7 +68,7 @@ jobs:
 
     # 8. Verify .next folder exists
     - name: Check build output
-      run: ls -la .next || echo ".next folder not found!"
+      run: ls -la .next  echo ".next folder not found!"
 
     # 9. Deploy to Jino via SSH
     - name: Deploy to Jino via SSH
