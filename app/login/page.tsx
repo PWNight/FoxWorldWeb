@@ -53,7 +53,7 @@ export default function Login() {
                         />
                         {state?.errors?.password && <p className="text-red-400 mt-1 mb-5">{state.errors.password}</p>}
                         <label><input id="show-password" type="checkbox" className="password-checkbox" onChange={()=>togglePasswordVisibility()}/> Показать пароль</label><br/>
-                        <Link href='https://t.me/rodiongoshev' className="text-orange-400 hover:text-orange-500">Забыли
+                        <Link href='https://t.me/pwnight' className="text-orange-400 hover:text-orange-500">Забыли
                             пароль?</Link>
                     </div>
                     <div>
