@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {getSession, getVerifyApplications} from "@/app/actions/getInfo";
-import {Crown, LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
+import {LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
 
