@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
-import {SearchX} from "lucide-react";
+import {Crown, SearchX} from "lucide-react";
 import {getAllMyGuilds, getSession} from "@/app/actions/getInfo";
 import ErrorMessage from "@/components/ui/notify-alert";
 import GuildSkelet from "@/components/skelets/guild_skelet";
@@ -55,14 +55,17 @@ export default function MeGuilds() {
                                 <div className='flex flex-col gap-2 w-full'>
                                     <div className="flex flex-row gap-1 items-center">
                                         <Image
-                                            src={`https://minotar.net/helm/${guild.owner_nickname}/25.png`}
+                                            src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
                                             alt={guild.owner_nickname}
                                             width={25}
                                             height={25}
                                             quality={100}
                                             className={'rounded-md overflow-hidden'}
                                         />
-                                        <h1>{guild.owner_nickname}</h1>
+                                        <div className={'flex gap-1 items-center'}>
+                                            {guild.have_fplus ? <Crown className={'text-orange-400'}/> : ''}
+                                            <h1>{guild.owner_nickname}</h1>
+                                        </div>
                                     </div>
                                     <div className="flex flex-row gap-1 justify-between">
                                         <div>

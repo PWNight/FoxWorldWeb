@@ -6,7 +6,7 @@ import Anchor from "./anchor";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import {Ban, CircleUser, Gavel, HandHeart, IdCard, LogOut} from "lucide-react";
+import {Ban, CircleUser, Crown, Gavel, HandHeart, IdCard, LogOut} from "lucide-react";
 import {getSession} from "@/app/actions/getInfo";
 
 export function AccountButton() {
@@ -60,7 +60,7 @@ export function AccountButton() {
                             <div className="flex items-center gap-5">
                                 <div className="w-14 h-14 flex items-center flex-col justify-center">
                                     <Image
-                                        src={`https://minotar.net/helm/${userData.profile.nick}/25.png`}
+                                        src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
                                         alt={userData.profile.nick}
                                         width={50}
                                         height={50}
@@ -69,7 +69,10 @@ export function AccountButton() {
                                     />
                                 </div>
                                 <div className="flex flex-col text-lg">
-                                    <h1 className="text-2xl">{userData.profile.nick}</h1>
+                                    <div className={'flex gap-1 items-center'}>
+                                        {userData.profile.have_fplus ? <Crown className={'text-orange-400'}/> : ''}
+                                        <h1 className="text-2xl">{userData.profile.nick}</h1>
+                                    </div>
                                     {userData.profile.have_fplus ?
                                         <p className='flex flex-row gap-1'><HandHeart/>Подписка активна</p>
                                         : null

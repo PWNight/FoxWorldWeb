@@ -4,7 +4,7 @@ import {useEffect, useState} from "react";
 import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import {checkGuildAccess, getGuildApplications, getGuildUsers, getSession} from "@/app/actions/getInfo";
-import {LucideLoader, Pencil, SearchX, Trash} from "lucide-react";
+import {Crown, LucideLoader, Pencil, SearchX, Trash} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 
 type PageProps = {
@@ -193,14 +193,17 @@ export default function MyGuildMembers(props: PageProps) {
                                     <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
-                                                src={`https://minotar.net/helm/${user.nickname}/50.png`}
+                                                src={`https://minotar.net/helm/${user.nickname}/100.png`}
                                                 alt={user.nickname}
                                                 width={50}
                                                 height={50}
                                                 quality={100}
                                                 className='rounded-lg'
                                             />
-                                            <h1 className='text-2xl'>{user.nickname}</h1>
+                                            <div className={'flex gap-2 items-center'}>
+                                                <Crown className={'text-orange-400'}/>
+                                                <h1 className='text-2xl'>{user.nickname}</h1>
+                                            </div>
                                         </div>
                                         <div>
                                             <p>Уровень доступа: {user.permission}</p>
@@ -244,14 +247,16 @@ export default function MyGuildMembers(props: PageProps) {
                                     <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
                                         <div className="flex items-center gap-2 w-fit ">
                                             <Image
-                                                src={`https://minotar.net/helm/${application.nick}/25.png`}
+                                                src={`https://minotar.net/helm/${application.nick}/100.png`}
                                                 alt={application.nick}
                                                 width={50}
                                                 height={50}
                                                 quality={100}
                                                 className='rounded-lg'
                                             />
-                                            <h1 className='text-2xl'>{application.nick}</h1>
+                                            <div className={'flex gap-1 items-center'}>
+                                                <h1 className='text-2xl'>{application.nick}</h1>
+                                            </div>
                                         </div>
                                         <div>
                                             <p>О игроке: {application.about_user}</p>

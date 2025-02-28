@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {getSession, getVerifyApplications} from "@/app/actions/getInfo";
-import {LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
+import {Crown, LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
 
@@ -97,14 +97,16 @@ export default function VerifyApplications() {
                             <div key={app.id} className="bg-white dark:bg-neutral-800 rounded-lg shadow p-4 w-fit">
                                 <div className="flex flex-row gap-1 items-center mb-2">
                                     <Image
-                                        src={`https://minotar.net/helm/${app.nickname}/25.png`}
+                                        src={`https://minotar.net/helm/${app.nickname}/100.png`}
                                         alt={app.nickname}
                                         width={25}
                                         height={25}
                                         quality={100}
                                         className={'rounded-md overflow-hidden'}
                                     />
-                                    <h1 className={'text-lg font-medium'}>{app.nickname}</h1>
+                                    <div className={'flex gap-1 items-center'}>
+                                        <h1 className={'text-lg font-medium'}>{app.nickname}</h1>
+                                    </div>
                                 </div>
                                 <div className="mb-2">
                                     <p className="text-gray-500 dark:text-gray-400">Возраст: {app.age}</p>
