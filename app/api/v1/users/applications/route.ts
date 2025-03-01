@@ -122,14 +122,6 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-        if ( !['dev','staff'].includes(json.group) ){
-            return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
-        }
-
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
         if ( verifyApplication ){
             return NextResponse.json({ success: false, message: "Нельзя создать новую заявку, пока старая не рассмотрена" }, { status: 400 });
