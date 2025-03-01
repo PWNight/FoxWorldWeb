@@ -51,6 +51,7 @@ export async function POST(request: NextRequest) {
         await query('UPDATE `profiles` SET nick = ? WHERE nick = ?', [new_username, user.nick]);
         return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
     }catch (error: any){
+        console.log(error)
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
 }
