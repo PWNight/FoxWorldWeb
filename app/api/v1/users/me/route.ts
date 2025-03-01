@@ -34,13 +34,17 @@ async function checkToken(token: any){
 
 export async function GET(request: NextRequest) {
     const authHeader = request.headers.get("authorization");
-    if (!authHeader) {
-        const session_token = request.cookies.get('s_token')
-        if( session_token === undefined ){
-            return NextResponse.json({ success: false, message: "Отсутсвует заголовок авторизации" }, { status: 401 })
-        }else{
-            return await checkToken(session_token?.value)
+    try {
+        if (!authHeader) {
+            const session_token = request.cookies.get('s_token')
+            if( session_token === undefined ){
+                return NextResponse.json({ success: false, message: "Отсутсвует заголовок авторизации" }, { status: 401 })
+            }else{
+                return await checkToken(session_token?.value)
+            }
         }
+        return await checkToken(authHeader.split(" ")[1])
+    }catch (error: any){
+        console.log(error)
     }
-    return await checkToken(authHeader.split(" ")[1])
 }
