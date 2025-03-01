@@ -33,8 +33,8 @@ async function checkToken(token: any){
 }
 
 export async function GET(request: NextRequest) {
-    const authHeader = request.headers.get("authorization");
     try {
+        const authHeader = request.headers.get("authorization");
         if (!authHeader) {
             const session_token = request.cookies.get('s_token')
             if( session_token === undefined ){
