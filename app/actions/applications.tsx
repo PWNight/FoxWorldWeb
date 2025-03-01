@@ -165,5 +165,5 @@ export async function verify_application(state: VerifyApplicationFormState, form
         }
     }
 
-    redirect('/me/applications')
+    redirect('/me')
 }
