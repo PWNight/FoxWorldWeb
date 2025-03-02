@@ -59,7 +59,7 @@ export default function Guilds() {
             )
         } else {
             return (
-                <div className="flex flex-col min-h-screen px-4 sm:w-[90%] w-full mx-auto container">
+                <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
                     { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                     <div className="flex mt-4 flex-col gap-4 select-none">
                         <h1 className="text-3xl font-bold">Гильдии</h1>
@@ -70,7 +70,7 @@ export default function Guilds() {
                             placeholder="Поиск"
                         />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 mb-4">
+                    <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-8 mb-4">
                         {filteredGuilds().map((guild: any) => (
                             <div key={guild.url} id={guild.url}
                                  className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-full'>
@@ -89,7 +89,7 @@ export default function Guilds() {
                                             <h1>{guild.owner_nickname}</h1>
                                         </div>
                                     </div>
-                                    <div className="flex gap-1 justify-between">
+                                    <div className="grid grid-cols-[1fr_.3fr]">
                                         <div>
                                             <h1 className='text-3xl'>{guild.name}</h1>
                                             <p>{guild.info}</p>
@@ -111,8 +111,9 @@ export default function Guilds() {
                                             <Image
                                                 src={guild.badge_url}
                                                 alt={`Эмблема ${guild.url}`}
-                                                height={150}
-                                                width={100}
+                                                width={200}
+                                                height={200}
+                                                objectFit={'cover'}
                                                 quality={100}
                                                 className={'rounded-md overflow-hidden'}
                                             />
