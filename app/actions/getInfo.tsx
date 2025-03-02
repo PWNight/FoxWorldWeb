@@ -5,11 +5,9 @@ export async function getSession() {
     if ( !response.ok ) {
         return { success: false}
     }
+
     const json = await response.json();
-    if ( !json.success ) {
-        return { success: false }
-    }
-    return {success: true, data: json}
+    return {success: true, data: json }
 }
 
 export async function getStats(data : any){
@@ -19,7 +17,9 @@ export async function getStats(data : any){
     if ( !response.ok ) {
         return { success: false }
     }
-    return { success: true, data: await response.json() };
+
+    const json = await response.json();
+    return { success: true, data: json };
 }
 
 export async function getAllMyGuilds(data:any){
@@ -34,10 +34,6 @@ export async function getAllMyGuilds(data:any){
     }
 
     const json = await response.json();
-    if ( !json.success ) {
-        return { success: false }
-    }
-
     return { success: true, data: json.data }
 }
 
@@ -55,10 +51,6 @@ export async function getMyGuildsApplications(data:any){
     }
 
     const json = await response.json();
-    if ( !json.success ) {
-        return { success: false }
-    }
-
     return { success: true, data: json.data }
 }
 
@@ -72,9 +64,6 @@ export async function getGuild(url: string){
     }
 
     const json = await response.json();
-    if ( !json.success ) {
-        return { success: false }
-    }
     return { success: true, data: json.data};
 }
 export async function getGuildUsers(url: string) {
@@ -86,9 +75,6 @@ export async function getGuildUsers(url: string) {
     }
 
     const json = await response.json()
-    if ( !json.success ) {
-        return { success: false }
-    }
     return { success: true, data: json.data }
 }
 
@@ -102,9 +88,6 @@ export async function checkGuildAccess(url: string, data : any) {
     }
 
     const json = await response.json();
-    if ( !json.success ) {
-        return { success: false }
-    }
     return { success: true, data: json.data }
 }
 
@@ -120,9 +103,6 @@ export async function getGuildApplications(url: string, token: string) {
     }
 
     const json = await response.json()
-    if ( !json.success ) {
-        return { success: false }
-    }
     return { success: true, data: json.data }
 }
 
@@ -138,8 +118,5 @@ export async function getVerifyApplications(token: string) {
     }
 
     const json = await response.json()
-    if ( !json.success ) {
-        return { success: false }
-    }
     return { success: true, data: json.data }
 }
