@@ -27,14 +27,14 @@ export async function guild_application(state: GuildApplicationFormState, formDa
     const user_response = await getSession()
     if (!user_response.success) {
         return {
-            message: 'Не удалось отправить заявку (err ' + 'auth' + ')',
+            message: 'Не удалось получить вашу сессию (err auth)',
         }
     }
 
     const guild_response = await getGuild(guildUrl)
     if (!guild_response.success) {
         return {
-            message: 'Не удалось отправить заявку (err ' + 'invalid guild' + ')',
+            message: 'Не удалось получить гильдию (err guild)',
         }
     }
 
@@ -49,15 +49,9 @@ export async function guild_application(state: GuildApplicationFormState, formDa
     if ( !response.ok ){
         const errorData = await response.json()
         console.error(errorData)
+
         return {
-            message: 'Не удалось отправить заявку (err ' + response.status + ')',
-        }
-    }
-    const json = await response.json()
-    if ( !json.success ){
-        console.error(json)
-        return {
-            message: 'Не удалось отправить заявку (err ' + response.status + ')',
+            message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
         }
     }
 
@@ -85,29 +79,31 @@ export async function signup(state: FormState, formData: FormData) {
         body: JSON.stringify({ username, password })
     })
 
-    if(result.ok){
-        const json : any = await result.json()
-        const uuid = json.data.uuid
-
-        const response = await fetch('/api/v1/auth/create-session',{
-            method: 'POST',
-            body: JSON.stringify({ uuid, username })
-        })
-        if (!response.ok){
-            const errorData = await response.json()
-            console.error(errorData)
-            return {
-              message: 'Не удалось войти (err ' + response.status + ')',
-            }
-        }
-        redirect("/me")
-    }else{
+    if ( !result.ok ){
         const errorData = await result.json()
         console.error(errorData)
+
         return {
-          message: 'Не удалось войти (err ' + result.status + ')',
+            message: errorData.message ? `${errorData.message} (err ${result.status})` : `Неизвестная ошибка (err ${result.status})`,
         }
     }
+
+    const json : any = await result.json()
+    const uuid = json.data.uuid
+
+    const response = await fetch('/api/v1/auth/create-session',{
+        method: 'POST',
+        body: JSON.stringify({ uuid, username })
+    })
+    if (!response.ok){
+        const errorData = await response.json()
+        console.error(errorData)
+
+        return {
+            message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
+        }
+    }
+    redirect("/me")
 }
 
 export async function verify_application(state: VerifyApplicationFormState, formData: FormData) {
@@ -131,7 +127,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
     const user_response = await getSession()
     if (!user_response.success) {
         return {
-            message: 'Не удалось отправить заявку (err ' + 'auth' + ')',
+            message: 'Не удалось получить вашу сессию (err auth)',
         }
     }
 
@@ -152,16 +148,9 @@ export async function verify_application(state: VerifyApplicationFormState, form
     if ( !response.ok ){
         const errorData = await response.json()
         console.error(errorData)
-        return {
-            message: 'Не удалось отправить заявку (err ' + response.status + ')',
-        }
-    }
 
-    const json = await response.json()
-    if ( !json.success ){
-        console.error(json)
         return {
-            message: 'Не удалось отправить заявку (err ' + response.status + ')',
+            message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
         }
     }
 
