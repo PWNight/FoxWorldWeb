@@ -27,7 +27,6 @@ async function checkToken(token: any){
         let [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
         return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, token }, {status:200})
     }catch (error: any){
-        console.log(error)
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
 }
@@ -45,6 +44,6 @@ export async function GET(request: NextRequest) {
         }
         return await checkToken(authHeader.split(" ")[1])
     }catch (error: any){
-        console.log(error)
+        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
 }

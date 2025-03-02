@@ -130,7 +130,6 @@ export async function PUT(request: NextRequest) {
         await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
     }catch (error: any){
-        console.log(error)
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
     }
 }
