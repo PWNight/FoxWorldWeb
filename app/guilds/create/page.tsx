@@ -100,7 +100,7 @@ export default function CreateGuild() {
                     />
                 </div>
                 <div className="mb-5 select-none">
-                    <label htmlFor="url" className="block mb-2 font-medium">Введите краткую ссылку на гильдию</label>
+                    <label htmlFor="url" className="block mb-2 font-medium">Придумайте ссылку для вашей гильдии (обычно это название гильдии маленькими буквами)</label>
                     <input
                         type="text"
                         id="url"
