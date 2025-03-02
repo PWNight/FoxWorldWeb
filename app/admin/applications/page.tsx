@@ -62,7 +62,8 @@ export default function VerifyApplications() {
         })
         if ( !response.ok ) {
             const errorData = await response.json()
-            console.log(errorData)
+            console.error(errorData)
+
             setNotifyMessage(`Произошла ошибка ${response.status} при обновлении заявки игрока`)
             setNotifyType('error')
             setUpdating(0);
