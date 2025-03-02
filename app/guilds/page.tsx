@@ -70,7 +70,7 @@ export default function Guilds() {
                             placeholder="Поиск"
                         />
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-8 mb-4">
                         {filteredGuilds().map((guild: any) => (
                             <div key={guild.url} id={guild.url}
                                  className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-full'>
