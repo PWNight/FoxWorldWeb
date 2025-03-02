@@ -18,8 +18,8 @@ export function Footer() {
               quality={100}
             />
             <div className="flex flex-col">
-              <p>FoxWorld © 2021 - 2025</p>
-              <p>v1.0.0-beta3 patch-1 (26.02.2025)</p>
+              <p>FoxWorld © 2025</p>
+              <p>v1.0.0-beta3</p>
             </div>
           </div>
 
