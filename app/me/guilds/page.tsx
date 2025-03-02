@@ -97,10 +97,14 @@ export default function MeGuilds() {
                                         )}
                                     </div>
                                 </div>
-                                <div className='flex sm:flex-row flex-col w-full gap-5'>
+                                <div className='flex flex-col w-fit gap-2'>
                                     {guild.permission == 2 && (
-                                        <Link href={'/me/guilds/'+ guild.url} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
+                                        <div className={'flex flex-row gap-2'}>
+                                            <Link href={`/me/guilds/${guild.url}`} className={buttonVariants({size: 'sm', variant: 'accent'})}>Редактировать гильдию</Link>
+                                            <Link href={`/me/guilds/${guild.url}/users`} className={buttonVariants({size: 'sm', variant: 'accent'})}>Управлять заявками</Link>
+                                        </div>
                                     )}
+                                    <Link href={guild.discord_code} className={buttonVariants({size: 'sm', variant: 'accent'})}>Перейти в Discord</Link>
                                 </div>
                             </div>
                         )
