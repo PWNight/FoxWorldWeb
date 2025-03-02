@@ -93,6 +93,7 @@ export default function Guilds() {
                                         <div>
                                             <h1 className='text-3xl'>{guild.name}</h1>
                                             <p>{guild.info}</p>
+                                            <p className={'mt-2'}>{guild.description}</p>
                                             <ul className="list-inside list-disc">
                                                 {guild.is_recruit ? (
                                                     <li>Принимает заявки</li>
