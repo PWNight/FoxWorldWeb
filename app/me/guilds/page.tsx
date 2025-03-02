@@ -104,7 +104,9 @@ export default function MeGuilds() {
                                             <Link href={`/me/guilds/${guild.url}/users`} className={buttonVariants({size: 'sm', variant: 'accent'})}>Управлять заявками</Link>
                                         </div>
                                     )}
-                                    <Link href={guild.discord_code} className={buttonVariants({size: 'sm', variant: 'accent'})}>Перейти в Discord</Link>
+                                    {guild.discord_code && (
+                                        <Link href={guild.discord_code} className={buttonVariants({size: 'sm', variant: 'accent'})}>Перейти в Discord</Link>
+                                    )}
                                 </div>
                             </div>
                         )
