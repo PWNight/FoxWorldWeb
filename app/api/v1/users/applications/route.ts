@@ -30,9 +30,7 @@ export async function GET(request: NextRequest) {
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
+
         if ( !['dev','staff'].includes(json.group) ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
@@ -69,10 +67,8 @@ export async function POST(request: NextRequest) {
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
         const user = json.profile;
+
         if ( !['dev','staff'].includes(json.group) ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }

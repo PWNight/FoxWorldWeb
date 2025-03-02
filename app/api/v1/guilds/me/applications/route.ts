@@ -20,10 +20,6 @@ export async function GET(request: NextRequest) {
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         const userGuildsApplications : any = await query(`SELECT * FROM guilds_applications JOIN profiles ON fk_profile = profiles.id WHERE fk_profile = ? AND status = 'Рассматривается'`, [user.id])

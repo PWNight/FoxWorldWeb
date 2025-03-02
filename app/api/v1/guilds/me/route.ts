@@ -20,10 +20,6 @@ export async function GET(request: NextRequest) {
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         // Получение пользователя из базы данных

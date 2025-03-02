@@ -46,10 +46,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         if(!user.in_guild){
@@ -108,10 +104,6 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])

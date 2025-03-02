@@ -28,10 +28,6 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`, [url])
@@ -74,11 +70,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         if ( !response.ok ){
             const errorData = await response.json()
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
-        }
-
-        const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
         }
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
@@ -138,10 +129,6 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])

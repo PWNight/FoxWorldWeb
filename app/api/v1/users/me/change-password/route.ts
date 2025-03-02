@@ -33,10 +33,6 @@ export async function POST(request: NextRequest) {
         }
 
         const json = await response.json()
-        if( !json.success ){
-            return NextResponse.json({ success: false, message: json.message }, { status: 401 });
-        }
-
         const user = json.profile;
 
         const result = await fetch('https://foxworld.ru/api/v1/auth/login',{
@@ -50,8 +46,8 @@ export async function POST(request: NextRequest) {
         response = await fetch("https://foxworld.ru/forbidden-passwords.txt",{
             method: "GET",
         })
-        let text = await response.text()
 
+        let text = await response.text()
         if ( text.indexOf(new_password) >= 0 ){
             return NextResponse.json({ success: false, message: "Пароль небезопасен, выберите другой" }, { status: 401 });
         }
