@@ -94,13 +94,18 @@ export default function MeSecurity() {
             headers: {"Authorization": `Bearer ${session_token}`},
             body: JSON.stringify({new_username: username})
         })
-        const json : any = await result.json()
-        if(result.ok){
-            setUsernameMessage(json.message)
-        }else{
+        if ( !result.ok){
+            const errorData = await result.json()
+            console.error(errorData)
+
             setHasError(true)
-            setUsernameMessage(json.message)
+            setPasswordMessage(errorData.message)
+            updateInputClass(usernameInput, hasError);
+            setIsLoading(false);
+            return
         }
+        const json : any = await result.json()
+        setPasswordMessage(json.message)
         updateInputClass(usernameInput, hasError);
         setIsLoading(false);
     };
@@ -140,13 +145,18 @@ export default function MeSecurity() {
             headers: {"Authorization": `Bearer ${session_token}`},
             body: JSON.stringify({new_password: password})
         })
-        const json : any = await result.json()
-        if(result.ok){
-            setPasswordMessage(json.message)
-        }else{
+        if ( !result.ok){
+            const errorData = await result.json()
+            console.error(errorData)
+
             setHasError(true)
-            setPasswordMessage(json.message)
+            setPasswordMessage(errorData.message)
+            updateInputClass(passwordInput, hasError);
+            setIsLoading(false);
+            return
         }
+        const json : any = await result.json()
+        setPasswordMessage(json.message)
         updateInputClass(passwordInput, hasError);
         setIsLoading(false);
     };

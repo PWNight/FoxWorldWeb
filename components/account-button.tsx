@@ -20,21 +20,28 @@ export function AccountButton() {
             const response = await fetch("/api/v1/auth/logout",{
                 method: "GET"
             })
-            if(response.ok){
-                setUserData({}); // Clear user data
-                router.push('/');
+            if ( !response.ok ){
+                const errorData = await response.json()
+                console.error(errorData);
+
+                setIsLoaded(true);
+                return
             }
+
+            setUserData({});
+            router.push('/');
             setIsLoaded(true);
         }
     }
 
     useEffect(() => {
         getSession().then(r =>{
-            if(r.success){
-                setUserData(r.data)
-            } else {
-                setUserData({}); // Important: Clear data if session check fails
+            if ( !r.success ){
+                setUserData({});
+                setIsLoaded(true);
+                return;
             }
+            setUserData(r.data)
             setIsLoaded(true);
         });
     }, [pathname, router]);

@@ -153,7 +153,6 @@ export default function MyGuild(props: PageProps) {
 
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
             setNotifyType('error')
-
             return
         }
 

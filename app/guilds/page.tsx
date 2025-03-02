@@ -21,18 +21,17 @@ export default function Guilds() {
                 method: "GET"
             });
             if (!response.ok) {
+                const errorData = await response.json();
+                console.error(errorData);
+
                 setNotifyMessage(`Произошла ошибка при загрузке гильдий`)
                 setNotifyType('error')
                 setGuilds([])
                 setPageLoaded(true)
+                return;
             }
 
             const json = await response.json();
-            if (!json.success) {
-                setNotifyMessage(`Произошла ошибка при загрузке гильдий`)
-                setNotifyType('error')
-                setGuilds([])
-            }
             setGuilds(json.data);
             setPageLoaded(true)
         }
