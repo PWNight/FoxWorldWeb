@@ -201,7 +201,6 @@ export default function MyGuildMembers(props: PageProps) {
                                                 className='rounded-lg'
                                             />
                                             <div className={'flex gap-2 items-center'}>
-                                                <Crown className={'text-orange-400'}/>
                                                 <h1 className='text-2xl'>{user.nickname}</h1>
                                             </div>
                                         </div>
