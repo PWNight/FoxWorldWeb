@@ -46,7 +46,7 @@ export function AccountButton() {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon">
                             <Image
-                                src={`https://minotar.net/helm/${userData.profile.nick}/25.png`}
+                                src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
                                 alt={userData.profile.nick}
                                 width={50}
                                 height={50}
