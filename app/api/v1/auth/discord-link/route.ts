@@ -52,10 +52,6 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const accessData = await getAccess.json();
     const getUser = await fetch(discord_user_url,{headers: { Authorization: `${accessData.token_type} ${accessData.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' }})
     const userData = await getUser.json()
-
-    const expiresAt = new Date(Date.now() + 7  *  24  *  60  *  60  *  1000); // 7 дней
-    const sessionToken = await encrypt({ userData, expiresAt });
-
-    await createSession(sessionToken,expiresAt)
+    console.log(userData)
     return NextResponse.redirect(meURL,302)
 }
