@@ -1,12 +1,10 @@
-import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
 const client_id = '921482377505673267'
 const client_secret = 'zqfzBi25FG7mCxqNjQsMU3z4WyJ0QLTP'
-const redirect_uri = 'https://foxworld.ru/api/v1/auth/discord-link'
+const redirect_uri = 'http://localhost:3000/api/v1/auth/discord-link'
 const grant_type = 'authorization_code'
-const scope = 'identify%20guilds';
-const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=921482377505673267&response_type=code&redirect_uri=https%3A%2F%2Fdev.foxworld.ru%2Fapi%2Fv1%2Fauth%2Fdiscord-link&scope=identify+guilds.join'
+const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=921482377505673267&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fapi%2Fv1%2Fauth%2Fdiscord-link&scope=identify+guilds.join'
 const discord_token_url = 'https://discord.com/api/oauth2/token'
 const discord_user_url = 'https://discord.com/api/users/@me'
 
@@ -29,8 +27,9 @@ export async function GET(request: NextRequest) {
     if (!code) {
       const authURL = new URL(discord_auth_url);
       // Здесь можно добавить дополнительные параметры для authURL если нужно
-      return NextResponse.redirect(authURL, { status: 302 });
+      return NextResponse.redirect(authURL);
     }
+
 
     // Формирование тела запроса для получения токена
     const body = new URLSearchParams({
@@ -39,21 +38,20 @@ export async function GET(request: NextRequest) {
       grant_type,
       redirect_uri,
       code,
-      scope,
     }).toString();
 
     // Получение токена доступа
     const tokenResponse = await fetch(discord_token_url, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
       body,
     });
 
     if (!tokenResponse.ok) {
       const errorData = await tokenResponse.json();
-      console.error('Token fetch error:', {
-        error: errorData.error,
-        error_description: errorData.error_description,
-      });
+      console.error('Token fetch error:', errorData);
       return NextResponse.redirect(mainURL, { status: 302 });
     }
 
@@ -63,6 +61,7 @@ export async function GET(request: NextRequest) {
     const userResponse = await fetch(discord_user_url, {
       headers: {
         Authorization: `${accessData.token_type} ${accessData.access_token}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
     });
 
@@ -74,6 +73,8 @@ export async function GET(request: NextRequest) {
 
     const userData = await userResponse.json();
     console.log('User data:', userData);
+
+    // TODO: Прописать логику для сохранения данных о игроке
 
     return NextResponse.redirect(meURL, { status: 302 });
   } catch (error) {
