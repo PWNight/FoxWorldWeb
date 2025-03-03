@@ -54,6 +54,5 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const userData = await getUser.json()
 
     console.log(userData)
-
     return NextResponse.redirect(meURL,302)
 }
