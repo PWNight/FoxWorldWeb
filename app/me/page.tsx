@@ -40,6 +40,10 @@ export default function Me() {
         });
     },[router])
 
+    const linkDiscord = () => {
+        router.push("/api/v1/auth/discord-link");
+    }
+
     const handleClose = () => {
         setNotifyMessage('')
     }
@@ -69,14 +73,14 @@ export default function Me() {
                     </div>
                     <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
                         <div className="border-b">
-                            <h1 className="text-2xl">Управление скином</h1>
-                            <p className="text-muted-foreground">Здесь вы можете изменить свой скин</p>
+                            <h1 className="text-2xl">Привязка Discord аккаунта</h1>
+                            <p className="text-muted-foreground">Здесь вы можете привязать свой Discord аккаунт,
+                            чтобы получать уведомления от сайта в ваш Discord</p>
                         </div>
                         <div className="flex flex-col gap-4 my-2">
-                            <Link href='/wiki/rules' className="text-orange-400 hover:text-orange-500 transition-all"><p className="text-muted-foreground">Устанавливаемый скин не должен нарушать</p>правила сервера</Link>
                             <div className="flex 2xl:flex-row flex-col gap-2">
-                                <Button variant='accent' className="flex gap-1"><CloudUpload/>Выбрать файл</Button>
-                                <Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>
+                                <Button onClick={linkDiscord} variant='accent' className="flex gap-1"><CloudUpload/>Привязать аккаунт</Button>
+                                {/*<Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>*/}
                             </div>
                         </div>
                     </div>
