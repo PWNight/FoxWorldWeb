@@ -154,5 +154,38 @@ export async function verify_application(state: VerifyApplicationFormState, form
         }
     }
 
+    const body = {
+      "content": "",
+      "tts": false,
+      "embeds": [
+        {
+          "id": 467674012,
+          "color": 15510603,
+          "fields": [],
+          "description": `## Заявка игрока ${nickname}\nВозраст: ${age}\nО игроке: ${about}\nОткуда узнал о проекте: ${where_find}\nПланы: ${plans}\n\n[Рассмотреть заявку](https://foxworld.ru/admin/applications)`
+        }
+      ],
+      "components": [],
+      "actions": {},
+      "username": "Заявки",
+      "avatar_url": "https://cdn.discordapp.com/avatars/948287446808932373/73fbe4737f059852f8ffc523d83927e0.png"
+    }
+
+    const res = await fetch("https://discord.com/api/webhooks/1346083291325009951/zWw4VjgNVMu7DTN7AYLUCXGe3tBKNYIVsFccPx8NgQDCyVrIQt486WgS_9CIQgVULBnJ",{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+    })
+
+    if ( !res.ok ){
+        const errorData = await res.json()
+        console.error(errorData)
+        return {
+            message: 'Не удалось отправить сообщение о вашей заявке (err ' + res.status + ')',
+        }
+    }
+
     redirect('/me')
 }
