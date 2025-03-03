@@ -1,4 +1,3 @@
-import { createSession, encrypt } from "@/lib/session";
 import { NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -11,48 +10,74 @@ const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=9214823
 const discord_token_url = 'https://discord.com/api/oauth2/token'
 const discord_user_url = 'https://discord.com/api/users/@me'
 
-export async function GET(request: NextRequest, response: NextApiResponse) {
-    const meURL = new URL("/me", request.url)
-    const mainURL = new URL("/", request.url)
-    const {searchParams} = new URL(request.url)
-    const code = searchParams.get('code')
-    const error = searchParams.get('error')
+export async function GET(request: NextRequest) {
+  try {
+    const meURL = new URL('/me', request.url);
+    const mainURL = new URL('/', request.url);
+    const { searchParams } = new URL(request.url);
+    const code = searchParams.get('code');
+    const error = searchParams.get('error');
 
-    if(code == null || code == ''){
-        const mainURL = new URL(discord_auth_url, request.url)
-        return NextResponse.redirect(mainURL)
-    }
-    if(error !== null || error !== ''){
-        const errorDescription = searchParams.get('error_description')
-        console.log({ error: error, errorDescription: errorDescription }, { status: 500 })
-        return NextResponse.redirect(mainURL,302)
+    // Проверка ошибки авторизации
+    if (error) {
+      const errorDescription = searchParams.get('error_description');
+      console.error('Auth error:', { error, errorDescription });
+      return NextResponse.redirect(mainURL, { status: 302 });
     }
 
+    // Проверка наличия кода
+    if (!code) {
+      const authURL = new URL(discord_auth_url);
+      // Здесь можно добавить дополнительные параметры для authURL если нужно
+      return NextResponse.redirect(authURL, { status: 302 });
+    }
+
+    // Формирование тела запроса для получения токена
     const body = new URLSearchParams({
-        client_id,
-        client_secret,
-        grant_type,
-        redirect_uri,
-        code,
-        scope,
-    }).toString()
+      client_id,
+      client_secret,
+      grant_type,
+      redirect_uri,
+      code,
+      scope,
+    }).toString();
 
-    const getAccess = await fetch(discord_token_url, {
-        headers:{"Content-Type": "application/x-www-form-urlencoded"},
-        method: "POST",
-        body: body
-    })
+    // Получение токена доступа
+    const tokenResponse = await fetch(discord_token_url, {
+      method: 'POST',
+      body,
+    });
 
-    if(!getAccess.ok){
-        const data = await getAccess.json();
-        console.log({ error: data.error, error_description: data.error_description }, { status: getAccess.status })
-        return NextResponse.redirect(mainURL,302)
+    if (!tokenResponse.ok) {
+      const errorData = await tokenResponse.json();
+      console.error('Token fetch error:', {
+        error: errorData.error,
+        error_description: errorData.error_description,
+      });
+      return NextResponse.redirect(mainURL, { status: 302 });
     }
 
-    const accessData = await getAccess.json();
-    const getUser = await fetch(discord_user_url,{headers: { Authorization: `${accessData.token_type} ${accessData.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' }})
-    const userData = await getUser.json()
+    const accessData = await tokenResponse.json();
 
-    console.log(userData)
-    return NextResponse.redirect(meURL,302)
+    // Получение данных пользователя
+    const userResponse = await fetch(discord_user_url, {
+      headers: {
+        Authorization: `${accessData.token_type} ${accessData.access_token}`,
+      },
+    });
+
+    if (!userResponse.ok) {
+      const errorData = await userResponse.json();
+      console.error('User fetch error:', errorData);
+      return NextResponse.redirect(mainURL, { status: 302 });
+    }
+
+    const userData = await userResponse.json();
+    console.log('User data:', userData);
+
+    return NextResponse.redirect(meURL, { status: 302 });
+  } catch (error) {
+    console.error('Unexpected error:', error);
+    return NextResponse.redirect(new URL('/', request.url), { status: 302 });
+  }
 }
