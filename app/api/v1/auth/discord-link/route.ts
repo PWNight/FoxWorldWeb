@@ -52,6 +52,8 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const accessData = await getAccess.json();
     const getUser = await fetch(discord_user_url,{headers: { Authorization: `${accessData.token_type} ${accessData.access_token}`, 'Content-Type': 'application/x-www-form-urlencoded' }})
     const userData = await getUser.json()
+
     console.log(userData)
+
     return NextResponse.redirect(meURL,302)
 }
