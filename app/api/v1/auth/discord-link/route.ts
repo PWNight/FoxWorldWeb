@@ -7,7 +7,7 @@ const client_secret = 'zqfzBi25FG7mCxqNjQsMU3z4WyJ0QLTP'
 const redirect_uri = 'https://foxworld.ru/api/v1/auth/discord-link'
 const grant_type = 'authorization_code'
 const scope = 'identify%20guilds';
-const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=921482377505673267&response_type=code&redirect_uri=https%3A%2F%2Ffoxworld.ru%2Fapi%2Fv1%2Fauth%2Fdiscord-link&scope=identify+guilds.join'
+const discord_auth_url = 'https://discord.com/oauth2/authorize?client_id=921482377505673267&response_type=code&redirect_uri=https%3A%2F%2Fdev.foxworld.ru%2Fapi%2Fv1%2Fauth%2Fdiscord-link&scope=identify+guilds.join'
 const discord_token_url = 'https://discord.com/api/oauth2/token'
 const discord_user_url = 'https://discord.com/api/users/@me'
 
@@ -18,7 +18,7 @@ export async function GET(request: NextRequest, response: NextApiResponse) {
     const code = searchParams.get('code')
     const error = searchParams.get('error')
 
-    if(code == null || code == '' || typeof code != 'string'){
+    if(code == null || code == ''){
         const mainURL = new URL(discord_auth_url, request.url)
         return NextResponse.redirect(mainURL)
     }
