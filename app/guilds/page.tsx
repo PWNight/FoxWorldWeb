@@ -22,7 +22,7 @@ export default function Guilds() {
             });
             if (!response.ok) {
                 const errorData = await response.json();
-                console.error(errorData);
+                console.log(errorData);
 
                 setNotifyMessage(`Произошла ошибка при загрузке гильдий`)
                 setNotifyType('error')

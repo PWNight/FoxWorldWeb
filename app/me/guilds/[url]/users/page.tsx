@@ -84,7 +84,7 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
+            console.log(errorData);
 
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при повышении пользователя');
@@ -117,7 +117,7 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
+            console.log(errorData);
 
             setNotifyType('error');
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
@@ -161,7 +161,7 @@ export default function MyGuildMembers(props: PageProps) {
         })
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
+            console.log(errorData);
 
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при работе с заявками')

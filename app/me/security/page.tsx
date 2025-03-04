@@ -96,7 +96,7 @@ export default function MeSecurity() {
         })
         if ( !result.ok){
             const errorData = await result.json()
-            console.error(errorData)
+            console.log(errorData)
 
             setHasError(true)
             setPasswordMessage(errorData.message)
@@ -147,7 +147,7 @@ export default function MeSecurity() {
         })
         if ( !result.ok){
             const errorData = await result.json()
-            console.error(errorData)
+            console.log(errorData)
 
             setHasError(true)
             setPasswordMessage(errorData.message)

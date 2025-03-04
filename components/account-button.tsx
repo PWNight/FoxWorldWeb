@@ -22,7 +22,7 @@ export function AccountButton() {
             })
             if ( !response.ok ){
                 const errorData = await response.json()
-                console.error(errorData);
+                console.log(errorData);
 
                 setIsLoaded(true);
                 return
