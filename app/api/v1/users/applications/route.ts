@@ -117,13 +117,40 @@ export async function PUT(request: NextRequest) {
             const errorData = await response.json()
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
-
+        const user = await response.json()
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
         if ( verifyApplication ){
             return NextResponse.json({ success: false, message: "Нельзя создать новую заявку, пока старая не рассмотрена" }, { status: 400 });
         }
+    const botToken = process.env.BOT_TOKEN;
 
-        await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
+    console.log(botToken)
+    const respo = await fetch(`https://discord.com/api/users/@me/channels`,{
+        headers: {
+            "Authorization": `Bot ${botToken}`,
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({"recipient_id": user.discord.user.id}),
+    })
+    const channels = await respo.json()
+    console.log(channels)
+
+    const resp = await fetch(`https://discord.com/api/channels/${channels.id}/messages`,{
+        headers: {
+            "Authorization": `Bot ${botToken}`,
+            "Content-Type": "application/json",
+        },
+        method: "POST",
+        body: JSON.stringify({"content": "Hello!"}),
+    })
+    if ( !resp.ok ){
+        const text = await resp.text()
+        console.log(text)
+        return
+    }
+
+        //await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
     }catch (error: any){
         return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})

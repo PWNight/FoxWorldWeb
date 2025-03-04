@@ -137,6 +137,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
     }
 
     const session_token = user_response.data.token;
+
     const response = await fetch(`/api/v1/users/applications`, {
         method: "PUT",
         headers: {
@@ -153,7 +154,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
             message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
         }
     }
-
+    /*
     const body = {
       "content": "",
       "tts": false,
@@ -186,6 +187,6 @@ export async function verify_application(state: VerifyApplicationFormState, form
             message: 'Не удалось отправить сообщение о вашей заявке (err ' + res.status + ')',
         }
     }
-
+    */
     redirect('/me')
 }
