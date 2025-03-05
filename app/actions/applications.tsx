@@ -48,7 +48,7 @@ export async function guild_application(state: GuildApplicationFormState, formDa
     })
     if ( !response.ok ){
         const errorData = await response.json()
-        console.error(errorData)
+        console.log(errorData)
 
         return {
             message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
@@ -81,7 +81,7 @@ export async function signup(state: FormState, formData: FormData) {
 
     if ( !result.ok ){
         const errorData = await result.json()
-        console.error(errorData)
+        console.log(errorData)
 
         return {
             message: errorData.message ? `${errorData.message} (err ${result.status})` : `Неизвестная ошибка (err ${result.status})`,
@@ -97,7 +97,7 @@ export async function signup(state: FormState, formData: FormData) {
     })
     if (!response.ok){
         const errorData = await response.json()
-        console.error(errorData)
+        console.log(errorData)
 
         return {
             message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
@@ -148,7 +148,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
 
     if ( !response.ok ){
         const errorData = await response.json()
-        console.error(errorData)
+        console.log(errorData)
 
         return {
             message: errorData.message ? `${errorData.message} (err ${response.status})` : `Неизвестная ошибка (err ${response.status})`,
@@ -182,7 +182,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
 
     if ( !res.ok ){
         const errorData = await res.json()
-        console.error(errorData)
+        console.log(errorData)
         return {
             message: 'Не удалось отправить сообщение о вашей заявке (err ' + res.status + ')',
         }
