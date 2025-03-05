@@ -92,6 +92,10 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
+    const host = request.headers.get('host');
+    const protocol = request.headers.get('x-forwarded-proto') || "http";
+    const baseURL = `${protocol}://${host}`;
+
     const data = await request.json();
 
     const { error } = applicationSchema.validate(data);
@@ -108,7 +112,7 @@ export async function PUT(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+        let response = await fetch(`${baseURL}/api/v1/users/me`,{
             method: "GET",
             headers: {"Authorization": `Bearer ${token}`}
         })
@@ -118,37 +122,40 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
         const user = await response.json()
+
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
         if ( verifyApplication ){
             return NextResponse.json({ success: false, message: "Нельзя создать новую заявку, пока старая не рассмотрена" }, { status: 400 });
         }
-    const botToken = process.env.BOT_TOKEN;
 
-    console.log(botToken)
-    const respo = await fetch(`https://discord.com/api/users/@me/channels`,{
-        headers: {
-            "Authorization": `Bot ${botToken}`,
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({"recipient_id": user.discord.user.id}),
-    })
-    const channels = await respo.json()
-    console.log(channels)
+        const botToken = process.env.BOT_TOKEN;
 
-    const resp = await fetch(`https://discord.com/api/channels/${channels.id}/messages`,{
-        headers: {
-            "Authorization": `Bot ${botToken}`,
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify({"content": "Hello!"}),
-    })
-    if ( !resp.ok ){
-        const text = await resp.text()
-        console.log(text)
-        return
-    }
+        const respo = await fetch(`https://discord.com/api/users/@me/channels`,{
+            headers: {
+                "Authorization": `Bot ${botToken}`,
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify({"recipient_id": user.discord.user.id}),
+        })
+        const channels = await respo.json()
+        if ( !respo.ok ){
+            return NextResponse.json({ success: false, data: channels }, { status: 500 });
+        }
+
+        const resp = await fetch(`https://discord.com/api/channels/${channels.id}/messages`,{
+            headers: {
+                "Authorization": `Bot ${botToken}`,
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify({"content": "Hello!"}),
+        })
+        const json = await resp.json()
+
+        if ( !resp.ok ){
+            return NextResponse.json({ success: false, data: json }, { status: 500 });
+        }
 
         //await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
