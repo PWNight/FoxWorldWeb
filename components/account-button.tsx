@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {Ban, CircleUser, Crown, Gavel, HandHeart, IdCard, LogOut} from "lucide-react";
 import {getSession} from "@/app/actions/getInfo";
+import Notifications from "@/components/notifications";
 
 export function AccountButton() {
     const [userData, setUserData] = useState(Object);
@@ -49,69 +50,72 @@ export function AccountButton() {
     if ( isLoaded ){
         if (Object.keys(userData).length != 0) {
             return (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                            <Image
-                                src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
-                                alt={userData.profile.nick}
-                                width={50}
-                                height={50}
-                                quality={100}
-                                className='rounded-lg'
-                            />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
-                        <DropdownMenuItem className="text-xl">
-                            <div className="flex items-center gap-5">
-                                <div className="w-14 h-14 flex items-center flex-col justify-center">
-                                    <Image
-                                        src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
-                                        alt={userData.profile.nick}
-                                        width={50}
-                                        height={50}
-                                        quality={100}
-                                        className='rounded-lg'
-                                    />
-                                </div>
-                                <div className="flex flex-col text-lg">
-                                    <div className={'flex gap-1 items-center'}>
-                                        {userData.profile.have_fplus ? <Crown className={'text-orange-400'}/> : ''}
-                                        <h1 className="text-2xl">{userData.profile.nick}</h1>
+                <div className='flex gap-2 items-center'>
+                    <Notifications userId={userData.profile.id} />
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <Image
+                                    src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
+                                    alt={userData.profile.nick}
+                                    width={50}
+                                    height={50}
+                                    quality={100}
+                                    className='rounded-lg'
+                                />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
+                            <DropdownMenuItem className="text-xl">
+                                <div className="flex items-center gap-5">
+                                    <div className="w-14 h-14 flex items-center flex-col justify-center">
+                                        <Image
+                                            src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
+                                            alt={userData.profile.nick}
+                                            width={50}
+                                            height={50}
+                                            quality={100}
+                                            className='rounded-lg'
+                                        />
                                     </div>
-                                    {userData.profile.have_fplus ?
-                                        <p className='flex flex-row gap-1'><HandHeart/>Подписка активна</p>
-                                        : null
-                                    }
-                                    {!userData.profile.has_access ?
-                                        <Link href='/access'
-                                              className = 'inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline'
-                                        ><Ban/>Заполните анкету</Link>
-                                        : null
-                                    }
-                                    {userData.profile.is_banned ?
-                                        <p className='flex flex-row gap-1'><Gavel/>Заблокирован</p>
-                                        : null
-                                    }
+                                    <div className="flex flex-col text-lg">
+                                        <div className={'flex gap-1 items-center'}>
+                                            {userData.profile.have_fplus ? <Crown className={'text-orange-400'}/> : ''}
+                                            <h1 className="text-2xl">{userData.profile.nick}</h1>
+                                        </div>
+                                        {userData.profile.have_fplus ?
+                                            <p className='flex flex-row gap-1'><HandHeart/>Подписка активна</p>
+                                            : null
+                                        }
+                                        {!userData.profile.has_access ?
+                                            <Link href='/access'
+                                                  className = 'inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline'
+                                            ><Ban/>Заполните анкету</Link>
+                                            : null
+                                        }
+                                        {userData.profile.is_banned ?
+                                            <p className='flex flex-row gap-1'><Gavel/>Заблокирован</p>
+                                            : null
+                                        }
+                                    </div>
                                 </div>
-                            </div>
-                        </DropdownMenuItem>
-                        <div>
-                            <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
-                                <p className='flex flex-row gap-1'><CircleUser/>Личный кабинет</p>
                             </DropdownMenuItem>
-                            {['dev','staff'].includes(userData.group) && (
-                                <DropdownMenuItem onClick={() => router.push('/admin')} className="text-xl">
-                                    <p className='flex flex-row gap-1'><IdCard/>Кабинет разработчика</p>
+                            <div>
+                                <DropdownMenuItem onClick={() => router.push('/me')} className="text-xl">
+                                    <p className='flex flex-row gap-1'><CircleUser/>Личный кабинет</p>
                                 </DropdownMenuItem>
-                            )}
-                            <DropdownMenuItem onClick={() => logOut()} className="text-xl">
-                                <p className='flex flex-row gap-1'><LogOut/>Выйти</p>
-                            </DropdownMenuItem>
-                        </div>
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                                {['dev','staff'].includes(userData.group) && (
+                                    <DropdownMenuItem onClick={() => router.push('/admin')} className="text-xl">
+                                        <p className='flex flex-row gap-1'><IdCard/>Кабинет разработчика</p>
+                                    </DropdownMenuItem>
+                                )}
+                                <DropdownMenuItem onClick={() => logOut()} className="text-xl">
+                                    <p className='flex flex-row gap-1'><LogOut/>Выйти</p>
+                                </DropdownMenuItem>
+                            </div>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
             );
         } else {
             return (
