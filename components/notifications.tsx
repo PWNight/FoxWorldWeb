@@ -97,7 +97,7 @@ export default function Notifications() {
         <Button variant="ghost" size="icon" className="relative">
           <Bell className="h-6 w-6" />
           {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
+            <span className="absolute -top-1 -right-1 bg-orange-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
               {unreadCount}
             </span>
           )}
@@ -120,7 +120,7 @@ export default function Notifications() {
           <DropdownMenuItem
             key={notification.id}
             className={`flex flex-col gap-2 py-3 ${
-              notification.is_read ? 'bg-gray-100' : 'bg-blue-50'
+              notification.is_read ? 'bg-gray-100' : 'bg-orange-50'
             }`}
           >
             <div className="flex flex-col w-full">
@@ -136,7 +136,7 @@ export default function Notifications() {
                       markAsRead(userData.token, notification.id);
                     }}
                     disabled={loadingStates[notification.id]}
-                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors text-blue-500 hover:text-blue-600 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors text-orange-400 hover:text-orange-500 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {loadingStates[notification.id] ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
