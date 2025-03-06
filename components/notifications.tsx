@@ -11,7 +11,7 @@ import { Bell } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getSession } from '@/app/actions/getInfo';
 
-export default function Notifications({ userId }: { userId: number }) {
+export default function Notifications() {
   const [userData, setUserData] = useState<any>(null); // Исправлен тип с Object на any
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);

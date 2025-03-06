@@ -51,7 +51,7 @@ export function AccountButton() {
         if (Object.keys(userData).length != 0) {
             return (
                 <div className='flex gap-2 items-center'>
-                    <Notifications userId={userData.profile.id} />
+                    <Notifications/>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
