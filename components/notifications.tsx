@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Bell, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { getSession } from '@/app/actions/getInfo';
+} from "@/components/ui/dropdown-menu";
+import { Bell, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getSession } from "@/app/actions/getInfo";
 
 export default function Notifications() {
   const [userData, setUserData] = useState<any>(null);
@@ -17,28 +17,25 @@ export default function Notifications() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({});
 
-  const fetchNotifications = useCallback(
-    async (token: string) => {
-      if (!token) return;
+  const fetchNotifications = useCallback(async (token: string) => {
+    if (!token) return;
 
-      const res = await fetch(`/api/v1/notifications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+    const res = await fetch(`/api/v1/notifications`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (!res.ok) {
-        console.log(data);
-        return;
-      }
+    if (!res.ok) {
+      console.log(data);
+      return;
+    }
 
-      setNotifications(data);
-      setUnreadCount(data.filter((n: any) => !n.is_read).length);
-    },
-    []
-  );
+    setNotifications(data);
+    setUnreadCount(data.filter((n: any) => !n.is_read).length);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -51,7 +48,7 @@ export default function Notifications() {
           await fetchNotifications(session.data.token);
         }
       } catch (error) {
-        console.error('Failed to initialize:', error);
+        console.error("Failed to initialize:", error);
       }
     };
 
@@ -73,21 +70,21 @@ export default function Notifications() {
   }, [userData?.token, fetchNotifications]);
 
   const markAsRead = async (token: string, id: number) => {
-    setLoadingStates((prev) => ({ ...prev, [id]: true })); // Устанавливаем loading для конкретного ID
+    setLoadingStates((prev) => ({ ...prev, [id]: true }));
     try {
-      await fetch('/api/v1/notifications', {
-        method: 'PATCH',
+      await fetch("/api/v1/notifications", {
+        method: "PATCH",
         body: JSON.stringify({ id }),
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       });
       await fetchNotifications(token);
     } catch (error) {
-      console.error('Failed to mark as read:', error);
+      console.error("Failed to mark as read:", error);
     } finally {
-      setLoadingStates((prev) => ({ ...prev, [id]: false })); // Сбрасываем loading
+      setLoadingStates((prev) => ({ ...prev, [id]: false }));
     }
   };
 
@@ -120,7 +117,7 @@ export default function Notifications() {
           <DropdownMenuItem
             key={notification.id}
             className={`flex flex-col gap-2 py-3 ${
-              notification.is_read ? 'bg-gray-100' : 'bg-orange-50'
+              !notification.is_read ? "bg-orange-50 dark:bg-orange-900/20" : "!dark:bg-neutral-50"
             }`}
           >
             <div className="flex flex-col w-full">
@@ -141,7 +138,7 @@ export default function Notifications() {
                     {loadingStates[notification.id] ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
-                      'Пометить как прочитанное'
+                      "Пометить как прочитанное"
                     )}
                   </button>
                 )}
