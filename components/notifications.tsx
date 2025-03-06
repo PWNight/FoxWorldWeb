@@ -7,14 +7,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Bell } from 'lucide-react';
+import { Bell, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getSession } from '@/app/actions/getInfo';
 
 export default function Notifications() {
-  const [userData, setUserData] = useState<any>(null); // Исправлен тип с Object на any
+  const [userData, setUserData] = useState<any>(null);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({});
 
   const fetchNotifications = useCallback(
     async (token: string) => {
@@ -36,7 +37,7 @@ export default function Notifications() {
       setNotifications(data);
       setUnreadCount(data.filter((n: any) => !n.is_read).length);
     },
-    [] 
+    []
   );
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export default function Notifications() {
         const session = await getSession();
         if (mounted) {
           setUserData(session.data);
-          await fetchNotifications(session.data.token); // Первый вызов с полученным токеном
+          await fetchNotifications(session.data.token);
         }
       } catch (error) {
         console.error('Failed to initialize:', error);
@@ -72,15 +73,22 @@ export default function Notifications() {
   }, [userData?.token, fetchNotifications]);
 
   const markAsRead = async (token: string, id: number) => {
-    await fetch('/api/v1/notifications', {
-      method: 'PATCH',
-      body: JSON.stringify({ id }),
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-      },
-    });
-    await fetchNotifications(token);
+    setLoadingStates((prev) => ({ ...prev, [id]: true })); // Устанавливаем loading для конкретного ID
+    try {
+      await fetch('/api/v1/notifications', {
+        method: 'PATCH',
+        body: JSON.stringify({ id }),
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      await fetchNotifications(token);
+    } catch (error) {
+      console.error('Failed to mark as read:', error);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [id]: false })); // Сбрасываем loading
+    }
   };
 
   return (
@@ -127,9 +135,14 @@ export default function Notifications() {
                       e.stopPropagation();
                       markAsRead(userData.token, notification.id);
                     }}
-                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors text-blue-500 hover:text-blue-600 text-xs"
+                    disabled={loadingStates[notification.id]}
+                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors text-blue-500 hover:text-blue-600 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Пометить как прочитанное
+                    {loadingStates[notification.id] ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      'Пометить как прочитанное'
+                    )}
                   </button>
                 )}
               </div>
