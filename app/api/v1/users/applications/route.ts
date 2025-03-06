@@ -142,35 +142,6 @@ export async function PUT(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Нельзя создать новую заявку, пока старая не рассмотрена" }, { status: 400 });
         }
 
-        const botToken = process.env.BOT_TOKEN;
-
-        const respo = await fetch(`https://discord.com/api/users/@me/channels`,{
-            headers: {
-                "Authorization": `Bot ${botToken}`,
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify({"recipient_id": user.discord.user.id}),
-        })
-        const channels = await respo.json()
-        if ( !respo.ok ){
-            return NextResponse.json({ success: false, data: channels }, { status: 500 });
-        }
-
-        const resp = await fetch(`https://discord.com/api/channels/${channels.id}/messages`,{
-            headers: {
-                "Authorization": `Bot ${botToken}`,
-                "Content-Type": "application/json",
-            },
-            method: "POST",
-            body: JSON.stringify({"content": "Hello!"}),
-        })
-        const json = await resp.json()
-
-        if ( !resp.ok ){
-            return NextResponse.json({ success: false, data: json }, { status: 500 });
-        }
-
         //await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
     } catch (error: any) {

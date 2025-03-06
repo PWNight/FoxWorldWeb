@@ -25,21 +25,9 @@ async function checkToken(token: any){
         const { premium_uuid, joined, last_seen } = user;
 
         const [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
-        const [discord] : any = await minecraftQuery("SELECT discord FROM ds_accounts WHERE uuid = ?", [profile.fk_uuid]);
+        const [result] : any = await minecraftQuery("SELECT discord FROM ds_accounts WHERE uuid = ?", [profile.fk_uuid]);
 
-
-        const res = await fetch(`https://discord.com/api/guilds/921483461016031263/members/${discord.discord}`, {
-            headers: {
-                "Authorization": `Bot ${botToken}`
-            }
-        })
-        const json = await res.json()
-
-        if (!res.ok) {
-            return NextResponse.json({ success: false, message: json.message }, {status:500})
-        }
-
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, discord: json, token }, {status:200})
+        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, discord_id: result.discord, token }, {status:200})
     } catch (error: any) {
         return NextResponse.json({
             success: false,
