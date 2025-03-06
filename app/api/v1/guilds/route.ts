@@ -6,8 +6,15 @@ export async function GET(request: NextRequest) {
     try{
         let guilds : any = await query("SELECT *, profiles.nick AS owner_nickname, (SELECT COUNT(*) FROM guilds_members WHERE fk_guild = guilds.id) AS member_count FROM guilds JOIN profiles ON guilds.owner_id = profiles.id");
         return NextResponse.json({ success: true, data: guilds }, {status:200})
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -73,7 +80,14 @@ export async function POST(request: NextRequest) {
         await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user.id])
 
         return NextResponse.json({success: true, message: 'Гильдия успешно создана'},{status:200})
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

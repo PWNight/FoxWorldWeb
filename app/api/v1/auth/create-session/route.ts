@@ -26,7 +26,14 @@ export async function POST(request: NextRequest) {
         await createSession(sessionToken, expiresAt)
         return NextResponse.json({ success: true }, { status: 200 });
 
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

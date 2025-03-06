@@ -14,8 +14,15 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
             return NextResponse.json({ success: false, message: "Пользователи гильдии не найдены" }, {status:404});
         }
         return NextResponse.json({ success: true, data: guildUsers }, {status:200})
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 export async function PUT(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
@@ -80,7 +87,14 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
         await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user_id])
 
         return NextResponse.json({ success: true, message: "Игрок успешно добавлен в гильдию" }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

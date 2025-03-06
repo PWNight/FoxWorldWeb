@@ -43,7 +43,14 @@ export async function POST(request: NextRequest) {
             await query('INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)', [last_nickname, uuid])
         }
         return NextResponse.json({ success: true, data: { uuid, last_nickname } }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

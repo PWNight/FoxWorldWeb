@@ -10,8 +10,15 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
             return NextResponse.json({ success: false, message: "Гильдия не найдена" }, {status:404});
         }
         return NextResponse.json({ success: true, data: guildData }, {status:200})
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
@@ -79,8 +86,15 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         values.push(url);
         await query(`UPDATE guilds SET ${updates.join(', ')} WHERE url = ?`, values)
         return NextResponse.json({ success: true, message: "Информация о гильдии успешно обновлена" }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 export async function DELETE(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
@@ -125,7 +139,14 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [user.id])
 
         return NextResponse.json({ success: true, message: 'Гильдия успешно удалена' },{status:200})
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
