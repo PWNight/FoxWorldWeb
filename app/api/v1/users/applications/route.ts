@@ -37,8 +37,15 @@ export async function GET(request: NextRequest) {
 
         const verifyApplications : any = await query(`SELECT * FROM verify_applications WHERE status = 'Рассматривается'`)
         return NextResponse.json({ success: true, data: verifyApplications }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status:500 })
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -86,8 +93,15 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -159,7 +173,14 @@ export async function PUT(request: NextRequest) {
 
         //await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
