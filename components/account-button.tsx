@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Anchor from "./anchor";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -31,7 +31,6 @@ export function AccountButton() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({});
-  const pathname = usePathname();
   const router = useRouter();
 
   const fetchNotifications = useCallback(async (token: string) => {
