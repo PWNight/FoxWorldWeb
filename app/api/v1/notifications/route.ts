@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendDiscordMessage } from '@/lib/discord';
-import {minecraftQuery, query} from "@/lib/mysql";
+import {query} from "@/lib/mysql";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
