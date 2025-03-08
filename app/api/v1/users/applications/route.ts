@@ -106,10 +106,6 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PUT(request: NextRequest) {
-    const host = request.headers.get('host');
-    const protocol = request.headers.get('x-forwarded-proto') || "http";
-    const baseURL = `${protocol}://${host}`;
-
     const data = await request.json();
 
     const { error } = applicationSchema.validate(data);
@@ -126,7 +122,7 @@ export async function PUT(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch(`${baseURL}/api/v1/users/me`,{
+        let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
             method: "GET",
             headers: {"Authorization": `Bearer ${token}`}
         })

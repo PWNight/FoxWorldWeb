@@ -9,11 +9,7 @@ export async function GET(request: Request) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const host = request.headers.get('host');
-    const protocol = request.headers.get('x-forwarded-proto') || "http";
-    const baseURL = `${protocol}://${host}`;
-
-    let response = await fetch(`${baseURL}/api/v1/users/me`,{
+    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
         method: "GET",
         headers: {"Authorization": `Bearer ${token}`}
     })
@@ -51,11 +47,7 @@ export async function POST(request: Request) {
   const token = authHeader.split(" ")[1];
 
   try {
-    const host = request.headers.get('host');
-    const protocol = request.headers.get('x-forwarded-proto') || "http";
-    const baseURL = `${protocol}://${host}`;
-
-    let response = await fetch(`${baseURL}/api/v1/users/me`,{
+    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
         method: "GET",
         headers: {"Authorization": `Bearer ${token}`}
     })
