@@ -60,18 +60,9 @@ export function AccountButton() {
     }
   }, []);
 
-  const fetchUserInfo = useCallback(async (token: string) => {
-    if (!token) {
-      console.warn("Токен отсутствует, информация о пользователе не загружается");
-      return null;
-    }
-
+  const fetchUserInfo = useCallback(async () => {
     try {
-      const res = await fetch(`/api/v1/users/me`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const res = await fetch(`/api/v1/users/me`, {});
 
       const data = await res.json();
 
@@ -122,7 +113,7 @@ export function AccountButton() {
         }
 
         // Получаем данные пользователя из /api/v1/users/me
-        const userInfo = await fetchUserInfo(session.data.token);
+        const userInfo = await fetchUserInfo();
         if (!userInfo) {
           setUserData({});
           setIsLoaded(true);
@@ -152,10 +143,11 @@ export function AccountButton() {
 
     const interval = setInterval(() => {
       fetchNotifications(userData.token);
+      fetchUserInfo();
     }, 15000);
 
     return () => clearInterval(interval);
-  }, [userData?.token, fetchNotifications]);
+  }, [userData.token, fetchNotifications, fetchUserInfo]);
 
   const markAsRead = async (token: string, id: number) => {
     if (!token) {
