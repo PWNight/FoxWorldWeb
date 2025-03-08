@@ -116,7 +116,7 @@ export function AccountButton() {
         method: "PATCH",
         body: JSON.stringify({ id }),
         headers: {
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
