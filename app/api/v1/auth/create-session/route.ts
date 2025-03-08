@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         const sessionToken = await encrypt({ data: { uuid, username}, expiresAt });
 
         await createSession(sessionToken, expiresAt)
-        return NextResponse.json({ success: true }, { status: 200 });
+        return NextResponse.json({ success: true, token: sessionToken }, { status: 200 });
 
     } catch (error: any) {
         return NextResponse.json({
