@@ -57,14 +57,26 @@ export async function guild_application(state: GuildApplicationFormState, formDa
         if (!guild_response.success) throw new Error('Не удалось получить гильдию (err guild)');
 
         // Отправка заявки
-        const response = await makeAuthorizedRequest(
+        let response = await makeAuthorizedRequest(
             `/api/v1/guilds/${guildUrl}/applications`,
             user_response.data.token,
             { about_user, why_this_guild },
             "PUT"
         );
-
         await handleApiResponse(response);
+
+        // Отправка уведомления
+        response = await makeAuthorizedRequest(
+            `/api/v1/notifications`,
+            user_response.data.token,
+            {
+                userId: user_response.data.profile.id,
+                message: "Ваша заявка в гильдию получена! Мы уведомим вас, как только она будет рассмотрена главой гильдии."
+            },
+            "POST"
+        );
+        await handleApiResponse(response);
+
         redirect('/me/guilds');
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
