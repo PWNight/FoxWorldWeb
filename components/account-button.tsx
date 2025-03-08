@@ -26,7 +26,7 @@ import {
 import { getSession } from "@/app/actions/getInfo";
 
 export function AccountButton() {
-  const [userData, setUserData] = useState<any>(Object);
+  const [userData, setUserData] = useState<any>({});
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -35,38 +35,48 @@ export function AccountButton() {
   const router = useRouter();
 
   const fetchNotifications = useCallback(async (token: string) => {
-    if (!token) return;
-
-    const res = await fetch(`/api/v1/notifications`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      console.log(data);
+    if (!token) {
+      console.warn("Токен отсутствует, уведомления не загружаются");
       return;
     }
 
-    setNotifications(data);
-    setUnreadCount(data.filter((n: any) => !n.is_read).length);
+    try {
+      const res = await fetch(`/api/v1/notifications`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Ошибка загрузки уведомлений:", data);
+        return;
+      }
+
+      setNotifications(data);
+      setUnreadCount(data.filter((n: any) => !n.is_read).length);
+    } catch (error) {
+      console.error("Не удалось загрузить уведомления:", error);
+    }
   }, []);
 
   async function logOut() {
-    if (Object.keys(userData).length !== 0) {
+    if (Object.keys(userData).length === 0) return;
+
+    try {
       const response = await fetch("/api/v1/auth/logout", {
         method: "GET",
       });
       if (!response.ok) {
         const errorData = await response.json();
-        console.log(errorData);
-        setIsLoaded(true);
-        return;
+        console.error("Ошибка при выходе:", errorData);
       }
       setUserData({});
-      router.push('/');
+      router.push("/");
+    } catch (error) {
+      console.error("Ошибка при выходе:", error);
+    } finally {
       setIsLoaded(true);
     }
   }
@@ -77,18 +87,20 @@ export function AccountButton() {
     const initialize = async () => {
       try {
         const session = await getSession();
-        if (mounted) {
-          if (!session.success) {
-            setUserData({});
-            setIsLoaded(true);
-            return;
-          }
-          setUserData(session.data);
-          await fetchNotifications(session.data.token);
+        if (!mounted) return;
+
+        if (!session.success) {
+          setUserData({});
           setIsLoaded(true);
+          return;
         }
+
+        setUserData(session.data);
+        await fetchNotifications(session.data.token); // Вызов с токеном после установки userData
+        setIsLoaded(true);
       } catch (error) {
-        console.error("Failed to initialize:", error);
+        console.error("Ошибка инициализации:", error);
+        setIsLoaded(true);
       }
     };
 
@@ -97,7 +109,7 @@ export function AccountButton() {
     return () => {
       mounted = false;
     };
-  }, [fetchNotifications, pathname, router]);
+  }, [fetchNotifications]);
 
   useEffect(() => {
     if (!userData?.token) return;
@@ -110,19 +122,30 @@ export function AccountButton() {
   }, [userData?.token, fetchNotifications]);
 
   const markAsRead = async (token: string, id: number) => {
+    if (!token) {
+      console.warn("Токен отсутствует, невозможно пометить как прочитанное");
+      return;
+    }
+
     setLoadingStates((prev) => ({ ...prev, [id]: true }));
     try {
-      await fetch("/api/v1/notifications", {
+      const res = await fetch("/api/v1/notifications", {
         method: "PATCH",
         body: JSON.stringify({ id }),
         headers: {
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
       });
+
+      if (!res.ok) {
+        console.error("Ошибка при обновлении уведомления:", await res.json());
+        return;
+      }
+
       await fetchNotifications(token);
     } catch (error) {
-      console.error("Failed to mark as read:", error);
+      console.error("Ошибка при пометке как прочитанное:", error);
     } finally {
       setLoadingStates((prev) => ({ ...prev, [id]: false }));
     }
@@ -133,7 +156,7 @@ export function AccountButton() {
   if (Object.keys(userData).length === 0) {
     return (
       <Anchor
-        href={'/login'}
+        href="/login"
         className={buttonVariants({ variant: "accent", className: "px-6", size: "lg" })}
       >
         Войти
