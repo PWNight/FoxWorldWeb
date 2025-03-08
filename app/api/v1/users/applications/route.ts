@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import Joi from "joi";
-import {query} from "@/lib/mysql";
+import {minecraftQuery, query} from "@/lib/mysql";
 import {rconQuery} from "@/lib/rcon";
 
 const applicationSchema = Joi.object({
@@ -29,9 +29,10 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const json = await response.json()
+        const user = await response.json()
 
-        if ( !['dev','staff'].includes(json.group) ){
+        const [userPermission]:any = await minecraftQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
+        if ( !userPermission ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
@@ -73,19 +74,19 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const json = await response.json()
-        const user = json.profile;
+        const user = await response.json()
 
-        if ( !['dev','staff'].includes(json.group) ){
+        const [userPermission]:any = await minecraftQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
+        if ( !userPermission ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
-        const [verifyApplication] : any = await query('SELECT * FROM verify_applications WHERE id = ?',[application_id])
+        const [verifyApplication] : any = await query('SELECT * FROM verify_applications WHERE id = ?', [application_id])
         if ( !verifyApplication ){
-            return NextResponse.json({ success: false, message: 'Заявка не найдена' },{status: 400})
+            return NextResponse.json({ success: false, message: 'Заявка не найдена' }, {status: 400})
         }
 
-        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.id, application_id])
+        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.profile.id, application_id])
 
         if ( status == 'Принята' ) {
             await query('UPDATE profiles SET has_access = 1 WHERE nick = ?', [nickname])
