@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import {query} from "@/lib/mysql";
+import {minecraftQuery, query} from "@/lib/mysql";
+import {sendDiscordMessage} from "@/lib/discord";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -65,22 +66,24 @@ export async function POST(request: Request) {
         const [profile] : any = await query("SELECT * FROM profiles WHERE nick = ?", [nickname]);
         userId = profile.id;
     }
+    const [profile] : any = await query("SELECT * FROM profiles WHERE id = ?", [userId]);
 
     await query(
       'INSERT INTO notifications (fk_profile, message) VALUES (?, ?)',
       [userId, message]
     );
 
-    // TODO: Implement notify in Discord
-    /*const [discordUser] : any = await minecraftQuery(
+    const [discordUser] : any = await minecraftQuery(
       'SELECT discord FROM ds_accounts WHERE uuid = ?',
-      [user.profile.fk_uuid]
+      [profile.fk_uuid]
     );
 
     if (discordUser) {
-      await sendDiscordMessage(discordUser, message);
+      const discord_result = await sendDiscordMessage(discordUser.discord, message);
+      if ( !discord_result.success ){
+          return NextResponse.json({ success: false, error: discord_result.data })
+      }
     }
-     */
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

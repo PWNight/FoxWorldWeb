@@ -1,5 +1,3 @@
-import {NextResponse} from "next/server";
-
 export async function sendDiscordMessage(discordId: string, message: string) {
   const botToken = process.env.BOT_TOKEN;
 
@@ -23,12 +21,12 @@ export async function sendDiscordMessage(discordId: string, message: string) {
       "Content-Type": "application/json",
     },
     method: "POST",
-    body: JSON.stringify({"content": "Hello!"}),
+    body: JSON.stringify({"content": message}),
   })
   const json = await response.json()
 
   if ( !response.ok ){
-    return { success: false, data: channels }
+    return { success: false, data: json }
   }
   return { success: true }
 }
