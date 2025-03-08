@@ -22,7 +22,7 @@ export default function AdminMe() {
                 return
             }
 
-            if ( !['dev','staff'].includes(r.data.group) ){
+            if ( !r.data.hasAdmin ){
                 router.push("/")
                 return
             }

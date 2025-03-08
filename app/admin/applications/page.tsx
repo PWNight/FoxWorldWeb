@@ -25,7 +25,7 @@ export default function VerifyApplications() {
                 return
             }
 
-            if ( !['dev','staff'].includes(r.data.group) ){
+            if ( !r.data.hasAdmin ){
                 router.push("/")
                 return
             }
