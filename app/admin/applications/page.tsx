@@ -49,7 +49,7 @@ export default function VerifyApplications() {
     const handleUpdate = async(status: string, nickname: string, appId: number) => {
         setUpdating(appId)
 
-        const response = await fetch("/api/v1/users/applications", {
+        let response = await fetch("/api/v1/users/applications", {
             headers: {
                 "Authorization": `Bearer ${userData.token}`
             },
@@ -65,6 +65,25 @@ export default function VerifyApplications() {
             console.log(errorData)
 
             setNotifyMessage(`Произошла ошибка ${response.status} при обновлении заявки игрока`)
+            setNotifyType('error')
+            setUpdating(0);
+            return;
+        }
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${userData.token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                nickname,
+                message: status == 'Принята' ? 'Ваша заявка была одобрена! Теперь вы можете начать играть на нашем сервере' : 'Ваша заявка была отклонена. Причину отказа можно узнать в службе поддержки.'
+            })
+        })
+        if ( !response.ok ) {
+            const errorData = await response.json()
+            console.log(errorData)
+
+            setNotifyMessage(`Произошла ошибка ${response.status} при отправке уведомления игроку`)
             setNotifyType('error')
             setUpdating(0);
             return;
