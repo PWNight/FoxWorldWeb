@@ -135,7 +135,6 @@ export async function PUT(request: NextRequest) {
             const errorData = await response.json()
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
-        const user = await response.json()
 
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
         if ( verifyApplication ){
