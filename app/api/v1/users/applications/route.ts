@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from "next/server";
 import Joi from "joi";
-import {minecraftQuery, query} from "@/lib/mysql";
+import {query} from "@/lib/mysql";
 import {rconQuery} from "@/lib/rcon";
 
 const applicationSchema = Joi.object({
@@ -30,9 +30,7 @@ export async function GET(request: NextRequest) {
         }
 
         const user = await response.json()
-
-        const [userPermission]:any = await minecraftQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
-        if ( !userPermission ){
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
@@ -76,8 +74,7 @@ export async function POST(request: NextRequest) {
 
         const user = await response.json()
 
-        const [userPermission]:any = await minecraftQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
-        if ( !userPermission ){
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 

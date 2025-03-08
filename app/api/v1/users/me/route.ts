@@ -1,7 +1,6 @@
 import {minecraftQuery, permsQuery, query} from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
-const botToken = process.env.BOT_TOKEN
 
 async function checkToken(token: any){
     const data : any = await decrypt(token)
@@ -24,10 +23,15 @@ async function checkToken(token: any){
         }
         const { premium_uuid, joined, last_seen } = user;
 
-        const [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
+        let hasAdmin = false;
+        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
+        if ( adminPermission ){
+            hasAdmin = true;
+        }
+
         const [result] : any = await minecraftQuery("SELECT discord FROM ds_accounts WHERE uuid = ?", [profile.fk_uuid]);
 
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, discord_id: result.discord, token }, {status:200})
+        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, hasAdmin, discord_id: result.discord, token }, {status:200})
     } catch (error: any) {
         return NextResponse.json({
             success: false,
