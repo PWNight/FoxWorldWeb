@@ -73,7 +73,7 @@ export default function MyGuildMembers(props: PageProps) {
     const handleUpdateUser = async (user: any, newPermission: number) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,6 +88,24 @@ export default function MyGuildMembers(props: PageProps) {
 
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при повышении пользователя');
+            return
+        }
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${userData.token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: user.uid,
+                message: `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`,
+            })
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
             return
         }
         getGuildUsers(guildUrl).then((r)=>{
@@ -107,7 +125,7 @@ export default function MyGuildMembers(props: PageProps) {
     const handleDeleteUser = async (user: any) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -123,6 +141,26 @@ export default function MyGuildMembers(props: PageProps) {
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
             return;
         }
+
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${userData.token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: user.uid,
+                message: `Вы были исключены из гильдии /${guildUrl}`,
+            })
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
+            return
+        }
+
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
                 setGuildUsers([]);
@@ -152,7 +190,7 @@ export default function MyGuildMembers(props: PageProps) {
             status = 'Отклонена'
         }
 
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${userData.token}`,
@@ -168,6 +206,26 @@ export default function MyGuildMembers(props: PageProps) {
             setIsLoading(false);
             return;
         }
+
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${userData.token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: application.fk_profile,
+                message: `Ваша заявка в гильдию /${guildUrl} была ${is_accepted ? 'принята' : 'отклонена'}.`,
+            })
+        })
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
+            return
+        }
+
         getGuildUsers(guildUrl).then((r)=>{
             if (!r.success) {
                 setGuildUsers([]);
