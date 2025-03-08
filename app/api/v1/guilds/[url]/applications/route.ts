@@ -98,9 +98,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
 
         if ( status == 'Принята' ) {
             await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData.id, user_id, 0])
-            await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user_id])
         }
-
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({

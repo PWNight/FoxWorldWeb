@@ -83,7 +83,6 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         }
 
         await query("UPDATE guilds_members SET permission = ? WHERE uid = ?", [permission, id])
-        await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [id])
 
         return NextResponse.json({ success: true, message: "Уровень доступа игрока обновлён" }, { status: 200 });
     } catch (error: any) {
@@ -136,8 +135,6 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         }
 
         await query("DELETE FROM guilds_members WHERE fk_guild = ? AND uid = ?", [guildData.id, id])
-        await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [id])
-
         return NextResponse.json({success: true, message: 'Участник исключён из гильдии'},{status:200})
     } catch (error: any) {
         return NextResponse.json({
