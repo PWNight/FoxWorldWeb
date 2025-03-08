@@ -1,4 +1,4 @@
-import {minecraftQuery, permsQuery, query} from "@/lib/mysql";
+import {permsQuery, query} from "@/lib/mysql";
 import { decrypt } from "@/lib/session";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -24,14 +24,37 @@ async function checkToken(token: any){
         const { premium_uuid, joined, last_seen } = user;
 
         let hasAdmin = false;
-        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [user.profile.fk_uuid])
+        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
         if ( adminPermission ){
             hasAdmin = true;
         }
 
-        const [result] : any = await minecraftQuery("SELECT discord FROM ds_accounts WHERE uuid = ?", [profile.fk_uuid]);
+        let hasFoxPlus = false;
+        const [fplusPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND permission = 'group.foxplus';", [profile.fk_uuid])
+        if ( fplusPermission ){
+            hasFoxPlus = true;
+        }
 
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, hasAdmin, discord_id: result.discord, token }, {status:200})
+        let inGuild = false;
+        const [userGuilds] : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
+        if ( userGuilds ){
+            inGuild = true;
+        }
+
+        return NextResponse.json({
+            success: true,
+            user: {premium_uuid, joined, last_seen},
+            profile: {
+                id: profile.id,
+                nick: profile.nick,
+                fk_uuid: profile.fk_uuid,
+                hasAccess: profile.has_access,
+                hasAdmin,
+                hasFoxPlus,
+                inGuild
+            },
+            token
+        }, {status:200})
     } catch (error: any) {
         return NextResponse.json({
             success: false,
