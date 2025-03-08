@@ -44,7 +44,7 @@ export async function GET(request: Request) {
 }
 
 export async function POST(request: Request) {
-  const { message } = await request.json();
+  let { userId, nickname, message } = await request.json();
   const authHeader = request.headers.get("authorization");
   if (!authHeader) {
       return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
@@ -61,19 +61,27 @@ export async function POST(request: Request) {
         headers: {"Authorization": `Bearer ${token}`}
     })
 
-    if ( !response.ok ){
+    if ( !response.ok ) {
         const errorData = await response.json()
-        return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        return NextResponse.json({
+            success: false,
+            message: 'Не удалось получить данные о пользователе',
+            error: errorData || response.statusText
+        }, {status: response.status})
     }
 
-    const user = await response.json()
+    if (nickname){
+        const [profile] : any = await query("SELECT * FROM profiles WHERE nick = ?", [nickname]);
+        userId = profile.id;
+    }
 
     await query(
       'INSERT INTO notifications (fk_profile, message) VALUES (?, ?)',
-      [user.profile.id, message]
+      [userId, message]
     );
 
-    const [discordUser] : any = await minecraftQuery(
+    // TODO: Implement notify in Discord
+    /*const [discordUser] : any = await minecraftQuery(
       'SELECT discord FROM ds_accounts WHERE uuid = ?',
       [user.profile.fk_uuid]
     );
@@ -81,6 +89,7 @@ export async function POST(request: Request) {
     if (discordUser) {
       await sendDiscordMessage(discordUser, message);
     }
+     */
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
