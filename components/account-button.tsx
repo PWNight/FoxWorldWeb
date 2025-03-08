@@ -284,10 +284,10 @@ export function AccountButton() {
               </div>
               <div className="flex flex-col text-lg">
                 <div className="flex gap-1 items-center">
-                  {userData.profile.haveFPlus ? <Crown className="text-orange-400" /> : ""}
+                  {userData.profile.hasFoxPlus ? <Crown className="text-orange-400" /> : ""}
                   <h1 className="text-2xl">{userData.profile.nick}</h1>
                 </div>
-                {userData.profile.haveFPlus ? (
+                {userData.profile.hasFoxPlus ? (
                   <p className="flex flex-row gap-1">
                     <HandHeart />
                     Подписка активна
