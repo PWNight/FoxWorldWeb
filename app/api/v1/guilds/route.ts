@@ -57,7 +57,7 @@ export async function POST(request: NextRequest) {
         const json = await response.json()
         const user = json.profile;
 
-        if(user.in_guild){
+        if(user.inGuild){
             const userGuilds : any = await query('SELECT permission FROM guilds_members WHERE uid = ?', [user.id])
             if ( userGuilds.length > 0 ){
                 userGuilds.map((guild: any) => {

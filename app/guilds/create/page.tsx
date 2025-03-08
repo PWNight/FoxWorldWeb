@@ -24,7 +24,7 @@ export default function CreateGuild() {
                 return
             }
 
-            if ( r.data.profile.in_guild ) {
+            if ( r.data.profile.inGuild ) {
                 router.push("/me/guilds")
                 return
             }

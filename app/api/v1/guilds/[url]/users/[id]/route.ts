@@ -61,7 +61,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         const json = await response.json()
         const user = json.profile;
 
-        if( !user.in_guild ){
+        if( !user.inGuild ){
             return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
         }
 
@@ -126,7 +126,7 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
             return NextResponse.json({success: false, message: 'Гильдия не найдена'},{status:404})
         }
 
-        if( !user.in_guild ){
+        if( !user.inGuild ){
             return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
         }
 
