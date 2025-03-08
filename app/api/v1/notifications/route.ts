@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       [userId, message]
     );
 
-    const [discordUser] : any = await minecraftQuery(
+    /*const [discordUser] : any = await minecraftQuery(
       'SELECT discord FROM ds_accounts WHERE uuid = ?',
       [profile.fk_uuid]
     );
@@ -84,6 +84,7 @@ export async function POST(request: Request) {
           return NextResponse.json({ success: false, error: discord_result.data })
       }
     }
+    */
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
