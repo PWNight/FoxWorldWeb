@@ -60,6 +60,33 @@ export function AccountButton() {
     }
   }, []);
 
+  const fetchUserInfo = useCallback(async (token: string) => {
+    if (!token) {
+      console.warn("Токен отсутствует, информация о пользователе не загружается");
+      return null;
+    }
+
+    try {
+      const res = await fetch(`/api/v1/users/me`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error("Ошибка загрузки данных пользователя:", data);
+        return null;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Не удалось загрузить данные пользователя:", error);
+      return null;
+    }
+  }, []);
+
   async function logOut() {
     if (Object.keys(userData).length === 0) return;
 
@@ -88,17 +115,27 @@ export function AccountButton() {
         const session = await getSession();
         if (!mounted) return;
 
-        if (!session.success) {
+        if (!session.success || !session.data?.token) {
           setUserData({});
           setIsLoaded(true);
           return;
         }
 
-        setUserData(session.data);
-        await fetchNotifications(session.data.token); // Вызов с токеном после установки userData
+        // Получаем данные пользователя из /api/v1/users/me
+        const userInfo = await fetchUserInfo(session.data.token);
+        if (!userInfo) {
+          setUserData({});
+          setIsLoaded(true);
+          return;
+        }
+
+        // Устанавливаем данные пользователя и токен
+        setUserData({ ...userInfo, token: session.data.token });
+        await fetchNotifications(session.data.token);
         setIsLoaded(true);
       } catch (error) {
         console.error("Ошибка инициализации:", error);
+        setUserData({});
         setIsLoaded(true);
       }
     };
@@ -108,7 +145,7 @@ export function AccountButton() {
     return () => {
       mounted = false;
     };
-  }, [fetchNotifications]);
+  }, [fetchNotifications, fetchUserInfo]);
 
   useEffect(() => {
     if (!userData?.token) return;
@@ -152,7 +189,7 @@ export function AccountButton() {
 
   if (!isLoaded) return null;
 
-  if (Object.keys(userData).length === 0) {
+  if (Object.keys(userData).length === 0 || !userData.token) {
     return (
       <Anchor
         href="/login"
