@@ -76,10 +76,9 @@ export async function guild_application(state: GuildApplicationFormState, formDa
             "POST"
         );
         await handleApiResponse(response);
-
-        redirect('/me/guilds');
     } catch (error) {
-        return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
+        return { message: error instanceof Error ? error.message : 'Произошла ошибка' };    } finally {
+        redirect("/me/guilds");
     }
 }
 
@@ -100,7 +99,7 @@ export async function signup(state: FormState, formData: FormData) {
             headers: { 'Content-Type': 'application/json' }
         });
 
-        const { data: { uuid } } = await handleApiResponse(loginResponse);
+        const { data: { uuid, ip } } = await handleApiResponse(loginResponse);
 
         // Создание сессии
         const sessionResponse = await fetch('/api/v1/auth/create-session', {
@@ -109,10 +108,22 @@ export async function signup(state: FormState, formData: FormData) {
             headers: { 'Content-Type': 'application/json' }
         });
 
-        await handleApiResponse(sessionResponse);
-        redirect("/me");
+        const { token } = await handleApiResponse(sessionResponse);
+
+        // Отправка уведомления
+        const response = await makeAuthorizedRequest(
+            `/api/v1/notifications`,
+            token,
+            {   nickname: username,
+                message: `Вы авторизовались под IP ${ip}`
+            },
+            "POST"
+        );
+        await handleApiResponse(response);
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
+    } finally {
+        redirect("/me");
     }
 }
 
