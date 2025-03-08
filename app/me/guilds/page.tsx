@@ -63,7 +63,7 @@ export default function MeGuilds() {
                                             className={'rounded-md overflow-hidden'}
                                         />
                                         <div className={'flex gap-1 items-center'}>
-                                            {guild.have_fplus ? <Crown className={'text-orange-400'}/> : ''}
+                                            {guild.haveFPlus ? <Crown className={'text-orange-400'}/> : ''}
                                             <h1>{guild.owner_nickname}</h1>
                                         </div>
                                     </div>
