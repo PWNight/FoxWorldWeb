@@ -7,8 +7,8 @@ import { LifeBuoy } from "lucide-react";
 export function Footer() {
   return (
     <footer className="w-full border-t bg-opacity-5 text-muted-foreground text-sm">
-      <div className="px-4 py-6 lg:px-14">
-        <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+      <div className="px-4 py-2 lg:px-14">
+        <div className="flex flex-col gap-6 md:flex-row items-center md:items-start md:justify-between">
           {/* Logo and copyright */}
           <div className="flex items-center justify-center md:justify-start gap-3">
             <Image
@@ -26,7 +26,7 @@ export function Footer() {
           </div>
 
           {/* Links and buttons */}
-          <div className="flex flex-col items-center md:items-end gap-4">
+          <div className="flex flex-col items-center md:items-end">
             <div className="flex flex-wrap justify-center">
               <Link
                 href="/wiki/legal/terms"
