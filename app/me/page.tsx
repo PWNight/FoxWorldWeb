@@ -1,9 +1,6 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CloudUpload, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {getSession, getStats} from "@/app/actions/getInfo";
 import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
 import ErrorMessage from "@/components/ui/notify-alert";
@@ -40,10 +37,6 @@ export default function Me() {
         });
     },[router])
 
-    const linkDiscord = () => {
-        router.push("/api/v1/auth/discord-link");
-    }
-
     const handleClose = () => {
         setNotifyMessage('')
     }
@@ -68,19 +61,6 @@ export default function Me() {
                                 <div className="xl:flex gap-2"><p className="text-muted-foreground">Ваш индекс активности</p>{statisticLoadError ? <div className='animate-pulse w-15 h-5 bg-neutral-200 dark:bg-neutral-700'/> : <p>{statsData.info.activity_index}</p>}</div>
                                 <div className="xl:flex gap-2"><p className="text-muted-foreground">Вы создали аккаунт</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
                                 <div className="xl:flex gap-2"><p className="text-muted-foreground">Последний раз входили</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="bg-neutral-100 rounded-sm p-4 max-h-fit flex justify-center flex-col dark:bg-neutral-800">
-                        <div className="border-b">
-                            <h1 className="text-2xl">Привязка Discord аккаунта</h1>
-                            <p className="text-muted-foreground">Здесь вы можете привязать свой Discord аккаунт,
-                            чтобы получать уведомления от сайта в ваш Discord</p>
-                        </div>
-                        <div className="flex flex-col gap-4 my-2">
-                            <div className="flex 2xl:flex-row flex-col gap-2">
-                                <Button onClick={linkDiscord} variant='accent' className="flex gap-1"><CloudUpload/>Привязать аккаунт</Button>
-                                {/*<Button variant='destructive' className="flex gap-1"><Trash2/>Сбросить скин</Button>*/}
                             </div>
                         </div>
                     </div>
