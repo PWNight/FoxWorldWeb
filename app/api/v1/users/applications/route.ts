@@ -86,7 +86,6 @@ export async function POST(request: NextRequest) {
         await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.profile.id, application_id])
 
         if ( status == 'Принята' ) {
-            await query('UPDATE profiles SET has_access = 1 WHERE nick = ?', [nickname])
             await rconQuery(`easywl add ${nickname}`)
         }
 
