@@ -42,8 +42,15 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
 
         const guildApplications : any = await query(`SELECT * FROM guilds_applications JOIN profiles ON fk_profile = profiles.id WHERE fk_guild = ? AND status = 'Рассматривается'`, [guildData.id])
         return NextResponse.json({ success: true, data: guildApplications }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status:500 })
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -91,12 +98,17 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
 
         if ( status == 'Принята' ) {
             await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData.id, user_id, 0])
-            await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [user_id])
         }
-
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -143,7 +155,14 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
 
         await query('INSERT INTO guilds_applications (fk_guild, fk_profile, about_user, why_this_guild) VALUES (?, ?, ?, ?)', [guildData.id, user.id, about_user, why_this_guild])
         return NextResponse.json({ success: true, message: 'Заявка в гильдию отправлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

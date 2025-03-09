@@ -14,8 +14,15 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
             return NextResponse.json({success: false, message: "Пользователь или гильдия не найдены"}, {status:404});
         }
         return NextResponse.json({success: true, data: guildUsers}, {status:200})
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -54,7 +61,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         const json = await response.json()
         const user = json.profile;
 
-        if( !user.in_guild ){
+        if( !user.inGuild ){
             return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
         }
 
@@ -76,11 +83,17 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         }
 
         await query("UPDATE guilds_members SET permission = ? WHERE uid = ?", [permission, id])
-        await query('UPDATE profiles SET in_guild = 1 WHERE id = ?', [id])
 
         return NextResponse.json({ success: true, message: "Уровень доступа игрока обновлён" }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -112,7 +125,7 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
             return NextResponse.json({success: false, message: 'Гильдия не найдена'},{status:404})
         }
 
-        if( !user.in_guild ){
+        if( !user.inGuild ){
             return NextResponse.json({success: false, message: 'Вы не состоите в гильдии'},{status:401})
         }
 
@@ -122,10 +135,15 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
         }
 
         await query("DELETE FROM guilds_members WHERE fk_guild = ? AND uid = ?", [guildData.id, id])
-        await query('UPDATE profiles SET in_guild = 0 WHERE id = ?', [id])
-
         return NextResponse.json({success: true, message: 'Участник исключён из гильдии'},{status:200})
-    }catch (error: any){
-        return NextResponse.json({success: false, message: 'Internal Server Error', error}, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

@@ -24,7 +24,14 @@ export async function GET(request: NextRequest) {
 
         const userGuildsApplications : any = await query(`SELECT * FROM guilds_applications JOIN profiles ON fk_profile = profiles.id WHERE fk_profile = ? AND status = 'Рассматривается'`, [user.id])
         return NextResponse.json({ success: true, data: userGuildsApplications }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status:500 })
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

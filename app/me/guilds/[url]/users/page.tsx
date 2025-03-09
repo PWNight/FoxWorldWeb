@@ -1,10 +1,10 @@
 "use client"
 import { useRouter } from "next/navigation";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
-import {Button} from "@/components/ui/button";
-import {checkGuildAccess, getGuildApplications, getGuildUsers, getSession} from "@/app/actions/getInfo";
-import {LucideLoader, Pencil, SearchX, Trash} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getInfo";
+import { LucideLoader, Pencil, SearchX, Trash } from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 
 type PageProps = {
@@ -15,19 +15,40 @@ export default function MyGuildMembers(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
     const [guildApplications, setGuildApplications] = useState([]);
-
     const [guildUrl, setGuildUrl] = useState("");
-
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
 
     const router = useRouter();
 
+    // Функция для получения данных об участниках и заявках
+    const fetchGuildData = async (url: string, token: string) => {
+        const usersResult = await getGuildUsers(url);
+        if (!usersResult.success) {
+            setGuildUsers([]);
+            setNotifyType('error');
+            setNotifyMessage('Не удалось получить участников гильдии');
+        } else {
+            setGuildUsers(usersResult.data);
+        }
+
+        const appsResult = await getGuildApplications(url, token);
+        if (!appsResult.success) {
+            setGuildApplications([]);
+            setNotifyType('error');
+            setNotifyMessage('Не удалось получить заявки в гильдию');
+        } else {
+            setGuildApplications(appsResult.data);
+        }
+    };
+
     useEffect(() => {
-        getSession().then(async user_r => {
+        let intervalId: NodeJS.Timeout;
+
+        const initializeData = async () => {
+            const user_r = await getSession();
             if (!user_r.success) {
                 router.push("/login");
                 return;
@@ -44,36 +65,29 @@ export default function MyGuildMembers(props: PageProps) {
                 return;
             }
 
-            getGuildUsers(url).then((r)=>{
-                if (!r.success) {
-                    setGuildUsers([]);
-                    setNotifyType('error');
-                    setNotifyMessage('Не удалось получить участников гильдии');
-                    setPageLoaded(true);
-                    return
-                }
-                setGuildUsers(r.data);
+            await fetchGuildData(url, user_r.data.token);
+            setPageLoaded(true);
 
-                getGuildApplications(url, user_r.data.token).then((r)=>{
-                    if ( !r.success ){
-                       setGuildApplications([]);
-                       setNotifyType('error');
-                       setNotifyMessage('Не удалось получить заявки в гильдию');
-                       setPageLoaded(true);
-                       return
-                    }
-                    setGuildApplications(r.data)
-                    setPageLoaded(true);
-                })
-            })
-        });
-    }, [guildUrl, props.params, router]);
+            // Установка интервала обновления заявок каждые 15 секунд
+            intervalId = setInterval(async () => {
+                await fetchGuildData(url, user_r.data.token);
+            }, 15000);
+        };
 
+        initializeData();
+
+        // Очистка интервала при размонтировании
+        return () => {
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+        };
+    }, [props.params, router]);
 
     const handleUpdateUser = async (user: any, newPermission: number) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -84,30 +98,43 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
-
+            console.log(errorData);
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при повышении пользователя');
-            return
-        }
-        getGuildUsers(guildUrl).then((r)=>{
-            if (!r.success) {
-                setGuildUsers([]);
-                setNotifyType('error');
-                setNotifyMessage('Не удалось получить участников гильдии');
-                return
-            }
-            setGuildUsers(r.data);
-            setNotifyType('success');
-            setNotifyMessage(`Пользователь успешно повышен до ${newPermission} уровня`);
             setIsLoading(false);
-        })
+            return;
+        }
+
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${session_token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: user.uid,
+                message: `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
+            setIsLoading(false);
+            return;
+        }
+
+        await fetchGuildData(guildUrl, session_token);
+        setNotifyType('success');
+        setNotifyMessage(`Пользователь успешно повышен до ${newPermission} уровня`);
+        setIsLoading(false);
     };
 
     const handleDeleteUser = async (user: any) => {
         setIsLoading(true);
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -117,177 +144,192 @@ export default function MyGuildMembers(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
-
+            console.log(errorData);
             setNotifyType('error');
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении пользователя`);
+            setIsLoading(false);
             return;
         }
-        getGuildUsers(guildUrl).then((r)=>{
-            if (!r.success) {
-                setGuildUsers([]);
-                setNotifyType('error');
-                setNotifyMessage('Не удалось получить участников гильдии');
-                return
-            }
-            setGuildUsers(r.data);
-            setNotifyType('success');
-            setNotifyMessage('Пользователь успешно исключён');
+
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${session_token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: user.uid,
+                message: `Вы были исключены из гильдии /${guildUrl}`,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
             setIsLoading(false);
-        })
+            return;
+        }
+
+        await fetchGuildData(guildUrl, session_token);
+        setNotifyType('success');
+        setNotifyMessage('Пользователь успешно исключён');
+        setIsLoading(false);
     };
 
     const handleClose = () => {
-        setNotifyMessage('')
-    }
+        setNotifyMessage('');
+    };
 
     const handleApplication = async (application: any, is_accepted: boolean) => {
         setIsLoading(true);
         const user_id = application.fk_profile;
-        let status;
+        const status = is_accepted ? 'Принята' : 'Отклонена';
 
-        if ( is_accepted ) {
-            status = 'Принята'
-        }else{
-            status = 'Отклонена'
-        }
-
-        const response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
+        let response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${userData.token}`,
             },
             body: JSON.stringify({ user_id, status }),
-        })
+        });
+
         if (!response.ok) {
             const errorData = await response.json();
-            console.error(errorData);
-
+            console.log(errorData);
             setNotifyType('error');
-            setNotifyMessage('Произошла ошибка при работе с заявками')
+            setNotifyMessage('Произошла ошибка при работе с заявками');
             setIsLoading(false);
             return;
         }
-        getGuildUsers(guildUrl).then((r)=>{
-            if (!r.success) {
-                setGuildUsers([]);
-                setNotifyType('error');
-                setNotifyMessage('Не удалось получить участников гильдии');
-                return
-            }
-            setGuildUsers(r.data);
-            setNotifyType('success');
-            setNotifyMessage(`Статус заявки успешно изменён на "${status}"`)
+
+        response = await fetch("/api/v1/notifications", {
+            headers: {
+                "Authorization": `Bearer ${userData.token}`
+            },
+            method: "POST",
+            body: JSON.stringify({
+                userId: application.fk_profile,
+                message: `Ваша заявка в гильдию /${guildUrl} была ${is_accepted ? 'принята' : 'отклонена'}.`,
+            })
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData);
+            setNotifyType('error');
+            setNotifyMessage('Произошла ошибка при отправке уведомления игроку');
             setIsLoading(false);
-        })
-    }
+            return;
+        }
+
+        await fetchGuildData(guildUrl, userData.token);
+        setNotifyType('success');
+        setNotifyMessage(`Статус заявки успешно изменён на "${status}"`);
+        setIsLoading(false);
+    };
+
     if (pageLoaded) {
         return (
             <div className="flex flex-col gap-2">
-                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
-                { guildUsers.length != 0
-                    ? (
-                        <div className="h-full w-full">
-                            <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Участники</h2>
-                            </div>
-                            <div className="my-2 grid xl:grid-cols-3 gap-2 xl:w-fit">
-                                {guildUsers.map((user: any) => (
-                                    <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
-                                        <div className="flex items-center gap-2 w-fit ">
-                                            <Image
-                                                src={`https://minotar.net/helm/${user.nickname}/100.png`}
-                                                alt={user.nickname}
-                                                width={50}
-                                                height={50}
-                                                quality={100}
-                                                className='rounded-lg'
-                                            />
-                                            <div className={'flex gap-2 items-center'}>
-                                                <h1 className='text-2xl'>{user.nickname}</h1>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p>Уровень доступа: {user.permission}</p>
-                                            <p>Участник с {new Date(user.member_since).toLocaleString("ru-RU")}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            {user.permission == 0 && (
-                                                <Button onClick={() => handleUpdateUser(user, 1)} disabled={isLoading} variant={"accent"} size={"sm"}>
-                                                    {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Повысить</>}
-                                                </Button>
-                                            )}
-                                            {user.permission != 2 && (
-                                                <Button onClick={()=> handleDeleteUser(user)} disabled={isLoading} variant={"destructive"} size={"sm"}>
-                                                    {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Исключить</>}
-                                                </Button>
-                                            )}
+                {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+                {guildUsers.length !== 0 ? (
+                    <div className="h-full w-full">
+                        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
+                            <h2 className="text-xl font-semibold">Участники</h2>
+                        </div>
+                        <div className="my-2 grid xl:grid-cols-3 gap-2 xl:w-fit">
+                            {guildUsers.map((user: any) => (
+                                <div key={user.uid} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
+                                    <div className="flex items-center gap-2 w-fit">
+                                        <Image
+                                            src={`https://minotar.net/helm/${user.nickname}/100.png`}
+                                            alt={user.nickname}
+                                            width={50}
+                                            height={50}
+                                            quality={100}
+                                            className='rounded-lg'
+                                        />
+                                        <div className={'flex gap-2 items-center'}>
+                                            <h1 className='text-2xl'>{user.nickname}</h1>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    )
-                    : (
-                        <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
-                            <div className=''>
-                                <SearchX className='h-20 w-20'/>
-                                <h1 className='text-3xl'>Участники не найдены</h1>
-                                <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
-                            </div>
-                        </div>
-                    )
-                }
-                { guildApplications.length != 0
-                    ? (
-                        <div className="h-full w-full">
-                            <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
-                                <h2 className="text-xl font-semibold">Заявки</h2>
-                            </div>
-                            <div className="my-2 grid xl:grid-cols-3 gap-2">
-                                {guildApplications.map((application: any) => (
-                                    <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
-                                        <div className="flex items-center gap-2 w-fit ">
-                                            <Image
-                                                src={`https://minotar.net/helm/${application.nick}/100.png`}
-                                                alt={application.nick}
-                                                width={50}
-                                                height={50}
-                                                quality={100}
-                                                className='rounded-lg'
-                                            />
-                                            <div className={'flex gap-1 items-center'}>
-                                                <h1 className='text-2xl'>{application.nick}</h1>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p>О игроке: {application.about_user}</p>
-                                            <p>Почему решил вступить к вам: {application.why_this_guild}</p>
-                                            <p>Заявка создана {new Date(application.create_data).toLocaleString("ru-RU")}</p>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <Button onClick={() => handleApplication(application, true)} disabled={isLoading} variant={"accent"} size={"sm"}>
-                                                {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Принять</>}
+                                    <div>
+                                        <p>Уровень доступа: {user.permission}</p>
+                                        <p>Участник с {new Date(user.member_since).toLocaleString("ru-RU")}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        {user.permission === 0 && (
+                                            <Button onClick={() => handleUpdateUser(user, 1)} disabled={isLoading} variant={"accent"} size={"sm"}>
+                                                {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Повысить</>}
                                             </Button>
-                                            <Button onClick={()=> handleApplication(application, false)} disabled={isLoading} variant={"destructive"} size={"sm"}>
-                                                {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Отклонить</>}
+                                        )}
+                                        {user.permission !== 2 && (
+                                            <Button onClick={() => handleDeleteUser(user)} disabled={isLoading} variant={"destructive"} size={"sm"}>
+                                                {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Исключить</>}
                                             </Button>
+                                        )}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ) : (
+                    <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
+                        <div className=''>
+                            <SearchX className='h-20 w-20'/>
+                            <h1 className='text-3xl'>Участники не найдены</h1>
+                            <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
+                        </div>
+                    </div>
+                )}
+                {guildApplications.length !== 0 ? (
+                    <div className="h-full w-full">
+                        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow">
+                            <h2 className="text-xl font-semibold">Заявки</h2>
+                        </div>
+                        <div className="my-2 grid xl:grid-cols-3 gap-2">
+                            {guildApplications.map((application: any) => (
+                                <div key={application.fk_profile} className="p-4 border-gray-200 dark:border-gray-700 bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow flex flex-col gap-4 xl:h-fit xl:w-fit">
+                                    <div className="flex items-center gap-2 w-fit">
+                                        <Image
+                                            src={`https://minotar.net/helm/${application.nick}/100.png`}
+                                            alt={application.nick}
+                                            width={50}
+                                            height={50}
+                                            quality={100}
+                                            className='rounded-lg'
+                                        />
+                                        <div className={'flex gap-1 items-center'}>
+                                            <h1 className='text-2xl'>{application.nick}</h1>
                                         </div>
                                     </div>
-                                ))}
-                            </div>
+                                    <div>
+                                        <p>О игроке: {application.about_user}</p>
+                                        <p>Почему решил вступить к вам: {application.why_this_guild}</p>
+                                        <p>Заявка создана {new Date(application.create_data).toLocaleString("ru-RU")}</p>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <Button onClick={() => handleApplication(application, true)} disabled={isLoading} variant={"accent"} size={"sm"}>
+                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Принять</>}
+                                        </Button>
+                                        <Button onClick={() => handleApplication(application, false)} disabled={isLoading} variant={"destructive"} size={"sm"}>
+                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Trash className="mr-2" />Отклонить</>}
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                    )
-                    : (
-                        <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
-                            <div className=''>
-                                <SearchX className='h-20 w-20'/>
-                                <h1 className='text-3xl'>Заявки не найдены</h1>
-                                <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
-                            </div>
+                    </div>
+                ) : (
+                    <div className='sm:w-fit w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 flex flex-col h-fit justify-between gap-2'>
+                        <div className=''>
+                            <SearchX className='h-20 w-20'/>
+                            <h1 className='text-3xl'>Заявки не найдены</h1>
+                            <p>Попробуйте активнее агитировать о существовании своей гильдии</p>
                         </div>
-                    )
-                }
+                    </div>
+                )}
             </div>
         );
     }
@@ -299,24 +341,22 @@ export default function MyGuildMembers(props: PageProps) {
                     <h2 className="text-xl font-semibold">Участники</h2>
                 </div>
                 <div className="my-2 grid sm:grid-cols-3 gap-2">
-                    {
-                      Array(3).fill(null).map((_, key) => (
+                    {Array(3).fill(null).map((_, key) => (
                         <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
-                          <div className="flex items-center gap-2 w-fit">
-                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
-                          </div>
-                          <div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
-                          </div>
+                            <div className="flex items-center gap-2 w-fit">
+                                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
+                            </div>
+                            <div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
+                            </div>
                         </div>
-                      ))
-                    }
+                    ))}
                 </div>
             </div>
             <div className="h-full w-full">
@@ -324,24 +364,22 @@ export default function MyGuildMembers(props: PageProps) {
                     <h2 className="text-xl font-semibold">Заявки</h2>
                 </div>
                 <div className="my-2 grid sm:grid-cols-3 gap-2">
-                    {
-                      Array(3).fill(null).map((_, key) => (
+                    {Array(3).fill(null).map((_, key) => (
                         <div key={key} className="w-full bg-neutral-100 rounded-sm p-4 dark:bg-neutral-800 h-fit flex flex-col gap-4 animate-pulse">
-                          <div className="flex items-center gap-2 w-fit">
-                            <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
-                          </div>
-                          <div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
-                            <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
-                          </div>
+                            <div className="flex items-center gap-2 w-fit">
+                                <div className="rounded-lg bg-gray-300 dark:bg-gray-700 w-12 h-12"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-6 rounded"></div>
+                            </div>
+                            <div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-32 h-4 rounded mb-2"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-48 h-4 rounded"></div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <div className="bg-gray-300 dark:bg-gray-700 w-20 h-8 rounded"></div>
+                                <div className="bg-gray-300 dark:bg-gray-700 w-24 h-8 rounded"></div>
+                            </div>
                         </div>
-                      ))
-                    }
+                    ))}
                 </div>
             </div>
         </div>

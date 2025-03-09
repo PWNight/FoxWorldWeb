@@ -21,13 +21,49 @@ async function checkToken(token: any){
         if ( !user ) {
             return NextResponse.json({ success: false, message: 'Пользователь не найден, обратитесь к администратору площадки' }, { status: 404 });
         }
-
         const { premium_uuid, joined, last_seen } = user;
 
-        let [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, token }, {status:200})
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+        let hasAdmin = false;
+        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
+        if ( adminPermission ){
+            hasAdmin = true;
+        }
+
+        let hasFoxPlus = false;
+        const [fplusPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND permission = 'group.foxplus';", [profile.fk_uuid])
+        if ( fplusPermission ){
+            hasFoxPlus = true;
+        }
+
+        let inGuild = false;
+        const userGuilds : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
+        if ( userGuilds.length > 0 ){
+            inGuild = true;
+        }
+
+        return NextResponse.json({
+            success: true,
+            user: {premium_uuid, joined, last_seen},
+            profile: {
+                id: profile.id,
+                nick: profile.nick,
+                fk_uuid: profile.fk_uuid,
+                hasAccess: profile.has_access,
+                hasAdmin,
+                hasFoxPlus,
+                inGuild
+            },
+            token
+        }, {status:200})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -38,12 +74,19 @@ export async function GET(request: NextRequest) {
             const session_token = request.cookies.get('s_token')
             if( session_token === undefined ){
                 return NextResponse.json({ success: false, message: "Отсутсвует заголовок авторизации" }, { status: 401 })
-            }else{
-                return await checkToken(session_token?.value)
             }
+
+            return await checkToken(session_token?.value)
         }
         return await checkToken(authHeader.split(" ")[1])
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }

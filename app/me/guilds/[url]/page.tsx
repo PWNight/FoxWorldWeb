@@ -79,7 +79,7 @@ export default function MyGuild(props: PageProps) {
 
         if ( !response.ok ) {
             const errorData = await response.json()
-            console.error(errorData)
+            console.log(errorData)
 
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
             setNotifyType('error')
@@ -149,7 +149,7 @@ export default function MyGuild(props: PageProps) {
 
         if (!response.ok) {
             const errorData = await response.json()
-            console.error(errorData)
+            console.log(errorData)
 
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
             setNotifyType('error')

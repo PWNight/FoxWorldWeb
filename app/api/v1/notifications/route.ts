@@ -1,0 +1,136 @@
+import { NextResponse } from 'next/server';
+import {minecraftQuery, query} from "@/lib/mysql";
+import {sendDiscordMessage} from "@/lib/discord";
+
+export async function GET(request: Request) {
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader) {
+      return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
+  }
+  const token = authHeader.split(" ")[1];
+
+  try {
+    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
+        method: "GET",
+        headers: {"Authorization": `Bearer ${token}`}
+    })
+
+    if ( !response.ok ){
+        const errorData = await response.json()
+        return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+    }
+
+    const user = await response.json()
+    const rows : any = await query(
+      'SELECT * FROM notifications WHERE fk_profile = ? ORDER BY created_at DESC',
+      [user.profile.id]
+    );
+
+    return NextResponse.json(rows);
+  } catch (error: any) {
+      return NextResponse.json({
+        success: false,
+        message: 'Серверная ошибка',
+        error: {
+          message: error.message,
+          code: error.code || 'UNKNOWN_ERROR'
+        }
+      }, {status:500})
+  }
+}
+
+export async function POST(request: Request) {
+  let { userId, nickname, message } = await request.json();
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader) {
+      return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
+  }
+  const token = authHeader.split(" ")[1];
+
+  try {
+    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
+        method: "GET",
+        headers: {"Authorization": `Bearer ${token}`}
+    })
+
+    if ( !response.ok ) {
+        const errorData = await response.json()
+        return NextResponse.json({
+            success: false,
+            message: 'Не удалось получить данные о пользователе',
+            error: errorData || response.statusText
+        }, {status: response.status})
+    }
+
+    if (nickname){
+        const [profile] : any = await query("SELECT * FROM profiles WHERE nick = ?", [nickname]);
+        userId = profile.id;
+    }
+    const [profile] : any = await query("SELECT * FROM profiles WHERE id = ?", [userId]);
+
+    await query(
+      'INSERT INTO notifications (fk_profile, message) VALUES (?, ?)',
+      [userId, message]
+    );
+
+    /*const [discordUser] : any = await minecraftQuery(
+      'SELECT discord FROM ds_accounts WHERE uuid = ?',
+      [profile.fk_uuid]
+    );
+
+    if (discordUser) {
+      const discord_result = await sendDiscordMessage(discordUser.discord, message);
+      if ( !discord_result.success ){
+          return NextResponse.json({ success: false, error: discord_result.data })
+      }
+    }
+    */
+
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+      return NextResponse.json({
+        success: false,
+        message: 'Серверная ошибка',
+        error: {
+          message: error.message,
+          code: error.code || 'UNKNOWN_ERROR'
+        }
+      }, {status:500})
+  }
+}
+
+export async function PATCH(request: Request) {
+  const { id } = await request.json();
+  const authHeader = request.headers.get("authorization");
+  if (!authHeader) {
+      return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
+  }
+  const token = authHeader.split(" ")[1];
+
+  try {
+    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
+        method: "GET",
+        headers: {"Authorization": `Bearer ${token}`}
+    })
+
+    if ( !response.ok ){
+        const errorData = await response.json()
+        return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+    }
+
+    await query(
+      'UPDATE notifications SET is_read = TRUE WHERE id = ?',
+      [id]
+    );
+    return NextResponse.json({ success: true });
+  } catch (error: any) {
+      return NextResponse.json({
+        success: false,
+        message: 'Серверная ошибка',
+        error: {
+          message: error.message,
+          code: error.code || 'UNKNOWN_ERROR'
+        }
+      }, {status:500})
+  }
+}

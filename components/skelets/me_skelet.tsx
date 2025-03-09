@@ -30,7 +30,7 @@ export default function MeSkelet(){
                     <div className="my-2">
                         <div className="gap-2 grid 2xl:grid-cols-2">
                             <div>
-                                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for title */}
+                                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded-sm mb-1"></div> {/* Placeholder for title */}
                                 <div className="flex flex-col gap-2 text-sm">
                                     <div className="h-24 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for stats */}
                                     <div className="h-24 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for stats */}
@@ -38,7 +38,7 @@ export default function MeSkelet(){
                                 </div>
                             </div>
                             <div>
-                                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for title */}
+                                <div className="h-8 bg-neutral-200 dark:bg-neutral-700 rounded-sm mb-1"></div> {/* Placeholder for title */}
                                 <div className="flex flex-col gap-2">
                                     <div className="h-24 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for stats */}
                                     <div className="h-24 bg-neutral-200 dark:bg-neutral-700 rounded-sm"></div> {/* Placeholder for stats */}

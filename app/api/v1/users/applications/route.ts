@@ -29,16 +29,22 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const json = await response.json()
-
-        if ( !['dev','staff'].includes(json.group) ){
+        const user = await response.json()
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
         const verifyApplications : any = await query(`SELECT * FROM verify_applications WHERE status = 'Рассматривается'`)
         return NextResponse.json({ success: true, data: verifyApplications }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, { status:500 })
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -66,19 +72,18 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
         }
 
-        const json = await response.json()
-        const user = json.profile;
+        const user = await response.json()
 
-        if ( !['dev','staff'].includes(json.group) ){
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
-        const [verifyApplication] : any = await query('SELECT * FROM verify_applications WHERE id = ?',[application_id])
+        const [verifyApplication] : any = await query('SELECT * FROM verify_applications WHERE id = ?', [application_id])
         if ( !verifyApplication ){
-            return NextResponse.json({ success: false, message: 'Заявка не найдена' },{status: 400})
+            return NextResponse.json({ success: false, message: 'Заявка не найдена' }, {status: 400})
         }
 
-        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.id, application_id])
+        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.profile.id, application_id])
 
         if ( status == 'Принята' ) {
             await query('UPDATE profiles SET has_access = 1 WHERE nick = ?', [nickname])
@@ -86,8 +91,15 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
 
@@ -108,7 +120,7 @@ export async function PUT(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
+        let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
             method: "GET",
             headers: {"Authorization": `Bearer ${token}`}
         })
@@ -125,7 +137,14 @@ export async function PUT(request: NextRequest) {
 
         await query('INSERT INTO verify_applications (nickname, age, about, where_find, plans) VALUES (?, ?, ?, ?, ?)', [nickname, age, about, where_find, plans])
         return NextResponse.json({ success: true, message: 'Заявка на верификацию отправлена' }, { status: 200 });
-    }catch (error: any){
-        return NextResponse.json({ success: false, message: 'Internal Server Error', error }, {status:500})
+    } catch (error: any) {
+        return NextResponse.json({
+            success: false,
+            message: 'Серверная ошибка',
+            error: {
+                message: error.message,
+                code: error.code || 'UNKNOWN_ERROR'
+            }
+        }, {status:500})
     }
 }
