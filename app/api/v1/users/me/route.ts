@@ -36,8 +36,8 @@ async function checkToken(token: any){
         }
 
         let inGuild = false;
-        const [userGuilds] : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
-        if ( userGuilds ){
+        const userGuilds : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
+        if ( userGuilds.length > 0 ){
             inGuild = true;
         }
 
