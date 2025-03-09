@@ -187,7 +187,6 @@ export async function verify_application(state: VerifyApplicationFormState, form
                 body: JSON.stringify(discordPayload),
             }
         );
-
         await handleApiResponse(discordResponse);
 
     } catch (error) {

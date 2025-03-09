@@ -25,7 +25,7 @@ export default function VerifyApplications() {
                 return
             }
 
-            if ( !r.data.hasAdmin ){
+            if ( !r.data.profile.hasAdmin ){
                 router.push("/")
                 return
             }

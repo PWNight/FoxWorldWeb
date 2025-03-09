@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
         }
 
         const user = await response.json()
-        if ( !user.hasAdmin ){
+        if ( !user.profile.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
         const user = await response.json()
 
-        if ( !user.hasAdmin ){
+        if ( !user.profile.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
