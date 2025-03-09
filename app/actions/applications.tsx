@@ -77,9 +77,9 @@ export async function guild_application(state: GuildApplicationFormState, formDa
         );
         await handleApiResponse(response);
     } catch (error) {
-        return { message: error instanceof Error ? error.message : 'Произошла ошибка' };    } finally {
-        redirect("/me/guilds");
+        return {message: error instanceof Error ? error.message : 'Произошла ошибка'};
     }
+    redirect("/me/guilds");
 }
 
 export async function signup(state: FormState, formData: FormData) {
@@ -122,9 +122,8 @@ export async function signup(state: FormState, formData: FormData) {
         await handleApiResponse(response);
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
-    } finally {
-        redirect("/me");
     }
+    redirect("/me");
 }
 
 export async function verify_application(state: VerifyApplicationFormState, formData: FormData) {
@@ -194,7 +193,6 @@ export async function verify_application(state: VerifyApplicationFormState, form
     } catch (error) {
         console.log(error)
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
-    } finally {
-        redirect('/me');
     }
+    redirect('/me');
 }
