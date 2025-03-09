@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
         // Получение пользователя из базы данных
         const [user]: any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [username]);
         if (!user) {
-            return NextResponse.json({ success: false, message: 'Неправильный никнейм или пароль' }, { status: 401 });
+            return NextResponse.json({ success: false, message: 'Игрок с таким ником не найден' }, { status: 401 });
         }
 
         // Сравнение паролей пользователя
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         hashedPassword = hashedPassword.replace('$2a$', '').replace(user.salt, '');
 
         if (user.hashed_password !== hashedPassword) {
-            return NextResponse.json({ success: false, message: "Неправильный никнейм или пароль" }, { status: 401 });
+            return NextResponse.json({ success: false, message: "Неправильный пароль" }, { status: 401 });
         }
 
         // Получение пользователя из базы данных
