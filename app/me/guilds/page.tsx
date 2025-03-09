@@ -45,75 +45,75 @@ export default function MeGuilds() {
                 <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-4">
                     {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                     {userGuilds.map((guild: any) => (
-                        <div
-                            key={guild.url}
-                            id={guild.url}
-                            className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-full'
-                        >
-                            <div className='flex flex-col gap-2 w-full'>
-                                <div className="flex flex-row gap-1 items-center">
-                                    <Image
-                                        src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
-                                        alt={guild.owner_nickname}
-                                        width={25}
-                                        height={25}
-                                        quality={100}
-                                        className={'rounded-md overflow-hidden'}
-                                    />
-                                    <div className={'flex gap-1 items-center'}>
-                                        {guild.hasFoxPlus && <Crown className={'text-orange-400'}/>}
-                                        <h1>{guild.owner_nickname}</h1>
-                                    </div>
-                                </div>
-                                <div className="grid grid-cols-[1fr_.3fr] gap-1">
-                                    <div>
-                                        <h1 className='text-3xl'>{guild.name}</h1>
-                                        <p>{guild.info}</p>
-                                        <p className={'mt-2'}>{guild.description}</p>
-                                        <ul className="list-inside list-disc">
-                                            {guild.is_recruit ? (
-                                                <li>Принимает заявки</li>
-                                            ) : (
-                                                <li>Не принимает заявки</li>
-                                            )}
-                                            {guild.discord_code && (
-                                                <li>Есть Discord сервер</li>
-                                            )}
-                                            <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                            <li>{guild.member_count} участников</li>
-                                        </ul>
-                                    </div>
-                                    {guild.badge_url && (
-                                        <Image
-                                            src={guild.badge_url}
-                                            alt={`Эмблема ${guild.url}`}
-                                            width={200}
-                                            height={200}
-                                            objectFit={'cover'}
-                                            quality={100}
-                                            className={'rounded-md overflow-hidden'}
-                                        />
-                                    )}
+                   <div
+                        key={guild.url}
+                        id={guild.url}
+                        className='flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4 bg-accent hover:border-[#F38F54] transition-all duration-300 shadow-md hover:shadow-lg w-full'
+                    >
+                        <div className='flex flex-col gap-3 w-full'>
+                            <div className="flex flex-row gap-2 items-center">
+                                <Image
+                                    src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
+                                    alt={guild.owner_nickname}
+                                    width={30}
+                                    height={30}
+                                    quality={100}
+                                    className={'rounded-full overflow-hidden border-2 border-gray-700'}
+                                />
+                                <div className={'flex gap-1 items-center'}>
+                                    {guild.hasFoxPlus && <Crown className={'text-orange-400 w-5 h-5'}/>}
+                                    <h1 className="font-semibold text-lg">{guild.owner_nickname}</h1>
                                 </div>
                             </div>
-                            <div className='flex flex-col w-fit gap-2'>
-                                {guild.permission === 2 && (
-                                    <div className={'flex flex-row gap-2'}>
-                                        <Link href={`/me/guilds/${guild.url}`} className={buttonVariants({size: 'sm', variant: 'accent'})}>
-                                            Редактировать гильдию
-                                        </Link>
-                                        <Link href={`/me/guilds/${guild.url}/users`} className={buttonVariants({size: 'sm', variant: 'accent'})}>
-                                            Управлять заявками
-                                        </Link>
-                                    </div>
-                                )}
-                                {guild.discord_code && (
-                                    <Link href={guild.discord_code} className={buttonVariants({size: 'sm', variant: 'accent'})}>
-                                        Перейти в Discord
-                                    </Link>
+                            <div className="grid grid-cols-[1fr_.3fr] gap-3">
+                                <div className="space-y-2">
+                                    <h1 className='text-2xl font-bold text-gray-100'>{guild.name}</h1>
+                                    <p className="text-gray-300 text-sm">{guild.info}</p>
+                                    <p className="text-gray-400 text-sm italic">{guild.description}</p>
+                                    <ul className="list-inside list-disc text-sm text-gray-300 space-y-1">
+                                        {guild.is_recruit ? (
+                                            <li className="text-green-400">Принимает заявки</li>
+                                        ) : (
+                                            <li className="text-red-400">Не принимает заявки</li>
+                                        )}
+                                        {guild.discord_code && (
+                                            <li className="text-blue-400">Есть Discord сервер</li>
+                                        )}
+                                        <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
+                                        <li>{guild.member_count} участников</li>
+                                    </ul>
+                                </div>
+                                {guild.badge_url && (
+                                    <Image
+                                        src={guild.badge_url}
+                                        alt={`Эмблема ${guild.url}`}
+                                        width={100}
+                                        height={100}
+                                        objectFit={'cover'}
+                                        quality={100}
+                                        className={'rounded-lg overflow-hidden'}
+                                    />
                                 )}
                             </div>
                         </div>
+                        <div className='flex flex-col w-fit gap-2'>
+                            {guild.permission === 2 && (
+                                <div className={'flex flex-row gap-2'}>
+                                    <Link href={`/me/guilds/${guild.url}`} className={buttonVariants({size: 'sm', variant: 'accent'})}>
+                                        Редактировать гильдию
+                                    </Link>
+                                    <Link href={`/me/guilds/${guild.url}/users`} className={buttonVariants({size: 'sm', variant: 'accent'})}>
+                                        Управлять заявками
+                                    </Link>
+                                </div>
+                            )}
+                            {guild.discord_code && (
+                                <Link href={guild.discord_code} className={buttonVariants({size: 'sm', variant: 'accent'})}>
+                                    Перейти в Discord
+                                </Link>
+                            )}
+                        </div>
+                    </div>
                     ))}
                 </div>
             );
