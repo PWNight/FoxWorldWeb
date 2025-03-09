@@ -18,7 +18,7 @@ export default function AccessApplications() {
                 router.push('/login')
                 return
             }
-            if ( user_r.data.profile.has_access ){
+            if ( user_r.data.profile.hasAccess ){
                 router.push('/me')
                 return
             }

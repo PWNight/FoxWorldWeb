@@ -142,7 +142,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
         if (!user_response.success) throw new Error('Не удалось получить вашу сессию (err auth)');
 
         const { data: userData } = user_response;
-        if (userData.profile.has_access) redirect('/me');
+        if (userData.profile.hasAccess) redirect('/me');
 
         // Отправка заявки
         let response = await makeAuthorizedRequest(

@@ -293,7 +293,7 @@ export function AccountButton() {
                     Подписка активна
                   </p>
                 ) : null}
-                {!userData.profile.has_access ? (
+                {!userData.profile.hasAccess ? (
                   <Link
                     href="/access"
                     className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline"
@@ -318,7 +318,7 @@ export function AccountButton() {
                 Личный кабинет
               </p>
             </DropdownMenuItem>
-            {["dev", "staff"].includes(userData.group) && (
+            {userData.profile.hasAdmin && (
               <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl">
                 <p className="flex flex-row gap-1">
                   <IdCard />
