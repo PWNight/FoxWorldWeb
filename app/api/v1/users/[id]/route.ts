@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import {minecraftQuery, permsQuery, query} from "@/lib/mysql";
-const botToken = process.env.BOT_TOKEN
-
+import {permsQuery, query} from "@/lib/mysql";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ id: string }> }) {
     const {id} = await params;
@@ -18,10 +16,43 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ id
         }
         const { premium_uuid, joined, last_seen } = user;
 
-        const [group] : any = await permsQuery("SELECT primary_group FROM luckperms_players WHERE username = ?", [profile.nick])
-        const [result] : any = await minecraftQuery("SELECT discord FROM ds_accounts WHERE uuid = ?", [profile.fk_uuid]);
+        let hasAdmin = false;
+        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
+        if ( adminPermission ){
+            hasAdmin = true;
+        }
 
-        return NextResponse.json({ success: true, user: {premium_uuid, joined, last_seen}, profile, group: group.primary_group, discord: result.discord }, {status:200})
+        let hasFoxPlus = false;
+        const [fplusPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND permission = 'group.foxplus';", [profile.fk_uuid])
+        if ( fplusPermission ){
+            hasFoxPlus = true;
+        }
+
+        let hasAccess = false;
+        const userApplications : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = ?", [profile.nick, 'Принята'])
+        if ( userApplications.length > 0 ){
+            hasAccess = true;
+        }
+
+        let inGuild = false;
+        const userGuilds : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
+        if ( userGuilds.length > 0 ){
+            inGuild = true;
+        }
+
+        return NextResponse.json({
+            success: true,
+            user: {premium_uuid, joined, last_seen},
+            profile: {
+                id: profile.id,
+                nick: profile.nick,
+                fk_uuid: profile.fk_uuid,
+                hasAccess,
+                hasAdmin,
+                hasFoxPlus,
+                inGuild
+            },
+        }, {status:200})
     } catch (error: any) {
         return NextResponse.json({
             success: false,
