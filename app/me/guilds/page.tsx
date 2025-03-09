@@ -42,13 +42,13 @@ export default function MeGuilds() {
     if (pageLoaded) {
         if (userGuilds.length !== 0) {
             return (
-                <div className='grid xl:grid-cols-3 md:grid-cols-2 grid-cols-1 sm:gap-8 gap-4'>
+                <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-2 gap-4">
                     {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}
                             id={guild.url}
-                            className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all sm:w-fit'
+                            className='flex flex-col justify-between gap-2 items-start border-2 rounded-md py-5 px-3 bg-accent hover:border-[#F38F54] transition-all w-full'
                         >
                             <div className='flex flex-col gap-2 w-full'>
                                 <div className="flex flex-row gap-1 items-center">
@@ -65,10 +65,11 @@ export default function MeGuilds() {
                                         <h1>{guild.owner_nickname}</h1>
                                     </div>
                                 </div>
-                                <div className="flex flex-row gap-4 justify-between">
+                                <div className="grid grid-cols-[1fr_.3fr] gap-1">
                                     <div>
                                         <h1 className='text-3xl'>{guild.name}</h1>
                                         <p>{guild.info}</p>
+                                        <p className={'mt-2'}>{guild.description}</p>
                                         <ul className="list-inside list-disc">
                                             {guild.is_recruit ? (
                                                 <li>Принимает заявки</li>
@@ -79,20 +80,19 @@ export default function MeGuilds() {
                                                 <li>Есть Discord сервер</li>
                                             )}
                                             <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
-                                            <li>Вы состоите в гильдии с {new Date(guild.member_since).toLocaleString("ru-RU")}</li>
                                             <li>{guild.member_count} участников</li>
                                         </ul>
                                     </div>
                                     {guild.badge_url && (
-                                        <div className="relative w-32 h-32 flex-shrink-0">
-                                            <Image
-                                                src={guild.badge_url}
-                                                alt={`Эмблема ${guild.url}`}
-                                                fill
-                                                quality={100}
-                                                className="rounded-md object-contain"
-                                            />
-                                        </div>
+                                        <Image
+                                            src={guild.badge_url}
+                                            alt={`Эмблема ${guild.url}`}
+                                            width={200}
+                                            height={200}
+                                            objectFit={'cover'}
+                                            quality={100}
+                                            className={'rounded-md overflow-hidden'}
+                                        />
                                     )}
                                 </div>
                             </div>

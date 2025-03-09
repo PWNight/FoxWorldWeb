@@ -130,7 +130,7 @@ export default function Guilds() {
                                     <h1>{guild.owner_nickname}</h1>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-[1fr_.3fr]">
+                            <div className="grid grid-cols-[1fr_.3fr] gap-1">
                                 <div>
                                     <h1 className='text-3xl'>{guild.name}</h1>
                                     <p>{guild.info}</p>
