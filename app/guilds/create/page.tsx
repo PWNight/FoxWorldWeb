@@ -105,7 +105,7 @@ export default function CreateGuild() {
                 }),
             })
             if ( !response.ok ){
-                const errorData = await result.json();
+                const errorData = await response.json();
                 console.log(errorData);
 
                 setIsLoading(false);
