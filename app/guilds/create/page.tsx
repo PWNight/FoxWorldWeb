@@ -29,11 +29,6 @@ export default function CreateGuild() {
                 return
             }
 
-            if (r.data.profile.inGuild) {
-                router.push("/me/guilds")
-                return
-            }
-
             setUserData(r.data)
         });
     }, [router]);
