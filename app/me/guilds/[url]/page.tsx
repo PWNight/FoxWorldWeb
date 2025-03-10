@@ -142,7 +142,7 @@ export default function MyGuild(props: PageProps) {
 
     const handleDelete = async () => {
         const session_token = userData.token;
-        const response = await fetch(`/api/v1/guilds/${userGuild.url}`,{
+        let response = await fetch(`/api/v1/guilds/${userGuild.url}`,{
             method: 'DELETE',
             headers: {"Authorization": `Bearer ${session_token}`}
         })
@@ -152,6 +152,24 @@ export default function MyGuild(props: PageProps) {
             console.log(errorData)
 
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`)
+            setNotifyType('error')
+            return
+        }
+
+        response = await fetch('/api/v1/notifications', {
+            method: 'POST',
+            headers: {"Authorization": `Bearer ${userData.token}`},
+            body: JSON.stringify({
+                userId: userData.profile.id,
+                message: "Ваша гильдия успешно удалена."
+            }),
+        })
+        if ( !response.ok ){
+            const errorData = await response.json();
+            console.log(errorData);
+
+            setIsLoading(false);
+            setNotifyMessage(`Произошла ошибка ${response.status} при отправке уведомления`)
             setNotifyType('error')
             return
         }
