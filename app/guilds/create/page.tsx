@@ -87,13 +87,32 @@ export default function CreateGuild() {
                 headers: {"Authorization": `Bearer ${token}`},
                 body: JSON.stringify({name, url, info, description}),
             });
-            const json: any = await result.json();
-            if (json.success) {
-                router.push('/me/guilds');
-            } else {
+            if ( !result.ok ){
+                const errorData = await result.json();
+                console.log(errorData);
+
                 setIsLoading(false);
-                setError(json.message);
+                setError(errorData.message);
+                return
             }
+
+            const response = await fetch('/api/v1/notifications', {
+                method: 'POST',
+                headers: {"Authorization": `Bearer ${token}`},
+                body: JSON.stringify({
+                    userId: userData.profile.id,
+                    message: "Ваша гильдия успешно создана! Теперь вы можете приступить к приёму игроков."
+                }),
+            })
+            if ( !response.ok ){
+                const errorData = await result.json();
+                console.log(errorData);
+
+                setIsLoading(false);
+                setError(errorData.message);
+                return
+            }
+            router.push('/me/guilds');
         }
     };
 
