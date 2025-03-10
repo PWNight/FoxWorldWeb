@@ -123,7 +123,7 @@ export default function Guilds() {
                                     width={30}
                                     height={30}
                                     quality={100}
-                                    className={'rounded-full overflow-hidden border-2 border-gray-700'}
+                                    className={'overflow-hidden rounded-lg'}
                                 />
                                 <div className={'flex gap-1 items-center'}>
                                     {guild.hasFoxPlus && <Crown className={'text-orange-400 w-5 h-5'}/>}
