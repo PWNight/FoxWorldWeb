@@ -1,7 +1,10 @@
 "use client";
 
-import { Button, buttonVariants } from "./ui/button";
 import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import { Button, buttonVariants } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,9 +12,6 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import Anchor from "./anchor";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
-import Link from "next/link";
 import {
   Ban,
   Bell,
@@ -25,163 +25,138 @@ import {
 } from "lucide-react";
 import { getSession } from "@/app/actions/getInfo";
 
+interface Notification {
+  id: number;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
+
+interface UserData {
+  profile: {
+    nick: string;
+    hasFoxPlus: boolean;
+    hasAccess: boolean;
+    is_banned: boolean;
+    hasAdmin: boolean;
+  };
+  token?: string;
+}
+
 export function AccountButton() {
-  const [userData, setUserData] = useState<any>({});
-  const [notifications, setNotifications] = useState([]);
+  const router = useRouter();
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [isLoaded, setIsLoaded] = useState(false);
   const [loadingStates, setLoadingStates] = useState<Record<number, boolean>>({});
-  const router = useRouter();
 
-  const fetchNotifications = useCallback(async (token: string) => {
-    if (!token) {
-      console.warn("Токен отсутствует, уведомления не загружаются");
-      return;
-    }
-
+  // Объединяем все fetch-запросы в один хелпер
+  const fetchAPI = useCallback(async <T,>(
+    endpoint: string,
+    token?: string,
+    method: string = "GET",
+    body?: any
+  ): Promise<T | null> => {
     try {
-      const res = await fetch(`/api/v1/notifications`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+      if (body) headers["Content-Type"] = "application/json";
+
+      const res = await fetch(endpoint, {
+        method,
+        headers,
+        body: body ? JSON.stringify(body) : undefined,
       });
 
       const data = await res.json();
-
       if (!res.ok) {
-        console.error("Ошибка загрузки уведомлений:", data);
-        return;
-      }
-
-      setNotifications(data);
-      setUnreadCount(data.filter((n: any) => !n.is_read).length);
-    } catch (error) {
-      console.error("Не удалось загрузить уведомления:", error);
-    }
-  }, []);
-
-  const fetchUserInfo = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/v1/users/me`, {});
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        console.error("Ошибка загрузки данных пользователя:", data);
+        console.error(`Ошибка ${endpoint}:`, data);
         return null;
       }
-
       return data;
     } catch (error) {
-      console.error("Не удалось загрузить данные пользователя:", error);
+      console.error(`Ошибка запроса ${endpoint}:`, error);
       return null;
     }
   }, []);
 
-  async function logOut() {
-    if (Object.keys(userData).length === 0) return;
-
-    try {
-      const response = await fetch("/api/v1/auth/logout", {
-        method: "GET",
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Ошибка при выходе:", errorData);
-      }
-      setUserData({});
-      router.push("/");
-    } catch (error) {
-      console.error("Ошибка при выходе:", error);
-    } finally {
-      setIsLoaded(true);
+  const fetchNotifications = useCallback(async (token: string | undefined) => {
+    const data = await fetchAPI<Notification[]>(`/api/v1/notifications`, token);
+    if (data) {
+      setNotifications(data);
+      setUnreadCount(data.filter(n => !n.is_read).length);
     }
-  }
+  }, [fetchAPI]);
+
+  const initializeData = useCallback(async () => {
+    const session = await getSession();
+    if (!session.success || !session.data?.token) {
+      setIsLoaded(true);
+      return;
+    }
+
+    // Параллельная загрузка данных
+    const [userInfo, notificationsData] = await Promise.all([
+      fetchAPI<UserData>(`/api/v1/users/me`, session.data.token),
+      fetchAPI<Notification[]>(`/api/v1/notifications`, session.data.token),
+    ]);
+
+    if (userInfo) {
+      setUserData({ ...userInfo, token: session.data.token });
+    }
+    if (notificationsData) {
+      setNotifications(notificationsData);
+      setUnreadCount(notificationsData.filter(n => !n.is_read).length);
+    }
+
+    setIsLoaded(true);
+  }, [fetchAPI]);
+
+  const markAsRead = useCallback(async (notificationId: number) => {
+    if (!userData?.token) return;
+
+    setLoadingStates(prev => ({ ...prev, [notificationId]: true }));
+    const success = await fetchAPI<any>(
+      "/api/v1/notifications",
+      userData.token,
+      "PATCH",
+      { id: notificationId }
+    );
+
+    if (success) await fetchNotifications(userData.token);
+    setLoadingStates(prev => ({ ...prev, [notificationId]: false }));
+  }, [userData?.token, fetchNotifications, fetchAPI]);
+
+  const handleLogout = useCallback(async () => {
+    if (!userData?.token) return;
+
+    await fetchAPI("/api/v1/auth/logout", userData.token);
+    setUserData(null);
+    router.push("/");
+    setIsLoaded(true);
+  }, [userData?.token, fetchAPI, router]);
 
   useEffect(() => {
-    let mounted = true;
-
-    const initialize = async () => {
-      try {
-        const session = await getSession();
-        if (!mounted) return;
-
-        if (!session.success || !session.data?.token) {
-          setUserData({});
-          setIsLoaded(true);
-          return;
-        }
-
-        // Получаем данные пользователя из /api/v1/users/me
-        const userInfo = await fetchUserInfo();
-        if (!userInfo) {
-          setUserData({});
-          setIsLoaded(true);
-          return;
-        }
-
-        // Устанавливаем данные пользователя и токен
-        setUserData({ ...userInfo, token: session.data.token });
-        await fetchNotifications(session.data.token);
-        setIsLoaded(true);
-      } catch (error) {
-        console.error("Ошибка инициализации:", error);
-        setUserData({});
-        setIsLoaded(true);
-      }
-    };
-
-    initialize();
-
-    return () => {
-      mounted = false;
-    };
-  }, [fetchNotifications, fetchUserInfo]);
+    initializeData();
+  }, [initializeData]);
 
   useEffect(() => {
     if (!userData?.token) return;
 
     const interval = setInterval(() => {
-      fetchNotifications(userData.token);
-      fetchUserInfo();
+      Promise.all([
+        fetchNotifications(userData.token),
+        fetchAPI<UserData>("/api/v1/users/me", userData.token).then(data =>
+          data && setUserData(prev => ({ ...prev, ...data, token: prev?.token }))
+        ),
+      ]);
     }, 15000);
 
     return () => clearInterval(interval);
-  }, [userData.token, fetchNotifications, fetchUserInfo]);
-
-  const markAsRead = async (token: string, id: number) => {
-    if (!token) {
-      console.warn("Токен отсутствует, невозможно пометить как прочитанное");
-      return;
-    }
-
-    setLoadingStates((prev) => ({ ...prev, [id]: true }));
-    try {
-      const res = await fetch("/api/v1/notifications", {
-        method: "PATCH",
-        body: JSON.stringify({ id }),
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!res.ok) {
-        console.error("Ошибка при обновлении уведомления:", await res.json());
-        return;
-      }
-
-      await fetchNotifications(token);
-    } catch (error) {
-      console.error("Ошибка при пометке как прочитанное:", error);
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [id]: false }));
-    }
-  };
+  }, [userData?.token, fetchNotifications, fetchAPI]);
 
   if (!isLoaded) return null;
-
-  if (Object.keys(userData).length === 0 || !userData.token) {
+  if (!userData?.token) {
     return (
       <Anchor
         href="/login"
@@ -192,9 +167,19 @@ export function AccountButton() {
     );
   }
 
+  const UserAvatar = () => (
+    <Image
+      src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
+      alt={userData.profile.nick}
+      width={50}
+      height={50}
+      quality={100}
+      className="rounded-lg"
+    />
+  );
+
   return (
     <div className="flex gap-2 items-center">
-      {/* Notifications Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon" className="relative">
@@ -206,27 +191,23 @@ export function AccountButton() {
             )}
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="end"
-          className="mt-2 py-4 flex flex-col gap-4 rounded-lg w-80 max-h-[400px] overflow-y-auto"
-        >
+        <DropdownMenuContent align="end" className="mt-2 py-4 w-80 max-h-[400px] overflow-y-auto rounded-lg">
           <DropdownMenuItem className="text-xl cursor-default">
             <div className="flex flex-col w-full">
               <h1 className="text-xl font-medium">Уведомления</h1>
-              {notifications.length === 0 && (
+              {!notifications.length && (
                 <p className="text-sm text-gray-500 mt-2">Нет новых уведомлений</p>
               )}
             </div>
           </DropdownMenuItem>
-
-          {notifications.map((notification: any) => (
+          {notifications.map((notification) => (
             <DropdownMenuItem
               key={notification.id}
               className={`flex flex-col gap-2 py-3 ${
-                !notification.is_read ? "bg-orange-50 dark:bg-orange-900/20" : "!dark:bg-neutral-50"
+                !notification.is_read ? "bg-orange-50 dark:bg-orange-900/20" : ""
               }`}
             >
-              <div className="flex flex-col w-full">
+              <div className={'flex flex-col w-full'}>
                 <p className="text-sm">{notification.message}</p>
                 <div className="flex justify-between items-center mt-1">
                   <span className="text-xs text-gray-500">
@@ -234,12 +215,9 @@ export function AccountButton() {
                   </span>
                   {!notification.is_read && (
                     <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        markAsRead(userData.token, notification.id);
-                      }}
+                      onClick={() => markAsRead(notification.id)}
                       disabled={loadingStates[notification.id]}
-                      className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium transition-colors text-orange-400 hover:text-orange-500 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="inline-flex gap-1 items-center text-orange-400 hover:text-orange-500 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {loadingStates[notification.id] ? (
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -255,79 +233,61 @@ export function AccountButton() {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Account Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" size="icon">
-            <Image
-              src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
-              alt={userData.profile.nick}
-              width={50}
-              height={50}
-              quality={100}
-              className="rounded-lg"
-            />
+            <UserAvatar />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
           <DropdownMenuItem className="text-xl">
             <div className="flex items-center gap-5">
-              <div className="w-14 h-14 flex items-center flex-col justify-center">
-                <Image
-                  src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
-                  alt={userData.profile.nick}
-                  width={50}
-                  height={50}
-                  quality={100}
-                  className="rounded-lg"
-                />
+              <div className="w-14 h-14">
+                <UserAvatar />
               </div>
               <div className="flex flex-col text-lg">
                 <div className="flex gap-1 items-center">
-                  {userData.profile.hasFoxPlus ? <Crown className="text-orange-400" /> : ""}
+                  {userData.profile.hasFoxPlus && <Crown className="text-orange-400" />}
                   <h1 className="text-2xl">{userData.profile.nick}</h1>
                 </div>
-                {userData.profile.hasFoxPlus ? (
-                  <p className="flex flex-row gap-1">
+                {userData.profile.hasFoxPlus && (
+                  <p className="flex gap-1">
                     <HandHeart />
                     Подписка активна
                   </p>
-                ) : null}
-                {!userData.profile.hasAccess ? (
-                  <Link
-                    href="/access"
-                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 text-primary underline-offset-4 hover:underline"
-                  >
+                )}
+                {!userData.profile.hasAccess && (
+                  <Link href="/access" className="inline-flex gap-1 items-center text-primary hover:underline">
                     <Ban />
                     Заполните анкету
                   </Link>
-                ) : null}
-                {userData.profile.is_banned ? (
-                  <p className="flex flex-row gap-1">
+                )}
+                {userData.profile.is_banned && (
+                  <p className="flex gap-1">
                     <Gavel />
                     Заблокирован
                   </p>
-                ) : null}
+                )}
               </div>
             </div>
           </DropdownMenuItem>
           <div>
-            <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl">
-              <p className="flex flex-row gap-1">
+            <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl cursor-pointer">
+              <p className="flex gap-1">
                 <CircleUser />
                 Личный кабинет
               </p>
             </DropdownMenuItem>
             {userData.profile.hasAdmin && (
-              <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl">
-                <p className="flex flex-row gap-1">
+              <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl cursor-pointer">
+                <p className="flex gap-1">
                   <IdCard />
                   Кабинет разработчика
                 </p>
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem onClick={() => logOut()} className="text-xl">
-              <p className="flex flex-row gap-1">
+            <DropdownMenuItem onClick={handleLogout} className="text-xl cursor-pointer">
+              <p className="flex gap-1">
                 <LogOut />
                 Выйти
               </p>
