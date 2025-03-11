@@ -73,26 +73,6 @@ export function AccountButton() {
     }
   }, []);
 
-  const initialize = useCallback(async () => {
-    setIsUserLoading(true);
-
-    const user = await fetchAPI<UserData>("/api/v1/users/me");
-    if (user) {
-      setUserData(user);
-      setIsUserLoading(false);
-      setIsNotificationsLoading(true);
-      const notifs = await fetchAPI<Notification[]>("/api/v1/notifications", user.token);
-      if (notifs) {
-        setNotifications(notifs);
-        setUnreadCount(notifs.filter((n) => !n.is_read).length);
-      }
-      setIsNotificationsLoading(false);
-    } else {
-      setUserData(null);
-      setIsUserLoading(false);
-    }
-  }, [fetchAPI]);
-
   const fetchNotifications = useCallback(async (token: string | undefined) => {
     const data = await fetchAPI<Notification[]>("/api/v1/notifications", token);
     if (data) {
@@ -100,6 +80,27 @@ export function AccountButton() {
       setUnreadCount(data.filter((n) => !n.is_read).length);
     }
   }, [fetchAPI]);
+
+  const initialize = useCallback(async () => {
+    setIsUserLoading(true);
+
+    const user = await fetchAPI<UserData>("/api/v1/users/me");
+    if (user) {
+      setUserData(user);
+      setIsUserLoading(false);
+      
+      setIsNotificationsLoading(true);
+      await fetchNotifications(user.token)
+      setIsNotificationsLoading(false);
+    } else {
+      setUserData(null);
+      setIsUserLoading(false);
+    }
+  }, [fetchAPI, fetchNotifications]);
+
+  useEffect(() => {
+    initialize();
+  }, [initialize]);
 
   const markAsRead = useCallback(async (notificationId: number) => {
     if (!userData?.token) return;
@@ -123,10 +124,6 @@ export function AccountButton() {
     setUserData(null);
     router.push("/");
   }, [userData?.token, fetchAPI, router]);
-
-  useEffect(() => {
-    initialize();
-  }, [initialize]);
 
   if (isUserLoading) {
     return (
@@ -187,7 +184,7 @@ export function AccountButton() {
                   <div className="flex flex-col w-full">
                     <h1 className="text-xl font-medium">Уведомления</h1>
                     {!notifications.length && (
-                        <p className="text-sm text-gray-500 mt-2">Нет новых уведомлений</p>
+                        <p className="text-sm text-gray-500 mt-2">Здесь пока пусто :(</p>
                     )}
                   </div>
                 </DropdownMenuItem>
@@ -229,77 +226,71 @@ export function AccountButton() {
         )}
 
         {/* Меню профиля */}
-        {isUserLoading ? (
-            <Button variant="ghost" size="icon" disabled>
-              <Loader2 className="h-6 w-6 animate-spin" />
-            </Button>
-        ) : (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <UserAvatar />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
-                <DropdownMenuItem className="text-xl">
-                  <div className="flex items-center gap-5">
-                    <div className="w-14 h-14">
-                      <UserAvatar />
-                    </div>
-                    <div className="flex flex-col text-lg">
-                      <div className="flex gap-1 items-center">
-                        {userData.profile.hasFoxPlus && <Crown className="text-orange-400" />}
-                        <h1 className="text-2xl">{userData.profile.nick}</h1>
-                      </div>
-                      {userData.profile.hasFoxPlus && (
-                          <p className="flex gap-1">
-                            <HandHeart />
-                            Подписка активна
-                          </p>
-                      )}
-                      {!userData.profile.hasAccess && (
-                          <Link
-                              href="/access"
-                              className="inline-flex gap-1 items-center text-primary hover:underline"
-                          >
-                            <Ban />
-                            Заполните анкету
-                          </Link>
-                      )}
-                      {userData.profile.is_banned && (
-                          <p className="flex gap-1">
-                            <Gavel />
-                            Заблокирован
-                          </p>
-                      )}
-                    </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <UserAvatar />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
+              <DropdownMenuItem className="text-xl">
+                <div className="flex items-center gap-5">
+                  <div className="w-14 h-14">
+                    <UserAvatar />
                   </div>
-                </DropdownMenuItem>
-                <div>
-                  <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl cursor-pointer">
-                    <p className="flex gap-1">
-                      <CircleUser />
-                      Личный кабинет
-                    </p>
-                  </DropdownMenuItem>
-                  {userData.profile.hasAdmin && (
-                      <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl cursor-pointer">
+                  <div className="flex flex-col text-lg">
+                    <div className="flex gap-1 items-center">
+                      {userData.profile.hasFoxPlus && <Crown className="text-orange-400" />}
+                      <h1 className="text-2xl">{userData.profile.nick}</h1>
+                    </div>
+                    {userData.profile.hasFoxPlus && (
                         <p className="flex gap-1">
-                          <IdCard />
-                          Кабинет разработчика
+                          <HandHeart />
+                          Подписка активна
                         </p>
-                      </DropdownMenuItem>
-                  )}
-                  <DropdownMenuItem onClick={handleLogout} className="text-xl cursor-pointer">
-                    <p className="flex gap-1">
-                      <LogOut />
-                      Выйти
-                    </p>
-                  </DropdownMenuItem>
+                    )}
+                    {!userData.profile.hasAccess && (
+                        <Link
+                            href="/access"
+                            className="inline-flex gap-1 items-center text-primary hover:underline"
+                        >
+                          <Ban />
+                          Заполните анкету
+                        </Link>
+                    )}
+                    {userData.profile.is_banned && (
+                        <p className="flex gap-1">
+                          <Gavel />
+                          Заблокирован
+                        </p>
+                    )}
+                  </div>
                 </div>
-              </DropdownMenuContent>
-            </DropdownMenu>
-        )}
+              </DropdownMenuItem>
+              <div>
+                <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl cursor-pointer">
+                  <p className="flex gap-1">
+                    <CircleUser />
+                    Личный кабинет
+                  </p>
+                </DropdownMenuItem>
+                {userData.profile.hasAdmin && (
+                    <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl cursor-pointer">
+                      <p className="flex gap-1">
+                        <IdCard />
+                        Кабинет разработчика
+                      </p>
+                    </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={handleLogout} className="text-xl cursor-pointer">
+                  <p className="flex gap-1">
+                    <LogOut />
+                    Выйти
+                  </p>
+                </DropdownMenuItem>
+              </div>
+            </DropdownMenuContent>
+          </DropdownMenu>
       </div>
   );
 }
