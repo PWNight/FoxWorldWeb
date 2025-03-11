@@ -110,6 +110,14 @@ export async function PATCH(request: Request) {
         return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
     }
 
+    const user = await response.json()
+
+    if (id !== user.profile.id){
+        if ( !user.profile.hasAdmin ){
+            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+        }
+    }
+
     await query(
       'UPDATE notifications SET is_read = TRUE WHERE id = ?',
       [id]
