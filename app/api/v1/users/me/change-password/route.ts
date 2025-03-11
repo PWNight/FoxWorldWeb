@@ -1,6 +1,7 @@
 import { rconQuery } from '@/lib/rcon'
 import { NextRequest, NextResponse } from "next/server";
 import Joi from "joi";
+import {getUserData} from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
@@ -22,24 +23,17 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
+        const user = result.data.profile;
 
-        const json = await response.json()
-        const user = json.profile;
-
-        const result = await fetch('https://foxworld.ru/api/v1/auth/login',{
+        let response = await fetch('https://foxworld.ru/api/v1/auth/login',{
             method: 'POST',
             body: JSON.stringify({username: user.nick, password: new_password}),
         })
-        if(result.ok){
+        if( response.ok ){
             return NextResponse.json({ success: false, message: "Новый пароль совпадает с текущим" }, { status: 401 });
         }
 
@@ -52,7 +46,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Пароль небезопасен, выберите другой" }, { status: 401 });
         }
 
-        await rconQuery(`librelogin user pass-change ${json.profile.nick} ${new_password}`);
+        await rconQuery(`librelogin user pass-change ${user.nick} ${new_password}`);
         return NextResponse.json({ success: true, message: "Успешно" }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({

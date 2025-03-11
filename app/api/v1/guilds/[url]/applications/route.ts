@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import Joi from "joi";
 import {query} from "@/lib/mysql";
+import {getUserData} from "@/lib/utils";
 
 const applicationSchema = Joi.object({
     about_user: Joi.string().required(),
@@ -17,18 +18,11 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
-
-        const json = await response.json()
-        const user = json.profile;
+        const user = result.data;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`, [url])
         if( !guildData ){
@@ -69,15 +63,12 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
+
+        // TODO: Написать проверку может ли пользователь управлять заявками
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){
@@ -130,18 +121,11 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
-
-        const json = await response.json()
-        const user = json.profile;
+        const user = result.data.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){

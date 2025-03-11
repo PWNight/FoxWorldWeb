@@ -2,6 +2,7 @@ import { query } from '@/lib/mysql';
 import { rconQuery } from '@/lib/rcon'
 import { NextRequest, NextResponse } from "next/server";
 import Joi from "joi";
+import {getUserData} from "@/lib/utils";
 
 export async function POST(request: NextRequest) {
     const data = await request.json();
@@ -23,18 +24,11 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
-
-        const json = await response.json()
-        const user = json.profile;
+        const user = result.data.profile;
 
         // Получение пользователя из базы данных
         const [libre_user] : any = await query('SELECT * FROM librepremium_data WHERE last_nickname = ?', [new_username]);
