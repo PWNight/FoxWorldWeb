@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import {getSession, getStats} from "@/app/actions/getInfo";
 import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
 import ErrorMessage from "@/components/ui/notify-alert";
-import InDev from "@/components/indev";
 
 export default function Me() {
     const [userData, setUserData] = useState(Object)
