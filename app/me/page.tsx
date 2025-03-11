@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import {getSession, getStats} from "@/app/actions/getInfo";
 import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
 import ErrorMessage from "@/components/ui/notify-alert";
+import InDev from "@/components/indev";
 
 export default function Me() {
     const [userData, setUserData] = useState(Object)
@@ -83,6 +84,9 @@ export default function Me() {
                             <span className={'text-right'}>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</span>
                         </div>
                     </div>
+                </div>
+                <div className="bg-neutral-100 rounded-lg shadow-sm dark:bg-neutral-800 w-full h-full flex items-center justify-center">
+                    <p>Говорят, скоро тут что-то будет</p>
                 </div>
             </div>
 
