@@ -88,9 +88,9 @@ export function AccountButton() {
     if (user) {
       setUserData(user);
       setIsUserLoading(false);
-      
+
       setIsNotificationsLoading(true);
-      await fetchNotifications(user.token)
+      await fetchNotifications(user.token);
       setIsNotificationsLoading(false);
     } else {
       setUserData(null);
@@ -98,8 +98,26 @@ export function AccountButton() {
     }
   }, [fetchAPI, fetchNotifications]);
 
+  const refreshData = useCallback(async () => {
+    const user = await fetchAPI<UserData>("/api/v1/users/me");
+    if (user) {
+      setUserData(user);
+      await fetchNotifications(user.token);
+    } else {
+      setUserData(null);
+    }
+  }, [fetchAPI, fetchNotifications]);
+
   useEffect(() => {
     initialize();
+
+    // Update the information every 15 seconds
+    const intervalId = setInterval(() => {
+      refreshData();
+    }, 15000);
+
+    // Clean up interval on component unmount
+    return () => clearInterval(intervalId);
   }, [initialize]);
 
   const markAsRead = useCallback(async (notificationId: number) => {
@@ -174,8 +192,8 @@ export function AccountButton() {
                   <Bell className="h-6 w-6" />
                   {unreadCount > 0 && (
                       <span className="absolute -top-1 -right-1 bg-orange-500 text-white rounded-full w-4 h-4 flex items-center justify-center text-xs">
-                  {unreadCount}
-                </span>
+                        {unreadCount}
+                      </span>
                   )}
                 </Button>
               </DropdownMenuTrigger>
@@ -198,9 +216,9 @@ export function AccountButton() {
                       <div className="flex flex-col w-full">
                         <p className="text-sm">{notification.message}</p>
                         <div className="flex justify-between items-center mt-1">
-                    <span className="text-xs text-gray-500">
-                      {new Date(notification.created_at).toLocaleString()}
-                    </span>
+                          <span className="text-xs text-gray-500">
+                            {new Date(notification.created_at).toLocaleString()}
+                          </span>
                           {!notification.is_read && (
                               <button
                                   onClick={(e) => {
@@ -226,71 +244,71 @@ export function AccountButton() {
         )}
 
         {/* Меню профиля */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <UserAvatar />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
-              <DropdownMenuItem className="text-xl">
-                <div className="flex items-center gap-5">
-                  <div className="w-14 h-14">
-                    <UserAvatar />
-                  </div>
-                  <div className="flex flex-col text-lg">
-                    <div className="flex gap-1 items-center">
-                      {userData.profile.hasFoxPlus && <Crown className="text-orange-400" />}
-                      <h1 className="text-2xl">{userData.profile.nick}</h1>
-                    </div>
-                    {userData.profile.hasFoxPlus && (
-                        <p className="flex gap-1">
-                          <HandHeart />
-                          Подписка активна
-                        </p>
-                    )}
-                    {!userData.profile.hasAccess && (
-                        <Link
-                            href="/access"
-                            className="inline-flex gap-1 items-center text-primary hover:underline"
-                        >
-                          <Ban />
-                          Заполните анкету
-                        </Link>
-                    )}
-                    {userData.profile.is_banned && (
-                        <p className="flex gap-1">
-                          <Gavel />
-                          Заблокирован
-                        </p>
-                    )}
-                  </div>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <UserAvatar />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="mt-2 py-10 flex flex-col gap-10 rounded-lg">
+            <DropdownMenuItem className="text-xl">
+              <div className="flex items-center gap-5">
+                <div className="w-14 h-14">
+                  <UserAvatar />
                 </div>
-              </DropdownMenuItem>
-              <div>
-                <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl cursor-pointer">
-                  <p className="flex gap-1">
-                    <CircleUser />
-                    Личный кабинет
-                  </p>
-                </DropdownMenuItem>
-                {userData.profile.hasAdmin && (
-                    <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl cursor-pointer">
+                <div className="flex flex-col text-lg">
+                  <div className="flex gap-1 items-center">
+                    {userData.profile.hasFoxPlus && <Crown className="text-orange-400" />}
+                    <h1 className="text-2xl">{userData.profile.nick}</h1>
+                  </div>
+                  {userData.profile.hasFoxPlus && (
                       <p className="flex gap-1">
-                        <IdCard />
-                        Кабинет разработчика
+                        <HandHeart />
+                        Подписка активна
                       </p>
-                    </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onClick={handleLogout} className="text-xl cursor-pointer">
-                  <p className="flex gap-1">
-                    <LogOut />
-                    Выйти
-                  </p>
-                </DropdownMenuItem>
+                  )}
+                  {!userData.profile.hasAccess && (
+                      <Link
+                          href="/access"
+                          className="inline-flex gap-1 items-center text-primary hover:underline"
+                      >
+                        <Ban />
+                        Заполните анкету
+                      </Link>
+                  )}
+                  {userData.profile.is_banned && (
+                      <p className="flex gap-1">
+                        <Gavel />
+                        Заблокирован
+                      </p>
+                  )}
+                </div>
               </div>
-            </DropdownMenuContent>
-          </DropdownMenu>
+            </DropdownMenuItem>
+            <div>
+              <DropdownMenuItem onClick={() => router.push("/me")} className="text-xl cursor-pointer">
+                <p className="flex gap-1">
+                  <CircleUser />
+                  Личный кабинет
+                </p>
+              </DropdownMenuItem>
+              {userData.profile.hasAdmin && (
+                  <DropdownMenuItem onClick={() => router.push("/admin")} className="text-xl cursor-pointer">
+                    <p className="flex gap-1">
+                      <IdCard />
+                      Кабинет разработчика
+                    </p>
+                  </DropdownMenuItem>
+              )}
+              <DropdownMenuItem onClick={handleLogout} className="text-xl cursor-pointer">
+                <p className="flex gap-1">
+                  <LogOut />
+                  Выйти
+                </p>
+              </DropdownMenuItem>
+            </div>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
   );
 }
