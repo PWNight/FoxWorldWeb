@@ -8,28 +8,25 @@ import ErrorMessage from "@/components/ui/notify-alert";
 export default function Me() {
     const [userData, setUserData] = useState(Object)
     const [statsData, setStatsData] = useState(Object)
-
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
-
     const [pageLoaded, setPageLoaded] = useState(false);
     const [statisticLoadError, setStatisticLoadError] = useState(false);
-
     const router = useRouter()
-    
+
     useEffect(()=>{
         getSession().then(async r => {
-            if ( !r.success ) {
+            if (!r.success) {
                 router.push("/login")
                 return
             }
             setUserData(r.data)
             getStats(r.data).then(r => {
-                if ( !r.success ) {
+                if (!r.success) {
                     setStatisticLoadError(true);
                     setNotifyMessage(`Произошла ошибка при загрузке игровой статистики`)
                     setNotifyType('warning')
-                }else{
+                } else {
                     setStatsData(r.data)
                 }
                 setPageLoaded(true)
@@ -41,127 +38,118 @@ export default function Me() {
         setNotifyMessage('')
     }
 
+    function getActivityClass(activityIndex: number) {
+      if (activityIndex >= 4) return ["text-[#79C37C] font-semibold text-right", "Очень активный"];
+      if (activityIndex >= 3) return ["text-[#A8D277] font-semibold text-right", "Активный"];
+      if (activityIndex >= 2) return ["text-[#D9E56A] font-semibold text-right", "Постоянный"];
+      if (activityIndex >= 1) return ["text-[#F3D476] font-semibold text-right", "Регулярный"];
+      return ["text-[#D9DCDE] font-semibold", "Неактивный"];
+    }
+
     if (!pageLoaded) {
-        return (
-            <MeSkelet/>
-        )
-    }else{
-        return (
-            <div className="grid lg:grid-cols-[.6fr_1fr] gap-2">
-                { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
-                <div className="flex flex-col gap-2 ">
-                    <div className="bg-neutral-100 rounded-sm p-4 flex justify-center flex-col dark:bg-neutral-800">
-                        <div className="border-b">
-                            <h1 className="text-2xl">Информация об аккаунте</h1>
-                            <p className="text-muted-foreground">Основная информация о вас</p>
+        return <MeSkelet/>
+    }
+
+    return (
+        <div className="grid xl:grid-cols-[.7fr_1fr] gap-6">
+            {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+
+            <div className="flex flex-col gap-6">
+                <div className="bg-neutral-100 rounded-lg p-6 shadow-sm dark:bg-neutral-800">
+                    <h1 className="text-2xl font-semibold border-b border-neutral-200 pb-3 dark:border-neutral-700">
+                        Информация об аккаунте
+                    </h1>
+                    <div className="mt-4 space-y-3">
+                        <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Никнейм</span>
+                            <span>{userData.profile.nick}</span>
                         </div>
-                        <div className="my-2">
-                            <div className="flex flex-col gap-1">
-                                <div className="xl:flex gap-2"><p className="text-muted-foreground">Ваш никнейм</p><p>{userData.profile.nick}</p></div>
-                                <div className="xl:flex gap-2"><p className="text-muted-foreground">Ваш индекс активности</p>{statisticLoadError ? <div className='animate-pulse w-15 h-5 bg-neutral-200 dark:bg-neutral-700'/> : <p>{statsData.info.activity_index}</p>}</div>
-                                <div className="xl:flex gap-2"><p className="text-muted-foreground">Вы создали аккаунт</p><p>{new Date(userData.user.joined).toLocaleString("ru-RU")}</p></div>
-                                <div className="xl:flex gap-2"><p className="text-muted-foreground">Последний раз входили</p><p>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</p></div>
-                            </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Индекс активности</span>
+                            {statisticLoadError ? (
+                                <div className="animate-pulse w-20 h-5 bg-neutral-200 dark:bg-neutral-700 rounded" />
+                            ) : (
+                                <span className={getActivityClass(statsData.info.activity_index)[0]}>
+                                    {statsData.info.activity_index} ({getActivityClass(statsData.info.activity_index)[1]})
+                                </span>
+                            )}
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Дата регистрации</span>
+                            <span className={'text-right'}>{new Date(userData.user.joined).toLocaleString("ru-RU")}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-muted-foreground">Последний вход</span>
+                            <span className={'text-right'}>{new Date(userData.user.last_seen).toLocaleString("ru-RU")}</span>
                         </div>
                     </div>
                 </div>
-                { statisticLoadError ? <MeStatisticSkelet/> :
-                    <div className="">
-                        <div className="bg-neutral-100 rounded-sm p-4 lg:row-span-1 lg:col-span-2 dark:bg-neutral-800">
-                            <div className="border-b">
-                                <h1 className="text-2xl">Игровая статистика</h1>
-                                <p className="text-muted-foreground">Статистика вашей игры</p>
+            </div>
+
+            {statisticLoadError ? <MeStatisticSkelet/> : (
+                <div className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
+                        {/* Блок статистики активности */}
+                        <div className="bg-neutral-100 rounded-lg p-6 shadow-sm dark:bg-neutral-800">
+                            <h2 className="text-xl font-medium mb-4 border-b border-neutral-200 pb-2 dark:border-neutral-700">
+                                Статистика активности
+                            </h2>
+                            <div className="space-y-6 text-sm">
+                                <div>
+                                    <h3 className="text-muted-foreground font-medium mb-2">Время игры</h3>
+                                    <div className="space-y-4">
+                                        <div>
+                                            <h4 className="text-muted-foreground text-sm">За всё время</h4>
+                                            <p>Всего наиграно: {statsData.info.playtime}</p>
+                                            <p>Активной игры: {statsData.info.active_playtime}</p>
+                                            <p>В АФК: {statsData.info.afk_time}</p>
+                                        </div>
+                                        <div>
+                                            <h4 className="text-muted-foreground text-sm">За 30 дней</h4>
+                                            <p>Всего наиграно: {statsData.online_activity.playtime_30d}</p>
+                                            <p>Активной игры: {statsData.online_activity.active_playtime_30d}</p>
+                                            <p>В АФК: {statsData.online_activity.afk_time_30d}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="text-muted-foreground font-medium mb-2">Сессии</h3>
+                                    <p>Всего заходов: {statsData.info.session_count}</p>
+                                    <p>За 30 дней: {statsData.online_activity.session_count_30d}</p>
+                                    <p>За 7 дней: {statsData.online_activity.session_count_7d}</p>
+                                </div>
                             </div>
-                            <div className="my-2">
-                                <div className="gap-2 grid 2xl:grid-cols-2">
-                                    <div>
-                                        <p className="text-muted-foreground text-xl">Статистика активности</p>
-                                        <div className="flex flex-col gap-2 text-sm">
-                                            <div>
-                                                <h1 className="text-muted-foreground text-lg">За всё время</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    наиграно</p><p>{statsData.info.playtime}</p></div>
-                                                <div className="flex gap-1"><p>{statsData.info.active_playtime}</p><p
-                                                    className="text-muted-foreground">активной игры</p></div>
-                                                <div className="flex gap-1"><p>{statsData.info.afk_time}</p><p
-                                                    className="text-muted-foreground">в афк</p></div>
-                                            </div>
-                                            <div>
-                                                <h1 className="text-muted-foreground text-lg">За 30 дней</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    наиграно</p><p>{statsData.online_activity.playtime_30d}</p></div>
-                                                <div className="flex gap-1">
-                                                    <p>{statsData.online_activity.active_playtime_30d}</p><p
-                                                    className="text-muted-foreground">активной игры</p></div>
-                                                <div className="flex gap-1">
-                                                    <p>{statsData.online_activity.afk_time_30d}</p><p
-                                                    className="text-muted-foreground">в афк</p></div>
-                                            </div>
-                                            <div>
-                                                <h1 className="text-muted-foreground text-lg">Ваши сессии</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    вы зашли к нам</p><p>{statsData.info.session_count}</p><p
-                                                    className="text-muted-foreground">раз</p></div>
-                                                <div className="flex gap-1">
-                                                    <p>{statsData.online_activity.session_count_30d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 30 дней</p>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <p>{statsData.online_activity.session_count_7d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 7 дней</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <p className="text-muted-foreground text-xl">Статистика убийств и
-                                            смертей</p>
-                                        <div className="flex flex-col gap-2">
-                                        <div className='text-sm'>
-                                                <h1 className="text-muted-foreground text-lg">Убийства мобов</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    вы убили</p><p>{statsData.kill_data.mob_kills_total}</p><p
-                                                    className="text-muted-foreground">животных</p></div>
-                                                <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_30d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 30 дней</p>
-                                                </div>
-                                                <div className="flex gap-1"><p>{statsData.kill_data.mob_kills_7d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 7 дней</p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h1 className="text-muted-foreground text-lg">Убийства игроков</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    вы убили</p><p>{statsData.kill_data.player_kills_total}</p><p
-                                                    className="text-muted-foreground">игроков</p></div>
-                                                <div className="flex gap-1">
-                                                    <p>{statsData.kill_data.player_kills_30d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 30 дней</p>
-                                                </div>
-                                                <div className="flex gap-1"><p>{statsData.kill_data.player_kills_7d}</p>
-                                                    <p className="text-muted-foreground">раз(-а) за последние 7 дней</p>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <h1 className="text-muted-foreground text-lg">Ваши смерти</h1>
-                                                <div className="flex gap-1"><p className="text-muted-foreground">Всего
-                                                    вы умерли</p><p>{statsData.kill_data.deaths_total}</p><p
-                                                    className="text-muted-foreground">раз(-а)</p></div>
-                                                <div className="flex gap-1"><p>{statsData.kill_data.deaths_30d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 30 дней</p>
-                                                </div>
-                                                <div className="flex gap-1"><p>{statsData.kill_data.deaths_7d}</p><p
-                                                    className="text-muted-foreground">раз(-а) за последние 7 дней</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        </div>
+
+                        {/* Блок статистики убийств и смертей */}
+                        <div className="bg-neutral-100 rounded-lg p-6 shadow-sm dark:bg-neutral-800">
+                            <h2 className="text-xl font-medium mb-4 border-b border-neutral-200 pb-2 dark:border-neutral-700">
+                                Статистика убийств и смертей
+                            </h2>
+                            <div className="space-y-6 text-sm">
+                                <div>
+                                    <h3 className="text-muted-foreground font-medium mb-2">Убийства мобов</h3>
+                                    <p>Всего: {statsData.kill_data.mob_kills_total}</p>
+                                    <p>За 30 дней: {statsData.kill_data.mob_kills_30d}</p>
+                                    <p>За 7 дней: {statsData.kill_data.mob_kills_7d}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-muted-foreground font-medium mb-2">Убийства игроков</h3>
+                                    <p>Всего: {statsData.kill_data.player_kills_total}</p>
+                                    <p>За 30 дней: {statsData.kill_data.player_kills_30d}</p>
+                                    <p>За 7 дней: {statsData.kill_data.player_kills_7d}</p>
+                                </div>
+                                <div>
+                                    <h3 className="text-muted-foreground font-medium mb-2">Смерти</h3>
+                                    <p>Всего: {statsData.kill_data.deaths_total}</p>
+                                    <p>За 30 дней: {statsData.kill_data.deaths_30d}</p>
+                                    <p>За 7 дней: {statsData.kill_data.deaths_7d}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
-                }
-            </div>
-        )
-    }
+                </div>
+            )}
+        </div>
+    )
 }
