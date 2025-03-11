@@ -39,8 +39,9 @@ export function stringToDate(date: string) {
 }
 
 export async function getUserData(token: string) {
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
   try {
-    const response = await fetch("/api/v1/users/me", {
+    const response = await fetch(`${apiBaseUrl}/api/v1/users/me`, {
       method: "GET",
       headers: { "Authorization": `Bearer ${token}` }
     });
