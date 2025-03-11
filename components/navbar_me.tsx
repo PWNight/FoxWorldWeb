@@ -1,56 +1,63 @@
 import SubAnchor from "@/components/subanchor";
-import {Castle, House, Landmark, ShieldCheck, Store} from "lucide-react";
+import { Castle, House, Landmark, ShieldCheck, Store } from "lucide-react";
 
 export function NavMe() {
     return (
-        <div className="sm:flex items-start">
-            <div className="bg-neutral-100 rounded-sm dark:bg-neutral-800 flex flex-col gap-5 px-6 py-4">
-                <h1 className="border-b text-xl my-2 w-full text-center">Меню навигации</h1>
-                <div className="w-full flex flex-col gap-2 items-center">
+        <div>
+            <div className="bg-neutral-100 rounded-lg shadow-sm dark:bg-neutral-800 p-4 sm:p-6">
+                <h1 className="text-xl sm:text-2xl font-semibold border-b border-neutral-200 dark:border-neutral-700 pb-3 text-center">
+                    Меню навигации
+                </h1>
+                <div className="mt-4 space-y-2">
                     <SubAnchor
-                        key='/me'
-                        activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                        key="/me"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
-                        className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                        href='/me'
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md text-sm sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me"
                     >
-                        <House/>Главная страница
+                        <House className="w-5 h-5" />
+                        Главная страница
                     </SubAnchor>
                     <SubAnchor
-                        key='/me/donate'
-                        activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                        key="/me/donate"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
-                        className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                        href='/me/donate'
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md text-sm sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/donate"
                     >
-                        <Store/> Магазин сервера
+                        <Store className="w-5 h-5" />
+                        Магазин сервера
                     </SubAnchor>
                     <SubAnchor
-                        key='/me/security'
-                        activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                        key="/me/security"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
-                        className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                        href='/me/security'
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md text-sm sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/security"
                     >
-                        <ShieldCheck/> Настройки безопасности
+                        <ShieldCheck className="w-5 h-5" />
+                        Управление безопасностью
                     </SubAnchor>
                     <SubAnchor
-                        key='/me/bank'
-                        activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                        key="/me/bank"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
-                        className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                        href='/me/bank'
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md text-sm sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/bank"
                     >
-                        <Landmark/> Управление средствами
+                        <Landmark className="w-5 h-5" />
+                        Управление средствами
                     </SubAnchor>
                     <SubAnchor
-                        key='/me/guilds'
-                        activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                        key="/me/guilds"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
-                        className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
-                        href='/me/guilds'
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md text-sm sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/guilds"
                     >
-                        <Castle/> Управление гильдиями
+                        <Castle className="w-5 h-5" />
+                        Управление гильдиями
                     </SubAnchor>
                 </div>
             </div>
