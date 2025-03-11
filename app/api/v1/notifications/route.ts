@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import {minecraftQuery, query} from "@/lib/mysql";
-import {sendDiscordMessage} from "@/lib/discord";
+import {query} from "@/lib/mysql";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -61,30 +60,23 @@ export async function POST(request: Request) {
             error: errorData || response.statusText
         }, {status: response.status})
     }
+    const user = await response.json()
 
     if (nickname){
         const [profile] : any = await query("SELECT * FROM profiles WHERE nick = ?", [nickname]);
         userId = profile.id;
     }
-    const [profile] : any = await query("SELECT * FROM profiles WHERE id = ?", [userId]);
+
+    if (userId !== user.profile.id){
+        if ( !user.profile.hasAdmin ){
+            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+        }
+    }
 
     await query(
       'INSERT INTO notifications (fk_profile, message) VALUES (?, ?)',
       [userId, message]
     );
-
-    /*const [discordUser] : any = await minecraftQuery(
-      'SELECT discord FROM ds_accounts WHERE uuid = ?',
-      [profile.fk_uuid]
-    );
-
-    if (discordUser) {
-      const discord_result = await sendDiscordMessage(discordUser.discord, message);
-      if ( !discord_result.success ){
-          return NextResponse.json({ success: false, error: discord_result.data })
-      }
-    }
-    */
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
