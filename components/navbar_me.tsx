@@ -1,5 +1,5 @@
 import SubAnchor from "@/components/subanchor";
-import { Castle, House, Landmark, ShieldCheck, Store } from "lucide-react";
+import {Castle, House, Landmark, PaintbrushVertical, Scale, Store} from "lucide-react";
 
 export function NavMe() {
     return (
@@ -20,6 +20,16 @@ export function NavMe() {
                         Главная страница
                     </SubAnchor>
                     <SubAnchor
+                        key="/me/customization"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
+                        absolute
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/customization"
+                    >
+                        <PaintbrushVertical className="w-5 h-5" />
+                        Кастомизация
+                    </SubAnchor>
+                    <SubAnchor
                         key="/me/donate"
                         activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                         absolute
@@ -27,27 +37,7 @@ export function NavMe() {
                         href="/me/donate"
                     >
                         <Store className="w-5 h-5" />
-                        Магазин сервера
-                    </SubAnchor>
-                    <SubAnchor
-                        key="/me/security"
-                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
-                        absolute
-                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
-                        href="/me/security"
-                    >
-                        <ShieldCheck className="w-5 h-5" />
-                        Управление безопасностью
-                    </SubAnchor>
-                    <SubAnchor
-                        key="/me/bank"
-                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
-                        absolute
-                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
-                        href="/me/bank"
-                    >
-                        <Landmark className="w-5 h-5" />
-                        Управление средствами
+                        Управление покупками
                     </SubAnchor>
                     <SubAnchor
                         key="/me/guilds"
@@ -58,6 +48,26 @@ export function NavMe() {
                     >
                         <Castle className="w-5 h-5" />
                         Управление гильдиями
+                    </SubAnchor>
+                    <SubAnchor
+                        key="/me/jurisdiction"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
+                        absolute
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/jurisdiction"
+                    >
+                        <Scale className="w-5 h-5" />
+                        Судебная система
+                    </SubAnchor>
+                    <SubAnchor
+                        key="/me/bank"
+                        activeClassName="bg-orange-400 text-white hover:bg-orange-500"
+                        absolute
+                        className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
+                        href="/me/bank"
+                    >
+                        <Landmark className="w-5 h-5" />
+                        Банковская система
                     </SubAnchor>
                 </div>
             </div>
