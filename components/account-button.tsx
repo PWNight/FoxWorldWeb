@@ -118,7 +118,7 @@ export function AccountButton() {
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
-  }, [initialize]);
+  }, [initialize, refreshData]);
 
   const markAsRead = useCallback(async (notificationId: number) => {
     if (!userData?.token) return;

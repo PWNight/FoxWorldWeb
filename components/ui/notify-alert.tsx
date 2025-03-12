@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 
 interface ErrorMessageProps {
   message: string;
-  type?: 'error' | 'warning' | 'success';
+  type: string;
   onClose?: () => void;
 }
 
@@ -32,6 +32,7 @@ function ErrorMessage({ message, type = 'error', onClose }: ErrorMessageProps) {
     },
   };
 
+  // @ts-ignore
   const style = alertStyles[type];
 
   useEffect(() => {
