@@ -111,7 +111,7 @@ export default function CreateGuild() {
 
     return (
         <div className="flex items-center justify-center p-4">
-            <div className="w-full max-w-md">
+            <div className="w-full max-w-lg">
                 <form onSubmit={handleSubmit} className="bg-neutral-100 dark:bg-neutral-800 shadow-lg rounded-xl p-6 space-y-6 text-gray-900 dark:text-gray-100">
                     <div className="space-y-2">
                         <h1 className="text-2xl font-bold">
