@@ -67,12 +67,16 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         if ( !result.success ){
             return NextResponse.json(result, { status: result.status })
         }
-
-        // TODO: Написать проверку может ли пользователь управлять заявками
+        const user = result.data.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){
             return NextResponse.json({ success: false, message: 'Гильдия не найдена' },{status: 400})
+        }
+
+        const [guildAccess] : any = await query(`SELECT permission FROM guilds_members WHERE fk_guild = ? AND uid = ?`, [guildData.id, user.id])
+        if( !guildAccess || guildAccess.permission != 2 ){
+            return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии'}, { status: 400 });
         }
 
         const [userGuild] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user_id, guildData.id])
