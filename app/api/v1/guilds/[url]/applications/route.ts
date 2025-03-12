@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
         if ( !result.success ){
             return NextResponse.json(result, { status: result.status })
         }
-        const user = result.data;
+        const user = result.data.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`, [url])
         if( !guildData ){
