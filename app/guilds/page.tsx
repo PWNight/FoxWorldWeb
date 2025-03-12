@@ -82,6 +82,7 @@ export default function Guilds() {
                     <ErrorMessage
                         message={notifyMessage}
                         onClose={handleClose}
+                        // @ts-ignore
                         type={notifyType}
                     />
                 )}
@@ -95,6 +96,7 @@ export default function Guilds() {
                 <ErrorMessage
                     message={notifyMessage}
                     onClose={handleClose}
+                    // @ts-ignore
                     type={notifyType}
                 />
             )}
