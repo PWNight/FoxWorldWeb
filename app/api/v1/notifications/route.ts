@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import {query} from "@/lib/mysql";
+import {getUserData} from "@/lib/utils";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -9,20 +10,15 @@ export async function GET(request: Request) {
   const token = authHeader.split(" ")[1];
 
   try {
-    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
-        method: "GET",
-        headers: {"Authorization": `Bearer ${token}`}
-    })
-
-    if ( !response.ok ){
-        const errorData = await response.json()
-        return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+    const result = await getUserData(token);
+    if ( !result.success ){
+      return NextResponse.json(result, { status: result.status })
     }
+    const user = result.data.profile;
 
-    const user = await response.json()
     const rows : any = await query(
       'SELECT * FROM notifications WHERE fk_profile = ? ORDER BY created_at DESC',
-      [user.profile.id]
+      [user.id]
     );
 
     return NextResponse.json(rows);
@@ -47,20 +43,11 @@ export async function POST(request: Request) {
   const token = authHeader.split(" ")[1];
 
   try {
-    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
-        method: "GET",
-        headers: {"Authorization": `Bearer ${token}`}
-    })
-
-    if ( !response.ok ) {
-        const errorData = await response.json()
-        return NextResponse.json({
-            success: false,
-            message: 'Не удалось получить данные о пользователе',
-            error: errorData || response.statusText
-        }, {status: response.status})
+    const result = await getUserData(token);
+    if ( !result.success ){
+      return NextResponse.json(result, { status: result.status })
     }
-    const user = await response.json()
+    const user = result.data;
 
     if (nickname){
         const [profile] : any = await query("SELECT * FROM profiles WHERE nick = ?", [nickname]);
@@ -100,17 +87,11 @@ export async function PATCH(request: Request) {
   const token = authHeader.split(" ")[1];
 
   try {
-    let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
-        method: "GET",
-        headers: {"Authorization": `Bearer ${token}`}
-    })
-
-    if ( !response.ok ){
-        const errorData = await response.json()
-        return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+    const result = await getUserData(token);
+    if ( !result.success ){
+      return NextResponse.json(result, { status: result.status })
     }
-
-    const user = await response.json()
+    const user = result.data;
 
     if (id !== user.profile.id){
         if ( !user.profile.hasAdmin ){

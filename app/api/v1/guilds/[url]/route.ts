@@ -1,6 +1,7 @@
 import {NextRequest, NextResponse} from "next/server";
 import { query } from "@/lib/mysql";
 import Joi from "joi";
+import {getUserData} from "@/lib/utils";
 
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
@@ -42,18 +43,11 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
     const token = authHeader.split(" ")[1];
 
     try{
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`},
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
-
-        const json = await response.json()
-        const user = json.profile;
+        const user = result.data.profile;
 
         if(!user.inGuild){
             return NextResponse.json({ success: false, message: 'Вы не состоите в гильдии' },{status:401})
@@ -107,18 +101,11 @@ export async function DELETE(request: NextRequest, {params}: { params: Promise<{
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`},
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
-
-        const json = await response.json()
-        const user = json.profile;
+        const user = result.data.profile;
 
         const [guildData] : any = await query(`SELECT * FROM guilds WHERE url = ?`,[url])
         if( !guildData ){

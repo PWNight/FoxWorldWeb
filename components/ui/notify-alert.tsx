@@ -1,4 +1,5 @@
-import React from 'react';
+"use client";
+import React, { useEffect } from 'react';
 
 interface ErrorMessageProps {
   message: string;
@@ -7,48 +8,80 @@ interface ErrorMessageProps {
 }
 
 function ErrorMessage({ message, type = 'error', onClose }: ErrorMessageProps) {
-  const alertClasses : any = {
-    error: 'bg-red-100 border border-red-400 text-red-700',
-    warning: 'bg-yellow-100 border border-yellow-400 text-yellow-700',
-    success: 'bg-green-100 border border-green-400 text-green-700',
+  const alertStyles = {
+    error: {
+      bg: 'bg-red-50 dark:bg-red-900/80',
+      border: 'border-red-200 dark:border-red-800',
+      text: 'text-red-800 dark:text-red-100',
+      iconBg: 'bg-red-100 dark:bg-red-800/50',
+      closeHover: 'hover:bg-red-100 dark:hover:bg-red-800',
+    },
+    warning: {
+      bg: 'bg-yellow-50 dark:bg-yellow-900/80',
+      border: 'border-yellow-200 dark:border-yellow-800',
+      text: 'text-yellow-800 dark:text-yellow-100',
+      iconBg: 'bg-yellow-100 dark:bg-yellow-800/50',
+      closeHover: 'hover:bg-yellow-100 dark:hover:bg-yellow-800',
+    },
+    success: {
+      bg: 'bg-green-50 dark:bg-green-900/80',
+      border: 'border-green-200 dark:border-green-800',
+      text: 'text-green-800 dark:text-green-100',
+      iconBg: 'bg-green-100 dark:bg-green-800/50',
+      closeHover: 'hover:bg-green-100 dark:hover:bg-green-800',
+    },
   };
 
-  const alertClass = alertClasses[type];
+  // @ts-ignore
+  const style = alertStyles[type];
+
+  useEffect(() => {
+    if (!onClose) return;
+
+    const timer = setTimeout(() => {
+      onClose();
+    }, 5000);
+
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
   return (
     <div
-      className={`p-4 rounded ${alertClass} mb-4 fixed top-0 left-0 right-0 z-1000`} // Измененные стили
+      className={`fixed top-6 left-1/2 transform -translate-x-1/2 w-full max-w-lg z-50 ${style.bg} ${style.border} border shadow-lg rounded-xl p-5 transition-all duration-300`}
       role="alert"
     >
-      <div className="flex">
-        <div>
-          {type === 'error' && <ErrorIcon className="h-6 w-6 mr-2" />}
-          {type === 'warning' && <WarningIcon className="h-6 w-6 mr-2" />}
-          {type === 'success' && <SuccessIcon className="h-6 w-6 mr-2" />}
+      <div className="flex items-start gap-4">
+        <div className={`p-2 rounded-full ${style.iconBg}`}>
+          {type === 'error' && <ErrorIcon className="w-6 h-6" />}
+          {type === 'warning' && <WarningIcon className="w-6 h-6" />}
+          {type === 'success' && <SuccessIcon className="w-6 h-6" />}
         </div>
-        <div>
-          <p className="font-bold">
+        <div className="flex-1">
+          <p className={`font-semibold text-lg ${style.text}`}>
             {type === 'error' ? 'Ошибка' : type === 'warning' ? 'Предупреждение' : 'Успех'}
           </p>
-          <p className="text-sm">{message}</p>
+          <p className={`text-base ${style.text}`}>{message}</p>
         </div>
         {onClose && (
           <button
-            className="ml-auto -mx-1.5 -my-1.5 bg-transparent hover:bg-red-200 rounded-lg focus:ring-2 focus:ring-red-100 p-1.5 inline-flex items-center justify-center"
+            className={`p-2 rounded-full ${style.closeHover} focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-${type}-300 dark:focus:ring-${type}-700 transition-colors`}
             onClick={onClose}
-            type="button" // Добавлено для корректности JSX
+            type="button"
+            aria-label="Закрыть"
           >
             <svg
-              className="w-5 h-5"
-              fill="currentColor"
-              viewBox="0 0 20 20"
+              className={`w-6 h-6 ${style.text}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             </svg>
           </button>
         )}
@@ -57,7 +90,6 @@ function ErrorMessage({ message, type = 'error', onClose }: ErrorMessageProps) {
   );
 }
 
-// Типизация для иконок
 interface IconProps {
   className?: string;
 }
@@ -74,8 +106,8 @@ const ErrorIcon = ({ className }: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2"
-      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-    ></path>
+      d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+    />
   </svg>
 );
 
@@ -91,8 +123,8 @@ const WarningIcon = ({ className }: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2"
-      d="M12 9v2m0 4h.01m-6.938 4.07A8 8 0 0112 17a8 8 0 016.938-4.07m0 0A7 7 0 0012 10a7 7 0 00-6.938 4.07m0 0A6 6 0 0112 11a6 6 0 016.938-4.07m0 0A5 5 0 0012 12a5 5 0 00-6.938 4.07m0 0A4 4 0 0112 13a4 4 0 016.938-4.07m0 0A3 3 0 0012 14a3 3 0 00-6.938 4.07"
-    ></path>
+      d="M12 9v3m0 3h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+    />
   </svg>
 );
 
@@ -108,8 +140,8 @@ const SuccessIcon = ({ className }: IconProps) => (
       strokeLinecap="round"
       strokeLinejoin="round"
       strokeWidth="2"
-      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-    ></path>
+      d="M5 13l4 4L19 7"
+    />
   </svg>
 );
 

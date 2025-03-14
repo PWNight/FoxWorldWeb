@@ -2,6 +2,7 @@ import {NextRequest, NextResponse} from "next/server";
 import Joi from "joi";
 import {query} from "@/lib/mysql";
 import {rconQuery} from "@/lib/rcon";
+import {getUserData} from "@/lib/utils";
 
 const applicationSchema = Joi.object({
     nickname: Joi.string().required(),
@@ -19,18 +20,13 @@ export async function GET(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
+        const user = result.data.profile;
 
-        const user = await response.json()
-        if ( !user.profile.hasAdmin ){
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
@@ -62,19 +58,13 @@ export async function POST(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch("https://foxworld.ru/api/v1/users/me",{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
+        const user = result.data.profile;
 
-        const user = await response.json()
-
-        if ( !user.profile.hasAdmin ){
+        if ( !user.hasAdmin ){
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
@@ -83,7 +73,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ success: false, message: 'Заявка не найдена' }, {status: 400})
         }
 
-        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.profile.id, application_id])
+        await query('UPDATE verify_applications SET status = ?, staff_uid = ? WHERE id = ?',[status, user.id, application_id])
 
         if ( status == 'Принята' ) {
             await rconQuery(`easywl add ${nickname}`)
@@ -119,14 +109,9 @@ export async function PUT(request: NextRequest) {
     const token = authHeader.split(" ")[1];
 
     try {
-        let response = await fetch(`https://foxworld.ru/api/v1/users/me`,{
-            method: "GET",
-            headers: {"Authorization": `Bearer ${token}`}
-        })
-
-        if ( !response.ok ){
-            const errorData = await response.json()
-            return NextResponse.json({success: false, message: 'Не удалось получить данные о пользователе', error: errorData || response.statusText},{status: response.status})
+        const result = await getUserData(token);
+        if ( !result.success ){
+            return NextResponse.json(result, { status: result.status })
         }
 
         const [verifyApplication] : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = 'Рассматривается'", [nickname])
