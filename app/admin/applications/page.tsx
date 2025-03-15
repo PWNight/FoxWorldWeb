@@ -25,7 +25,7 @@ export default function VerifyApplications() {
                 return
             }
 
-            if ( !r.data.profile.hasAdmin ){
+            if ( r.data.profile.nick != 'PWNight' ){
                 router.push("/")
                 return
             }
