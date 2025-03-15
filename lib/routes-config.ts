@@ -1,11 +1,4 @@
-import {ROUTES} from "@/contents/routes";
-
-export type EachRoute = {
-  title: string;
-  href: string;
-  noLink?: true;
-  items?: EachRoute[];
-};
+import {EachRoute, ROUTES} from "@/contents/routes";
 
 type Page = { title: string; href: string };
 
