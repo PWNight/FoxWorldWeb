@@ -3,7 +3,7 @@ name: DEV Deploy to Jino
 on:
   push:
     branches:
-      - dev
+      - main
   repository_dispatch:
     types: [submodule-updated]
 
@@ -17,14 +17,14 @@ jobs:
       uses: actions/checkout@v4
       with:
         submodules: recursive
-        fetch-depth: 1  # Изменено с 0 на 1 для shallow clone
+        fetch-depth: 1
 
     # 2. Обновление субмодулей только при необходимости
     - name: Update submodules
       if: github.event_name == 'repository_dispatch'
       run: git submodule update --remote --merge
 
-    # 3. Настройка Node.js с конкретной версией и кэшированием
+    # 3. Настройка Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
@@ -42,33 +42,42 @@ jobs:
         key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
         restore-keys: ${{ runner.os }}-nextjs-
 
-    # 5. Установка зависимостей с проверкой кэша
+    # 5. Установка зависимостей
     - name: Install dependencies
       run: npm ci --prefer-offline --no-audit
 
-    # 6. Оптимизированная сборка
+    # 6. Сборка приложения
     - name: Build Next.js app
       run: npm run build
       env:
         NODE_OPTIONS: '--max-old-space-size=4096'
-        NEXT_TELEMETRY_DISABLED: 1  # Отключаем телеметрию
+        NEXT_TELEMETRY_DISABLED: 1
 
-    # 7. Установка только необходимых утилит
-    - name: Install deployment tools
+    # 7. Установка утилит
+    - name: Install sshpass and rsync
       run: sudo apt-get update && sudo apt-get install -y --no-install-recommends sshpass rsync
 
-    # 8. Оптимизированный деплой с rsync
-    - name: Deploy to Jino
+    # 8. Полный перенос сборки как в оригинале
+    - name: Deploy to Jino via SSH
       env:
         SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
         SSH_HOST: ${{ secrets.SSH_HOST }}
         SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
       run: |
-        # Тестирование SSH
-        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $SSH_USERNAME@$SSH_HOST "echo SSH OK" || exit 1
+        echo "Testing SSH connection..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
 
-        # Использование rsync вместо tar/scp
-        sshpass -p "$SSH_PASSWORD" rsync -az --progress -e "ssh -o StrictHostKeyChecking=no" .next/ $SSH_USERNAME@$SSH_HOST:~/domains/dev.foxworld.ru/.next/
+        echo "Creating remote directory if it doesn’t exist..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/dev.foxworld.ru/.next"
 
-        # Перезапуск сервера
+        echo "Compressing .next folder..."
+        tar -czf next.tar.gz .next
+
+        echo "Uploading compressed .next folder..."
+        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no next.tar.gz $SSH_USERNAME@$SSH_HOST:~/domains/dev.foxworld.ru/
+
+        echo "Decompressing on server..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "tar -xzf ~/domains/dev.foxworld.ru/next.tar.gz -C ~/domains/dev.foxworld.ru/ && rm ~/domains/dev.foxworld.ru/next.tar.gz"
+
+        echo "Restarting server..."
         sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/dev.foxworld.ru/tmp && touch ~/domains/dev.foxworld.ru/tmp/restart.txt"
