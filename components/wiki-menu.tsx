@@ -1,8 +1,8 @@
 "use client";
 
-import { ROUTES } from "@/lib/routes-config";
 import SubLink from "./sublink";
 import { usePathname } from "next/navigation";
+import {ROUTES} from "@/contents/routes";
 
 export default function WikiMenu({ isSheet = false }) {
   const pathname = usePathname();
