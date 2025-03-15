@@ -1,14 +1,12 @@
 {
   "name": "foxworld-web",
-  "version": "1.0.0-beta4",
+  "version": "1.0.0-beta5",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "deploy": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/foxworld.ru/tmp && touch ~/domains/foxworld.ru/tmp/restart.txt\"",
-    "deploy-dev": "npm run build && scp -r .next/* j88971792@9fd803bac286.hosting.myjino.ru:~/domains/dev.foxworld.ru/.next && ssh j88971792@9fd803bac286.hosting.myjino.ru \"mkdir -p ~/domains/dev.foxworld.ru/tmp && touch ~/domains/dev.foxworld.ru/tmp/restart.txt\""
+    "lint": "next lint"
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.0",
