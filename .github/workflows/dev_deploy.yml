@@ -1,4 +1,4 @@
-name: Deploy to Jino
+name: DEV Deploy to Jino
 
 on:
   push:
