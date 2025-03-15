@@ -24,20 +24,17 @@ async function checkToken(token: any){
         const { premium_uuid, joined, last_seen } = user;
 
         let hasAdmin = false;
-        if ( profile.nick == 'PWNight'){
-            hasAdmin = true;
-        }
-        /*const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
+        const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
         if ( adminPermission ){
             hasAdmin = true;
-        }*/
+        }
 
 
         let hasFoxPlus = false;
-        /*const [fplusPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND permission = 'group.foxplus';", [profile.fk_uuid])
+        const [fplusPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND permission = 'group.foxplus';", [profile.fk_uuid])
         if ( fplusPermission ){
             hasFoxPlus = true;
-        }*/
+        }
 
         let hasAccess = false;
         const userApplications : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = ?", [profile.nick, 'Принята'])
