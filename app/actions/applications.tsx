@@ -161,34 +161,6 @@ export async function verify_application(state: VerifyApplicationFormState, form
         );
         await handleApiResponse(response);
 
-        // Отправка в Discord
-        const discordPayload = {
-            content: "",
-            tts: false,
-            embeds: [{
-                id: 467674012,
-                color: 15510603,
-                description: `## Заявка игрока ${nickname}\n` +
-                    `Возраст: ${age}\n` +
-                    `О игроке: ${about}\n` +
-                    `Откуда узнал о проекте: ${where_find}\n` +
-                    `Планы: ${plans}\n\n` +
-                    `[Рассмотреть заявку](https://foxworld.ru/admin/applications)`,
-            }],
-            username: "Заявки",
-            avatar_url: "https://cdn.discordapp.com/avatars/948287446808932373/73fbe4737f059852f8ffc523d83927e0.png"
-        };
-
-        const discordResponse = await fetch(
-            "https://discord.com/api/webhooks/1346083291325009951/zWw4VjgNVMu7DTN7AYLUCXGe3tBKNYIVsFccPx8NgQDCyVrIQt486WgS_9CIQgVULBnJ",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(discordPayload),
-            }
-        );
-        await handleApiResponse(discordResponse);
-
     } catch (error) {
         console.log(error)
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
