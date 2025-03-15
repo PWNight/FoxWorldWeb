@@ -1,4 +1,4 @@
-name: DEV Deploy to Jino
+name: Deploy to Jino
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
 
     # 5. Установка зависимостей
     - name: Install dependencies
-      run: npm ci --prefer-offline --no-audit
+      run: npm ci --no-audit
 
     # 6. Сборка приложения
     - name: Build Next.js app
@@ -53,8 +53,8 @@ jobs:
         NEXT_TELEMETRY_DISABLED: 1
 
     # 7. Установка утилит
-    - name: Install sshpass and rsync
-      run: sudo apt-get update && sudo apt-get install -y --no-install-recommends sshpass rsync
+    - name: Install sshpass
+      run: sudo apt-get install -y --no-install-recommends sshpass
 
     # 8. Полный перенос сборки как в оригинале
     - name: Deploy to Jino via SSH
