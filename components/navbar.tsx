@@ -11,10 +11,6 @@ export const NAVLINKS = [
     href: "/",
   },
   {
-    title: "Новости",
-    href: `/news`,
-  },
-  {
     title: "Вики",
     href: `/wiki`,
   },
