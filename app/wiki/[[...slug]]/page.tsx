@@ -13,7 +13,8 @@ type PageProps = {
 
 export default async function WikiPage(props: PageProps) {
   const params = await props.params;
-  const {slug = []} = params;
+
+  const { slug = [] } = params;
 
   const pathName = slug.join("/");
   const res = await getWikiForSlug(pathName);
@@ -24,8 +25,10 @@ export default async function WikiPage(props: PageProps) {
       <div className="flex-[4.5] pt-10">
         <WikiBreadcrumb paths={slug} />
         <Typography>
-          <h1 className="text-3xl -mt-0.5!">{res.frontmatter.title}</h1>
-          <p className="-mt-4 text-muted-foreground text-[16.5px]">
+          <h1 className="sm:text-3xl text-2xl !-mt-0.5">
+            {res.frontmatter.title}
+          </h1>
+          <p className="-mt-4 text-muted-foreground sm:text-[16.5px] text-[14.5px]">
             {res.frontmatter.description}
           </p>
           <div>{res.content}</div>
@@ -41,16 +44,14 @@ export default async function WikiPage(props: PageProps) {
 export async function generateMetadata(props: PageProps) {
   const params = await props.params;
 
-  const {slug = []} = params;
+  const { slug = [] } = params;
 
   const pathName = slug.join("/");
   const res = await getWikiForSlug(pathName);
-  if (!res) { // @ts-ignore
-    return null;
-  }
+  if (!res) return {};
   const { frontmatter } = res;
   return {
-    title: `FW - ${frontmatter.title}`,
+    title: frontmatter.title,
     description: frontmatter.description,
   };
 }
