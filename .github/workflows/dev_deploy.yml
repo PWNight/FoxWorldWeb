@@ -3,7 +3,7 @@ name: DEV Deploy to Jino
 on:
   push:
     branches:
-      - main
+      - dev
   repository_dispatch:
     types: [submodule-updated]
 
