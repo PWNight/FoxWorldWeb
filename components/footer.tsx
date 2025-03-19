@@ -21,7 +21,7 @@ export function Footer() {
                         />
                         <div className="space-y-1">
                             <p className="font-medium text-sm sm:text-base">FoxWorld © 2025</p>
-                            <p className="text-xs opacity-70">v1.0.0-beta5 PRE-1 (12.03.25)</p>
+                            <p className="text-xs opacity-70">v1.0.0-beta5 PRE-2 (19.03.25)</p>
                         </div>
                     </div>
                     <FooterButtons />
@@ -79,7 +79,7 @@ export function FooterButtons() {
                 className={buttonVariants({
                     size: "icon",
                     className:
-                        "h-9 w-9 rounded-full bg-muted hover:bg-[#F38F54] transition-all duration-200",
+                        "h-9 w-9 rounded-full bg-muted transition-all duration-200",
                 })}
             >
                 <svg
@@ -96,7 +96,7 @@ export function FooterButtons() {
                 className={buttonVariants({
                     size: "icon",
                     className:
-                        "h-9 w-9 rounded-full bg-muted hover:bg-[#F38F54] hover:text-white transition-all duration-200",
+                        "h-9 w-9 rounded-full bg-muted transition-all duration-200",
                 })}
             >
                 <svg
@@ -113,7 +113,7 @@ export function FooterButtons() {
                 className={buttonVariants({
                     size: "icon",
                     className:
-                        "h-9 w-9 rounded-full bg-muted hover:text-white transition-all duration-200",
+                        "h-9 w-9 rounded-full bg-muted transition-all duration-200",
                 })}
             >
                 <LifeBuoy className="h-4 w-4" />
