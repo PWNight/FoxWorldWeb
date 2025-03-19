@@ -6,8 +6,8 @@ import { LifeBuoy } from "lucide-react";
 
 export function Footer() {
     return (
-        <footer className="w-full border-t bg-muted/5 text-muted-foreground text-sm">
-            <div className="px-2 pb-2 sm:px-4 lg:px-14">
+        <footer className="w-full border-t bg-muted/5 text-sm">
+            <div className="px-6 pb-2">
                 <div className="grid grid-rows-2 h-fit">
                     {/* Первая строка: Копирайт и социальные ссылки */}
                     <div className="flex flex-row justify-between items-center gap-4 md:gap-6">
