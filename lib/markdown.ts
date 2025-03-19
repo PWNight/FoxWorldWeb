@@ -38,12 +38,12 @@ const components = {
   img: Image,
   a: Link,
   Outlet,
-  table: Table,
-  thead: TableHeader,
-  th: TableHead,
-  tr: TableRow,
-  tbody: TableBody,
-  t: TableCell,
+  Table,
+  TableHeader,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
 };
 
 // can be used for other pages like blogs, Guides etc
