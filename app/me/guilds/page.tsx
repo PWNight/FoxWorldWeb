@@ -63,12 +63,12 @@ export default function MeGuilds() {
             </div>
 
             {userGuilds.length > 0 ? (
-                <div className="grid gap-6 grid-cols-1 xl:grid-cols-2 w-fit">
+                <div className="grid gap-2 grid-cols-1 xl:grid-cols-2 w-fit">
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}
-                            className="flex flex-col w-full p-6 rounded-lg border-2
-                            bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700
+                            className="flex flex-col p-4 rounded-lg
+                            bg-white dark:bg-zinc-800 dark:border-zinc-700
                             hover:border-[#F38F54] transition-all duration-300 shadow-md hover:shadow-lg"
                         >
                             <div className="flex flex-col gap-4">
@@ -90,12 +90,12 @@ export default function MeGuilds() {
                                 </div>
 
                                 <div className="flex flex-row items-start gap-4">
-                                    <div className="flex-1 space-y-3 max-w-xl">
-                                        <h3 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+                                    <div className="flex-1 space-y-3">
+                                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                                             {guild.name}
                                         </h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-300">{guild.info}</p>
-                                        <p className="text-sm italic text-gray-500 dark:text-gray-400">
+                                        <p className="text-xs italic text-gray-500 dark:text-gray-400">
                                             {guild.description}
                                         </p>
                                         <ul className="list-disc list-inside text-sm space-y-1 text-gray-600 dark:text-gray-300">
@@ -110,21 +110,19 @@ export default function MeGuilds() {
                                         </ul>
                                     </div>
                                     {guild.badge_url && (
-                                        <div className="">
-                                            <Image
-                                                src={guild.badge_url}
-                                                alt={`Эмблема ${guild.url}`}
-                                                width={100}
-                                                height={100}
-                                                quality={100}
-                                                className="rounded-lg object-cover"
-                                            />
-                                        </div>
+                                        <Image
+                                            src={guild.badge_url}
+                                            alt={`Эмблема ${guild.url}`}
+                                            width={100}
+                                            height={100}
+                                            quality={100}
+                                            className="rounded-lg object-cover"
+                                        />
                                     )}
                                 </div>
                             </div>
 
-                            <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-4">
+                            <div className="flex flex-row flex-wrap gap-2 mt-4">
                                 {guild.permission === 2 && (
                                     <>
                                         <Link
@@ -166,9 +164,9 @@ export default function MeGuilds() {
                     ))}
                 </div>
             ) : (
-                <div className="w-full bg-white dark:bg-zinc-800 rounded-lg p-6 border-2
+                <div className="w-fit bg-white dark:bg-zinc-800 rounded-lg p-6 border-2
                 border-zinc-200 dark:border-zinc-700 shadow-md">
-                    <div className="flex flex-col items-center gap-4 text-center">
+                    <div className="flex flex-col gap-4">
                         <SearchX className="h-16 w-16 text-gray-500 dark:text-gray-400" />
                         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
                             Гильдии не найдены
@@ -179,9 +177,9 @@ export default function MeGuilds() {
                         <Link
                             href="/guilds"
                             className={buttonVariants({
-                                size: 'sm',
+                                size: 'lg',
                                 variant: 'accent',
-                                className: "w-full sm:w-auto mt-4 bg-[#F38F54] hover:bg-[#e07b44] text-white"
+                                className: "w-full sm:w-fit mt-4 bg-[#F38F54] hover:bg-[#e07b44] text-white"
                             })}
                         >
                             Найти гильдию
