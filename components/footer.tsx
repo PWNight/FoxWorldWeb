@@ -82,13 +82,13 @@ export function Footer() {
 
 export function FooterButtons() {
     return (
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex gap-2">
             <Link
                 href="https://discord.gg/2yyeWQ5unZ"
                 className={buttonVariants({
                     variant: "link",
                     className:
-                        "p-2 hover:text-accent-foreground hover:scale-110 transition-all duration-200 hover:bg-[#F38F54]",
+                        "p-2 !pl-0 hover:text-accent-foreground hover:scale-110 transition-all duration-200 hover:bg-[#F38F54]",
                 })}
             >
                 <svg
