@@ -12,85 +12,71 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. Shallow checkout с субмодулями
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          fetch-depth: 1
+    # 1. Используем shallow checkout для ускорения
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+        fetch-depth: 1
 
-      # 2. Обновление субмодулей только при необходимости
-      - name: Update submodules
-        run: git submodule update --remote --init
+    # 2. Обновление субмодулей только при необходимости
+    - name: Update submodules
+      run: git submodule update --remote
 
-      # 3. Настройка Node.js
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+    # 3. Настройка Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
 
-      # 4. Улучшенное кэширование зависимостей и сборки
-      - name: Cache dependencies and build
-        uses: actions/cache@v3
-        id: cache
-        with:
-          path: |
-            ~/.npm
-            node_modules
-            .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json', 'yarn.lock') }}
-          restore-keys: ${{ runner.os }}-nextjs-
+    # 4. Оптимизированное кэширование
+    - name: Cache dependencies and build
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+          .next/cache
+          node_modules
+        key: ${{ runner.os }}-nextjs-${{ hashFiles('package-lock.json') }}
+        restore-keys: ${{ runner.os }}-nextjs-
 
-      # 5. Установка зависимостей только если кэш не сработал
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci --no-audit --prefer-offline
+    # 5. Установка зависимостей
+    - name: Install dependencies
+      run: npm ci --no-audit
 
-      # 6. Сборка приложения с оптимизацией
-      - name: Build Next.js app
-        run: npm run build
-        env:
-          NODE_OPTIONS: '--max-old-space-size=4096'
-          NEXT_TELEMETRY_DISABLED: 1
+    # 6. Сборка приложения
+    - name: Build Next.js app
+      run: npm run build
+      env:
+        NODE_OPTIONS: '--max-old-space-size=4096'
+        NEXT_TELEMETRY_DISABLED: 1
 
-      # 7. Сохранение .next как артефакт
-      - name: Archive .next folder
-        uses: actions/upload-artifact@v3
-        with:
-          name: next-build
-          path: .next/
-          retention-days: 1
+    # 7. Установка утилит
+    - name: Install sshpass
+      run: sudo apt-get install -y --no-install-recommends sshpass
 
-      # 8. Скачивание артефакта перед деплоем
-      - name: Download .next artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: next-build
-          path: .next/
+    # 8. Полный перенос сборки как в оригинале
+    - name: Deploy to Jino via SSH
+      env:
+        SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
+        SSH_HOST: ${{ secrets.SSH_HOST }}
+        SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
+      run: |
+        echo "Testing SSH connection..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
 
-      # 9. Деплой на Jino через SSH
-      - name: Deploy to Jino via SSH
-        env:
-          SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-        run: |
-          # Установка sshpass
-          sudo apt-get install -y --no-install-recommends sshpass
+        echo "Creating remote directory if it doesn’t exist..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/dev.foxworld.ru/.next"
 
-          # Проверка SSH соединения
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
+        echo "Compressing .next folder..."
+        tar -czf next.tar.gz .next
 
-          # Подготовка директории и деплой
-          echo "Deploying to server..."
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "
-            mkdir -p ~/domains/dev.foxworld.ru/.next &&
-            rm -rf ~/domains/dev.foxworld.ru/.next/*"
-          sshpass -p "$SSH_PASSWORD" scp -r -o StrictHostKeyChecking=no .next/* $SSH_USERNAME@$SSH_HOST:~/domains/dev.foxworld.ru/.next/
+        echo "Uploading compressed .next folder..."
+        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no next.tar.gz $SSH_USERNAME@$SSH_HOST:~/domains/dev.foxworld.ru/
 
-          # Перезапуск сервера
-          echo "Restarting server..."
-          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "
-            mkdir -p ~/domains/dev.foxworld.ru/tmp &&
-            touch ~/domains/dev.foxworld.ru/tmp/restart.txt"
+        echo "Decompressing on server..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "tar -xzf ~/domains/dev.foxworld.ru/next.tar.gz -C ~/domains/dev.foxworld.ru/ && rm ~/domains/dev.foxworld.ru/next.tar.gz"
+
+        echo "Restarting server..."
+        sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "mkdir -p ~/domains/dev.foxworld.ru/tmp && touch ~/domains/dev.foxworld.ru/tmp/restart.txt"
