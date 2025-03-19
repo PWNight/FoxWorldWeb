@@ -7,10 +7,10 @@ import { LifeBuoy } from "lucide-react";
 export function Footer() {
     return (
         <footer className="w-full border-t bg-muted/5 text-muted-foreground text-sm">
-            <div className="px-2 py-3 sm:px-4 lg:px-14">
-                <div className="grid grid-rows-2">
+            <div className="px-2 pb-2 sm:px-4 lg:px-14">
+                <div className="grid grid-rows-2 h-fit">
                     {/* Первая строка: Копирайт и социальные ссылки */}
-                    <div className="flex flex-col items-center justify-between gap-4 md:flex-row md:gap-6">
+                    <div className="flex flex-row justify-between items-center gap-4 md:gap-6">
                         <div className="flex items-center gap-3">
                             <Image
                                 src="/logo.png"
@@ -65,11 +65,11 @@ export function Footer() {
                                 Политика возврата средств
                             </Link>
                         </div>
-                        <div className="flex flex-col items-center gap-2 text-[10px] sm:flex-row sm:gap-3 sm:text-xs">
-                            <p className="opacity-75 text-center">
+                        <div className="flex flex-col gap-2 text-[10px] sm:gap-3 sm:text-xs">
+                            <p className="opacity-75">
                                 We are in no way affiliated with or endorsed by Mojang, AB.
                             </p>
-                            <p className="opacity-75 text-center">
+                            <p className="opacity-75">
                                 НДП Гошев Родион Александрович (ИНН 290410201401)
                             </p>
                         </div>
