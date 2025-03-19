@@ -74,7 +74,7 @@ export default function MeGuilds() {
                             <div className="flex flex-col gap-4">
                                 <div className="flex items-center gap-3">
                                     <Image
-                                        src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
+                                        src={`https://minotar.net/helm/${guild.owner_nickname}/150.png`}
                                         alt={guild.owner_nickname}
                                         width={36}
                                         height={36}

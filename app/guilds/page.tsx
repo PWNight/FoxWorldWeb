@@ -132,7 +132,7 @@ export default function Guilds() {
                         <div className='flex flex-col gap-3 w-full'>
                             <div className="flex flex-row gap-2 items-center">
                                 <Image
-                                    src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
+                                    src={`https://minotar.net/helm/${guild.owner_nickname}/150.png`}
                                     alt={guild.owner_nickname}
                                     width={30}
                                     height={30}
