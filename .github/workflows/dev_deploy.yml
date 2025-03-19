@@ -19,9 +19,9 @@ jobs:
           submodules: recursive
           fetch-depth: 1
 
-      # 2. Обновление субмодулей
+      # 2. Обновление субмодулей только при необходимости
       - name: Update submodules
-        run: git submodule update --remote
+        run: git submodule update --remote --init
 
       # 3. Настройка Node.js
       - name: Setup Node.js
@@ -62,7 +62,14 @@ jobs:
           path: .next/
           retention-days: 1
 
-      # 8. Деплой на Jino через SSH
+      # 8. Скачивание артефакта перед деплоем
+      - name: Download .next artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: next-build
+          path: .next/
+
+      # 9. Деплой на Jino через SSH
       - name: Deploy to Jino via SSH
         env:
           SSH_PASSWORD: ${{ secrets.SSH_PASSWORD }}
@@ -75,7 +82,7 @@ jobs:
           # Проверка SSH соединения
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -o ConnectTimeout=10 $SSH_USERNAME@$SSH_HOST "echo SSH connection successful" || { echo "SSH connection failed"; exit 1; }
 
-          # Скачивание артефакта и деплой
+          # Подготовка директории и деплой
           echo "Deploying to server..."
           sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no $SSH_USERNAME@$SSH_HOST "
             mkdir -p ~/domains/dev.foxworld.ru/.next &&
