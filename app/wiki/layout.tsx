@@ -7,9 +7,9 @@ export default function WikiLayout({
   children: React.ReactNode;
 }>) {
     return (
-        <div className="flex items-start gap-6 sm:gap-8 lg:px-8 w-full">
+        <div className="flex items-start gap-6 sm:gap-8 sm:px-8">
             <Leftbar key="leftbar" />
-            <main className="flex-[5] w-full">{children}</main>
+            <main className="w-full">{children}</main>
         </div>
     );
 }

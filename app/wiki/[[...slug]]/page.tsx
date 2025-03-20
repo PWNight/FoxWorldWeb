@@ -21,8 +21,8 @@ export default async function WikiPage(props: PageProps) {
   if (!res) notFound();
 
   return (
-      <div className="flex items-start gap-8 lg:gap-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex-[4] pt-6">
+      <div className="flex items-start gap-8 lg:gap-12 px-4 sm:px-6 lg:px-8">
+        <div className="flex-[12] pt-6">
           <WikiBreadcrumb paths={slug} />
           <Typography>
             <h1 className="sm:text-3xl text-2xl font-bold text-foreground mb-2">
