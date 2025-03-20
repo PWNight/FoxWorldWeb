@@ -169,7 +169,7 @@ export function AccountButton() {
 
   const UserAvatar = () => (
       <Image
-          src={`https://minotar.net/helm/${userData.profile.nick}/100.png`}
+          src={`https://minotar.net/helm/${userData.profile.nick}/150.png`}
           alt={userData.profile.nick}
           width={50}
           height={50}

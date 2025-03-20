@@ -7,29 +7,28 @@ import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import rehypeCodeTitles from "rehype-code-titles";
 import { page_routes } from "./routes-config";
+import { ROUTES } from '@/contents/routes'
 import { visit } from "unist-util-visit";
 import matter from "gray-matter";
 
 // custom components imports
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCaption, TableCell, TableFooter, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import Pre from "@/components/markdown/pre";
 import Note from "@/components/markdown/note";
 import Image from "@/components/markdown/image";
 import Link from "@/components/markdown/link";
 import Outlet from "@/components/markdown/outlet";
-import {ROUTES} from "@/contents/routes";
-
-// add custom components
-const components = {
+import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
+} from "@/components/ui/table";
+
+// add custom components
+const components = {
   Tabs,
   TabsContent,
   TabsList,
@@ -39,6 +38,12 @@ const components = {
   img: Image,
   a: Link,
   Outlet,
+  Table,
+  TableHeader,
+  TableHead,
+  TableRow,
+  TableBody,
+  TableCell,
 };
 
 // can be used for other pages like blogs, Guides etc
@@ -136,20 +141,20 @@ export async function getAllChilds(pathString: string) {
   if (!prevHref) return [];
 
   return await Promise.all(
-    page_routes_copy.map(async (it) => {
-      const totalPath = path.join(
-        process.cwd(),
-        "/contents/wiki/",
-        prevHref,
-        it.href,
-        "index.mdx",
-      );
-      const raw = await fs.readFile(totalPath, "utf-8");
-      return {
-        ...justGetFrontmatterFromMD<BaseMdxFrontmatter>(raw),
-        href: `/wiki${prevHref}${it.href}`,
-      };
-    }),
+      page_routes_copy.map(async (it) => {
+        const totalPath = path.join(
+            process.cwd(),
+            "/contents/wiki/",
+            prevHref,
+            it.href,
+            "index.mdx",
+        );
+        const raw = await fs.readFile(totalPath, "utf-8");
+        return {
+          ...justGetFrontmatterFromMD<BaseMdxFrontmatter>(raw),
+          href: `/wiki${prevHref}${it.href}`,
+        };
+      }),
   );
 }
 
@@ -171,54 +176,3 @@ const postProcess = () => (tree: any) => {
     }
   });
 };
-
-export type Author = {
-  avatar?: string;
-  handle: string;
-  username: string;
-  handleUrl: string;
-};
-
-export type NewsMdxFrontmatter = BaseMdxFrontmatter & {
-  date: string;
-  authors: Author[];
-  cover: string;
-};
-
-export async function getAllNewsStaticPaths() {
-  try {
-    const newsFolder = path.join(process.cwd(), "/contents/news/");
-    const res = await fs.readdir(newsFolder);
-    return res.map((file) => file.split(".")[0]);
-  } catch (err) {
-    console.log(err);
-  }
-}
-export async function getAllNews() {
-  const newsFolder = path.join(process.cwd(), "/contents/news/");
-  const files = await fs.readdir(newsFolder);
-  const uncheckedRes = await Promise.all(
-    files.map(async (file) => {
-      if (!file.endsWith(".mdx")) return undefined;
-      const filepath = path.join(process.cwd(), `/contents/news/${file}`);
-      const rawMdx = await fs.readFile(filepath, "utf-8");
-      return {
-        ...justGetFrontmatterFromMD<NewsMdxFrontmatter>(rawMdx),
-        slug: file.split(".")[0],
-      };
-    }),
-  );
-  return uncheckedRes.filter((it) => !!it) as (NewsMdxFrontmatter & {
-    slug: string;
-  })[];
-}
-
-export async function getNewsForSlug(slug: string) {
-  const newsFile = path.join(process.cwd(), "/contents/news/", `${slug}.mdx`);
-  try {
-    const rawMdx = await fs.readFile(newsFile, "utf-8");
-    return await parseMdx<NewsMdxFrontmatter>(rawMdx);
-  } catch {
-    return undefined;
-  }
-}

@@ -264,7 +264,7 @@ export default function MyGuildMembers(props: PageProps) {
                                 <div key={user.uid} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
                                         <Image
-                                            src={`https://minotar.net/helm/${user.nickname}/100.png`}
+                                            src={`https://minotar.net/helm/${user.nickname}/150.png`}
                                             alt={user.nickname}
                                             width={48}
                                             height={48}
@@ -332,7 +332,7 @@ export default function MyGuildMembers(props: PageProps) {
                                 <div key={application.fk_profile} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
                                         <Image
-                                            src={`https://minotar.net/helm/${application.nick}/100.png`}
+                                            src={`https://minotar.net/helm/${application.nick}/150.png`}
                                             alt={application.nick}
                                             width={48}
                                             height={48}

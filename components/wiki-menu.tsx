@@ -9,8 +9,10 @@ export default function WikiMenu({ isSheet = false }) {
   if (!pathname.startsWith("/wiki")) return null;
 
   return (
-    <div className="flex flex-col gap-3.5 mt-5 pr-2 pb-6">
-      {isSheet && <h1 className='text-xl'>Навигация по вики:</h1>}
+      <>
+      {isSheet && (
+          <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Вики</h2>
+      )}
       {ROUTES.map((item, index) => {
         const modifiedItems = {
           ...item,
@@ -20,6 +22,6 @@ export default function WikiMenu({ isSheet = false }) {
         };
         return <SubLink key={item.title + index} {...modifiedItems} />;
       })}
-    </div>
+      </>
   );
 }

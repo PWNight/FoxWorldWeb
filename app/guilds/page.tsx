@@ -101,26 +101,38 @@ export default function Guilds() {
                 />
             )}
             <div className="flex mt-4 flex-col gap-4 select-none">
-                <h1 className="text-3xl font-bold">Гильдии</h1>
+                <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                 <input
-                    className="p-3 border border-gray-600 rounded-lg outline-none"
+                    className="p-3 border rounded-lg outline-none
+                dark:border-zinc-700 dark:bg-zinc-800 dark:text-white
+                border-zinc-300 bg-white text-black
+                placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                     type="text"
                     onChange={e => setSearchQuery(e.target.value)}
                     placeholder="Поиск"
                     value={searchQuery}
                 />
+                <Link
+                    href="/guilds/create"
+                    className="sm:w-fit bg-[#F38F54] hover:bg-orange-400 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200"
+                >
+                    Создать гильдию
+                </Link>
             </div>
             <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-8 mb-4">
                 {filteredGuilds().map((guild:any) => (
                     <div
                         key={guild.url}
                         id={guild.url}
-                        className='flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4 bg-accent hover:border-[#F38F54] transition-all duration-300 shadow-md hover:shadow-lg w-full'
+                        className='flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
+                    dark:bg-zinc-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
+                    bg-white border-zinc-200 hover:border-[#F38F54]
+                    transition-all duration-300 shadow-md hover:shadow-lg w-full'
                     >
                         <div className='flex flex-col gap-3 w-full'>
                             <div className="flex flex-row gap-2 items-center">
                                 <Image
-                                    src={`https://minotar.net/helm/${guild.owner_nickname}/100.png`}
+                                    src={`https://minotar.net/helm/${guild.owner_nickname}/150.png`}
                                     alt={guild.owner_nickname}
                                     width={30}
                                     height={30}
@@ -129,15 +141,18 @@ export default function Guilds() {
                                 />
                                 <div className={'flex gap-1 items-center'}>
                                     {guild.hasFoxPlus && <Crown className={'text-orange-400 w-5 h-5'}/>}
-                                    <h1 className="font-semibold text-lg">{guild.owner_nickname}</h1>
+                                    <h1 className="font-semibold text-lg dark:text-white text-black">
+                                        {guild.owner_nickname}
+                                    </h1>
                                 </div>
                             </div>
                             <div className="grid grid-cols-[1fr_.3fr] gap-3">
                                 <div className="space-y-2">
-                                    <h1 className='text-2xl font-bold text-gray-100'>{guild.name}</h1>
-                                    <p className="text-gray-300 text-sm">{guild.info}</p>
-                                    <p className="text-gray-400 text-sm italic">{guild.description}</p>
-                                    <ul className="list-inside list-disc text-sm text-gray-300 space-y-1">
+                                    <h1 className='text-2xl font-bold dark:text-white text-black'>{guild.name}</h1>
+                                    <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
+                                    <p className="text-sm italic dark:text-zinc-400 text-zinc-500">{guild.description}</p>
+                                    <ul className="list-inside list-disc text-sm space-y-1
+                                dark:text-zinc-300 text-zinc-700">
                                         {guild.is_recruit ? (
                                             <li className="text-green-400">Принимает заявки</li>
                                         ) : (
@@ -168,7 +183,7 @@ export default function Guilds() {
                                 href={`/guilds/${guild.url}/application`}
                                 className={buttonVariants({
                                     variant: "accent",
-                                    className: "px-4 py-2 w-full sm:w-auto",
+                                    className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
                                     size: "sm",
                                 })}
                             >

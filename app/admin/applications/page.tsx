@@ -117,7 +117,7 @@ export default function VerifyApplications() {
                             <div key={app.id} className="bg-white dark:bg-neutral-800 rounded-lg shadow p-4 w-fit">
                                 <div className="flex flex-row gap-1 items-center mb-2">
                                     <Image
-                                        src={`https://minotar.net/helm/${app.nickname}/100.png`}
+                                        src={`https://minotar.net/helm/${app.nickname}/150.png`}
                                         alt={app.nickname}
                                         width={25}
                                         height={25}
