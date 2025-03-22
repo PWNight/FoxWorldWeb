@@ -21,7 +21,7 @@ export default function VerifyApplications() {
     useEffect(()=>{
         getSession().then(async r => {
             if ( !r.success ) {
-                router.push("/login")
+                router.push("/login?to=admin/applications")
                 return
             }
 

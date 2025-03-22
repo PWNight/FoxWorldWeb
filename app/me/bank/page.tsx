@@ -11,7 +11,7 @@ export default function MeBank() {
     useEffect(()=>{
         getSession().then(async r => {
             if ( !r.success ) {
-                router.push("/login")
+                router.push("/login?to=me/bank")
                 return
             }
             setUserData(r.data)

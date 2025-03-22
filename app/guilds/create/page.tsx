@@ -26,7 +26,7 @@ export default function CreateGuild() {
     useEffect(() => {
         getSession().then(async r => {
             if (!r.success) {
-                router.push("/login");
+                router.push("/login?to=guilds/create");
                 return;
             }
             setUserData(r.data);

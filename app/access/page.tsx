@@ -15,7 +15,7 @@ export default function AccessApplications() {
     useEffect(() => {
         getSession().then(async(user_r) => {
             if ( !user_r.success ){
-                router.push('/login')
+                router.push('/login?to=access')
                 return
             }
             if ( user_r.data.profile.hasAccess ){

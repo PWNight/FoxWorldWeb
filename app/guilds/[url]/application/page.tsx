@@ -18,13 +18,13 @@ export default function GuildApplication(props: PageProps) {
 
     useEffect(() => {
         getSession().then(async(user_r) => {
-            if ( !user_r.success ){
-                router.push('/login')
-                return
-            }
-
             const params = await props.params;
             const guildUrl = params.url;
+
+            if ( !user_r.success ){
+                router.push(`/login?to=guilds/${guildUrl}/application`);
+                return
+            }
 
             getGuild(guildUrl).then((r) => {
                 if ( !r.success ){

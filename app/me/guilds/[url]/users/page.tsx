@@ -47,16 +47,16 @@ export default function MyGuildMembers(props: PageProps) {
         let intervalId : any;
 
         const initializeData = async () => {
-            const user_r = await getSession();
-            if (!user_r.success) {
-                router.push("/login");
-                return;
-            }
-            setUserData(user_r.data);
-
             const params = await props.params;
             const { url } = params;
             setGuildUrl(url);
+
+            const user_r = await getSession();
+            if (!user_r.success) {
+                router.push(`/login?to=me/guilds/${url}/users`);
+                return;
+            }
+            setUserData(user_r.data);
 
             const accessResult = await checkGuildAccess(url, user_r.data);
             if (!accessResult.success) {

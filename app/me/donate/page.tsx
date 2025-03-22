@@ -11,7 +11,7 @@ export default function MeDonate() {
     useEffect(()=>{
         getSession().then(async r => {
             if ( !r.success ) {
-                router.push("/login")
+                router.push("/login?to=me/donate")
                 return
             }
             setUserData(r.data)

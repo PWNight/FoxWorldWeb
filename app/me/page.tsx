@@ -17,7 +17,7 @@ export default function Me() {
     useEffect(()=>{
         getSession().then(async r => {
             if (!r.success) {
-                router.push("/login")
+                router.push("/login?to=me")
                 return
             }
             setUserData(r.data)

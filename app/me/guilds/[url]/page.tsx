@@ -29,14 +29,15 @@ export default function MyGuild(props: PageProps) {
 
     useEffect(()=>{
         getSession().then(async r => {
+            const params = await props.params;
+            const {url} = params;
+
             if ( !r.success ) {
-                router.push("/login")
+                router.push(`/login?to=me/guilds/${url}`)
                 return
             }
             setUserData(r.data)
 
-            const params = await props.params;
-            const {url} = params;
             getGuild(url).then((r) => {
                 if ( !r.success ) {
                     router.push("/me/guilds")

@@ -19,7 +19,7 @@ export default function MeGuilds() {
     useEffect(() => {
         getSession().then(async r => {
             if (!r.success) {
-                router.push("/login");
+                router.push("/login?to=me/guilds");
                 return;
             }
             getAllMyGuilds(r.data).then((r) => {
