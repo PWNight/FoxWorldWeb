@@ -6,65 +6,63 @@ import { LifeBuoy } from "lucide-react";
 
 export function Footer() {
     return (
-        <footer className="w-fit mx-auto sm:w-full border-t bg-muted/10">
-            <div className="px-4 py-6 sm:px-6 lg:px-8">
-                {/* Первая строка: Копирайт и соцсети */}
-                <div className="flex flex-col sm:flex-row justify-between gap-4 mb-6">
-                    <div className="flex items-center gap-3">
-                        <Image
-                            src="/logo.png"
-                            alt="FoxWorld Logo"
-                            width={36}
-                            height={36}
-                            quality={100}
-                            className="flex-shrink-0 transition-transform hover:scale-105"
-                        />
-                        <div className="space-y-1">
-                            <p className="font-medium text-sm sm:text-base">FoxWorld © 2025</p>
-                            <p className="text-xs opacity-70">v1.0.0-beta5 PRE-2 (19.03.25)</p>
-                        </div>
+        <footer className="w-full p-2 px-6 border-t bg-muted/10">
+            {/* Первая строка: Копирайт и соцсети */}
+            <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+                <div className="flex items-center gap-3">
+                    <Image
+                        src="/logo.png"
+                        alt="FoxWorld Logo"
+                        width={36}
+                        height={36}
+                        quality={100}
+                        className="flex-shrink-0 transition-transform hover:scale-105"
+                    />
+                    <div className="space-y-1">
+                        <p className="text-sm opacity-90">FoxWorld © 2025</p>
+                        <p className="text-xs opacity-70">v1.0.0-beta5 PRE-2 (19.03.25)</p>
                     </div>
-                    <FooterButtons />
                 </div>
+                <FooterButtons />
+            </div>
 
-                {/* Вторая строка: Юридические ссылки и информация */}
-                <div className="flex flex-col gap-4">
-                    <div className="flex items-start flex-wrap flex-row gap-4 sm:gap-6">
-                        <Link
-                            href="/wiki/legal/terms"
-                            className={buttonVariants({
-                                variant: "link",
-                                size: "xs",
-                                className: "!px-0 text-xs hover:text-accent-foreground",
-                            })}
-                        >
-                            Условия пользования
-                        </Link>
-                        <Link
-                            href="/wiki/legal/privacy"
-                            className={buttonVariants({
-                                variant: "link",
-                                size: "xs",
-                                className: "!px-0 text-xs hover:text-accent-foreground",
-                            })}
-                        >
-                            Политика конфиденциальности
-                        </Link>
-                        <Link
-                            href="/wiki/legal/refund"
-                            className={buttonVariants({
-                                variant: "link",
-                                size: "xs",
-                                className: "!px-0 text-xs hover:text-accent-foreground",
-                            })}
-                        >
-                            Политика возврата средств
-                        </Link>
-                    </div>
-                    <div className="text-xs opacity-70 space-y-1 flex flex-col sm:flex-row gap-2">
-                        <p>We are not affiliated with Mojang, AB.</p>
-                        <p>НДП Гошев Родион Александрович (ИНН 290410201401)</p>
-                    </div>
+            {/* Вторая строка: Юридические ссылки и информация */}
+            <div className="flex flex-col gap-4">
+                <div className="flex items-start flex-wrap flex-row gap-4 sm:gap-6">
+                    <Link
+                        href="/wiki/legal/terms"
+                        className={buttonVariants({
+                            variant: "link",
+                            size: "xs",
+                            className: "!px-0 text-xs hover:text-accent-foreground",
+                        })}
+                    >
+                        Условия пользования
+                    </Link>
+                    <Link
+                        href="/wiki/legal/privacy"
+                        className={buttonVariants({
+                            variant: "link",
+                            size: "xs",
+                            className: "!px-0 text-xs hover:text-accent-foreground",
+                        })}
+                    >
+                        Политика конфиденциальности
+                    </Link>
+                    <Link
+                        href="/wiki/legal/refund"
+                        className={buttonVariants({
+                            variant: "link",
+                            size: "xs",
+                            className: "!px-0 text-xs hover:text-accent-foreground",
+                        })}
+                    >
+                        Политика возврата средств
+                    </Link>
+                </div>
+                <div className="text-xs opacity-70 space-y-1 flex flex-col sm:flex-row gap-2">
+                    <p>We are not affiliated with Mojang, AB.</p>
+                    <p>НДП Гошев Родион Александрович (ИНН 290410201401)</p>
                 </div>
             </div>
         </footer>
