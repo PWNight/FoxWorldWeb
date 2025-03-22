@@ -1,6 +1,6 @@
 "use client";
 
-import { LucideLoader, UserPlusIcon } from "lucide-react";
+import { Loader2, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
@@ -88,7 +88,7 @@ export function LoginForm() {
                     >
                         {pending ? (
                             <>
-                                <LucideLoader className="mr-2 animate-spin" />
+                                <Loader2 className="mr-2 animate-spin" />
                                 <p>Выполняю вход</p>
                             </>
                         ) : (

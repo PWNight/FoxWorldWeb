@@ -2,7 +2,7 @@
 import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
-import {LucideLoader} from "lucide-react";
+import {Loader2} from "lucide-react";
 import {getSession} from "@/app/actions/getInfo";
 import {verify_application} from "@/app/actions/applications";
 
@@ -89,7 +89,7 @@ export default function AccessApplications() {
                     </div>
                     <div>
                         <button type="submit"
-                                className="select-none text-white bg-[#F38F54] hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><LucideLoader className="mr-2 animate-spin"/><p>Выполняю..</p></> : 'Отправить заявку'}
+                                className="select-none text-white bg-[#F38F54] hover:bg-orange-500 focus:ring-4 focus:outline-hidden focus:ring-orange-300 font-medium rounded-lg text-sm w-full px-5 py-2.5 text-center flex items-center gap-1" disabled={pending}>{pending ? <><Loader2 className="mr-2 animate-spin"/><p>Выполняю..</p></> : 'Отправить заявку'}
                         </button>
                         {state?.message && <p className="text-red-400 mt-1 mb-5">{state.message}</p>}
                     </div>

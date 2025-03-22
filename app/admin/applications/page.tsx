@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {getSession, getVerifyApplications} from "@/app/actions/getInfo";
-import {LucideCheck, LucideLoader, LucideX, SearchX} from "lucide-react";
+import {LucideCheck, Loader2, LucideX, SearchX} from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
 
@@ -108,7 +108,7 @@ export default function VerifyApplications() {
             <h1 className="text-3xl font-bold mb-4">Управление заявками</h1>
             {!pageLoaded ? (
                 <div className="flex gap-2 text-xl">
-                    <LucideLoader className="animate-spin" /> <p>Загружаю анкеты...</p>
+                    <Loader2 className="animate-spin" /> <p>Загружаю анкеты...</p>
                 </div>
             ) :
                 verifyApplications.length > 0 ? (
@@ -155,14 +155,14 @@ export default function VerifyApplications() {
                                         disabled={updating === app.id}
                                         className="bg-green-500 hover:bg-green-700 text-white py-1 px-2 rounded flex"
                                     >
-                                        {updating == app.id ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><LucideCheck className={'mr-2'}/>Принять</>}
+                                        {updating == app.id ? <><Loader2 className="mr-2 animate-spin" /> Выполняю..</> : <><LucideCheck className={'mr-2'}/>Принять</>}
                                     </button>
                                     <button
                                         onClick={() => handleUpdate('Отклонена', app.nickname, app.id)}
                                         disabled={updating === app.id}
                                         className="bg-red-500 hover:bg-red-700 text-white py-1 px-2 rounded flex"
                                     >
-                                        {updating == app.id ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><LucideX className={'mr-2'}/>Отклонить</>}
+                                        {updating == app.id ? <><Loader2 className="mr-2 animate-spin" /> Выполняю..</> : <><LucideX className={'mr-2'}/>Отклонить</>}
                                     </button>
                                 </div>
                             </div>

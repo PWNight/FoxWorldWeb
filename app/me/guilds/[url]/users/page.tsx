@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getInfo";
-import { LucideLoader, Pencil, SearchX, Trash } from "lucide-react";
+import { Loader2, Pencil, SearchX, Trash } from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 
 type PageProps = {
@@ -287,7 +287,7 @@ export default function MyGuildMembers(props: PageProps) {
                                                 className="flex-1"
                                             >
                                                 {isLoading ? (
-                                                    <><LucideLoader className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
                                                 ) : (
                                                     <><Pencil className="w-4 h-4 mr-2" />Повысить</>
                                                 )}
@@ -302,7 +302,7 @@ export default function MyGuildMembers(props: PageProps) {
                                                 className="flex-1"
                                             >
                                                 {isLoading ? (
-                                                    <><LucideLoader className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
                                                 ) : (
                                                     <><Trash className="w-4 h-4 mr-2" />Исключить</>
                                                 )}
@@ -355,7 +355,7 @@ export default function MyGuildMembers(props: PageProps) {
                                             className="flex-1"
                                         >
                                             {isLoading ? (
-                                                <><LucideLoader className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
                                             ) : (
                                                 <><Pencil className="w-4 h-4 mr-2" />Принять</>
                                             )}
@@ -368,7 +368,7 @@ export default function MyGuildMembers(props: PageProps) {
                                             className="flex-1"
                                         >
                                             {isLoading ? (
-                                                <><LucideLoader className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
                                             ) : (
                                                 <><Trash className="w-4 h-4 mr-2" />Отклонить</>
                                             )}

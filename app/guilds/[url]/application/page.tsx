@@ -3,7 +3,7 @@ import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {checkGuildAccess, getGuild, getMyGuildsApplications, getSession} from "@/app/actions/getInfo";
 import Link from "next/link";
-import {Castle, LucideLoader} from "lucide-react";
+import {Castle, Loader2} from "lucide-react";
 import {guild_application} from "@/app/actions/applications";
 
 type PageProps = {
@@ -120,7 +120,7 @@ export default function GuildApplication(props: PageProps) {
                         >
                             {pending ? (
                                 <>
-                                    <LucideLoader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
                                     Выполняю...
                                 </>
                             ) : (

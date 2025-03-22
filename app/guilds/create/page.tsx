@@ -1,5 +1,5 @@
 "use client"
-import { LucideLoader } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getSession } from "@/app/actions/getInfo";
@@ -207,7 +207,7 @@ export default function CreateGuild() {
                         >
                             {isLoading ? (
                                 <>
-                                    <LucideLoader className="w-5 h-5 mr-2 animate-spin" />
+                                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                                     Создание...
                                 </>
                             ) : (

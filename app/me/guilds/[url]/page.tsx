@@ -1,7 +1,7 @@
 "use client"
 import { useRouter } from"next/navigation";
 import { useEffect, useState } from"react";
-import { LucideLoader, Pencil } from "lucide-react";
+import { Loader2, Pencil } from "lucide-react";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
 import { getGuild, getSession} from "@/app/actions/getInfo";
@@ -239,7 +239,7 @@ export default function MyGuild(props: PageProps) {
                                     />
                                 </div>
                                 <button type="submit" disabled={isLoading} className={buttonVariants({ className: "w-full", variant: 'accent' })}>
-                                    {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить изменения</>}
+                                    {isLoading ? <><Loader2 className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить изменения</>}
                                 </button>
 
                             </form>
@@ -270,7 +270,7 @@ export default function MyGuild(props: PageProps) {
                                     />
                                     <div className="flex gap-2 mt-2">
                                         <button disabled={isLoading} className={buttonVariants({ variant: "accent" })} type="submit">
-                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
+                                            {isLoading ? <><Loader2 className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
                                         </button>
                                     </div>
                                 </form>
@@ -288,7 +288,7 @@ export default function MyGuild(props: PageProps) {
                                     />
                                     <div className="flex gap-2 mt-2">
                                         <button disabled={isLoading} className={buttonVariants({ variant: "accent" })} type="submit">
-                                            {isLoading ? <><LucideLoader className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
+                                            {isLoading ? <><Loader2 className="mr-2 animate-spin" /> Выполняю..</> : <><Pencil className="mr-2" />Сохранить</>}
                                         </button>
                                     </div>
                                 </form>
