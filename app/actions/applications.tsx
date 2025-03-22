@@ -114,13 +114,15 @@ export async function signup(state: FormState, formData: FormData) {
         const response = await makeAuthorizedRequest(
             `/api/v1/notifications`,
             token,
-            {   nickname: username,
+            {
+                nickname: username,
                 message: `Вы авторизовались под IP ${ip}`
             },
             "POST"
         );
         await handleApiResponse(response);
-        return { success: true}
+
+        return { success: true }; // Успех без редиректа, обработка на клиенте
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
     }
