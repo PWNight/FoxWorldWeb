@@ -120,10 +120,10 @@ export async function signup(state: FormState, formData: FormData) {
             "POST"
         );
         await handleApiResponse(response);
+        return { success: true}
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
     }
-    redirect("/me");
 }
 
 export async function verify_application(state: VerifyApplicationFormState, formData: FormData) {

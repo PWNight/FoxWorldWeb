@@ -1,7 +1,7 @@
 "use client"
 import { LucideLoader, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { signup } from "@/app/actions/applications";
 import {getSession} from "@/app/actions/getInfo";
@@ -10,20 +10,30 @@ export default function Login() {
     const [pageLoaded, setPageLoaded] = useState(false);
     const [state, action, pending] = useActionState(signup, undefined);
     const [showPassword, setShowPassword] = useState(false); // Состояние для видимости пароля
-    const router = useRouter();
 
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const redirectTo = searchParams.get("to") || "/me";
+    
     useEffect(() => {
         getSession().then(r =>{
             if( r.success ){
-                router.push("/me");
+                router.push(redirectTo);
             }
             setPageLoaded(true);
         });
-    }, [router]);
+    }, [redirectTo, router]);
 
     const togglePasswordVisibility = () => {
         setShowPassword(!showPassword);
     };
+
+    useEffect(() => {
+        if (state?.success) {
+            router.push(redirectTo);
+        }
+    }, [state, router, redirectTo]);
+    
     if(pageLoaded){
         return (
             <div className="flex items-center flex-col justify-center w-full h-full">
