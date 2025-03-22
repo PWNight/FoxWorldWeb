@@ -91,6 +91,7 @@ export async function signup(state: FormState, formData: FormData) {
         }
 
         const { username, password } = validatedFields.data;
+        const redirectTo = formData.get("redirectTo")?.toString() || "/me"; // Получаем redirectTo из формы
 
         // Логин
         const loginResponse = await fetch('/api/v1/auth/login', {
@@ -122,7 +123,8 @@ export async function signup(state: FormState, formData: FormData) {
         );
         await handleApiResponse(response);
 
-        return { success: true }; // Успех без редиректа, обработка на клиенте
+        // Возвращаем успех и redirectTo
+        return { success: true, redirectTo };
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
     }
