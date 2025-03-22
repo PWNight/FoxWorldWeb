@@ -18,9 +18,9 @@ export function Footer() {
                         quality={100}
                         className="flex-shrink-0 transition-transform hover:scale-105"
                     />
-                    <div className="space-y-1">
+                    <div className="">
                         <p className="text-sm opacity-90">FoxWorld © 2025</p>
-                        <p className="text-xs opacity-70">v1.0.0-beta5 PRE-2 (19.03.25)</p>
+                        <p className="text-xs opacity-70">v1.0.0-beta5 (22.03.25)</p>
                     </div>
                 </div>
                 <FooterButtons />
