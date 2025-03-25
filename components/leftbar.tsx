@@ -16,7 +16,7 @@ import WikiMenu from "./wiki-menu";
 export function Leftbar() {
   return (
       <aside className="md:flex hidden w-[260px] flex-col overflow-y-auto">
-        <ScrollArea className="pt-6 text-base">
+        <ScrollArea className="py-6 text-base">
           <h2 className="text-xs font-semibold text-muted-foreground mb-5 uppercase tracking-wider">
             Содержание
           </h2>
