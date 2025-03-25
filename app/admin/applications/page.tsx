@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {getSession, getVerifyApplications} from "@/app/actions/getInfo";
+import {getSession, getVerifyApplications} from "@/app/actions/getDataHandlers";
 import {LucideCheck, Loader2, LucideX, SearchX} from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
@@ -103,7 +103,7 @@ export default function VerifyApplications() {
     }
 
     return (
-        <div className="p-4">
+        <div>
             { notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
             <h1 className="text-3xl font-bold mb-4">Управление заявками</h1>
             {!pageLoaded ? (

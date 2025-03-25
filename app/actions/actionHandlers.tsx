@@ -7,7 +7,7 @@ import {
     VerifyApplicationFormSchema
 } from '@/lib/definitions'
 import { redirect } from "next/navigation";
-import { getGuild, getSession } from "@/app/actions/getInfo";
+import { getGuild, getSession } from "@/app/actions/getDataHandlers";
 
 // Общий тип для API ответов с ошибкой
 interface ApiErrorResponse {

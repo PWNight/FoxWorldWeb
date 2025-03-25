@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getInfo";
+import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getDataHandlers";
 import { Loader2, Pencil, SearchX, Trash } from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 

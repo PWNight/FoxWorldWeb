@@ -2,7 +2,7 @@
 import { Loader2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { getSession } from "@/app/actions/getInfo";
+import { getSession } from "@/app/actions/getDataHandlers";
 
 export default function CreateGuild() {
     const [userData, setUserData] = useState(Object);

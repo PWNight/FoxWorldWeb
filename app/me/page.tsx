@@ -1,7 +1,7 @@
 "use client"
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import {getSession, getStats} from "@/app/actions/getInfo";
+import {getSession, getStats} from "@/app/actions/getDataHandlers";
 import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
 import ErrorMessage from "@/components/ui/notify-alert";
 

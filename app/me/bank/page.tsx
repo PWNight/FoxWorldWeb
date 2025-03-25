@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import InDev from "@/components/indev";
-import {getSession} from "@/app/actions/getInfo";
+import {getSession} from "@/app/actions/getDataHandlers";
 
 export default function MeBank() {
     const [userData, setUserData] = useState(Object)

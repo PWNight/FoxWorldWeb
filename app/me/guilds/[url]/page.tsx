@@ -4,7 +4,7 @@ import { useEffect, useState } from"react";
 import { Loader2, Pencil } from "lucide-react";
 import Link from "next/link";
 import {buttonVariants} from "@/components/ui/button";
-import { getGuild, getSession} from "@/app/actions/getInfo";
+import { getGuild, getSession} from "@/app/actions/getDataHandlers";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import ErrorMessage from "@/components/ui/notify-alert";
 import GuildEditSkelet from "@/components/skelets/guild_edit_skelet";

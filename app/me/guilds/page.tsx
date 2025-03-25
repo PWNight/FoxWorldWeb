@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { Crown, SearchX } from "lucide-react";
-import { getAllMyGuilds, getSession } from "@/app/actions/getInfo";
+import { getAllMyGuilds, getSession } from "@/app/actions/getDataHandlers";
 import ErrorMessage from "@/components/ui/notify-alert";
 import GuildSkelet from "@/components/skelets/guild_skelet";
 

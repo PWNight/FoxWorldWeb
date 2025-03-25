@@ -4,7 +4,7 @@ import { Loader2, UserPlusIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
-import { signup } from "@/app/actions/applications";
+import { signup } from "@/app/actions/actionHandlers";
 
 export function LoginForm() {
     const [state, action, pending] = useActionState(signup, undefined);

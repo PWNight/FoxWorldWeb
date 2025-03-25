@@ -1,10 +1,10 @@
 "use client";
 import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {checkGuildAccess, getGuild, getMyGuildsApplications, getSession} from "@/app/actions/getInfo";
+import {checkGuildAccess, getGuild, getMyGuildsApplications, getSession} from "@/app/actions/getDataHandlers";
 import Link from "next/link";
 import {Castle, Loader2} from "lucide-react";
-import {guild_application} from "@/app/actions/applications";
+import {guild_application} from "@/app/actions/actionHandlers";
 
 type PageProps = {
     params: Promise<{ url: string }>;

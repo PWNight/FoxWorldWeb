@@ -3,8 +3,8 @@ import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import Link from "next/link";
 import {Loader2} from "lucide-react";
-import {getSession} from "@/app/actions/getInfo";
-import {verify_application} from "@/app/actions/applications";
+import {getSession} from "@/app/actions/getDataHandlers";
+import {verify_application} from "@/app/actions/actionHandlers";
 
 export default function AccessApplications() {
     const [userData, setUserData] = useState(Object)
