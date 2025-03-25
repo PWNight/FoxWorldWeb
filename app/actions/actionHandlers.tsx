@@ -51,10 +51,10 @@ export async function guild_application(state: GuildApplicationFormState, formDa
 
         // Получение сессии и гильдии
         const user_response = await getSession();
-        if (!user_response.success) throw new Error('Не удалось получить вашу сессию (err auth)');
+        if (!user_response.success) return {message: 'Не удалось получить вашу сессию (err auth)'};
 
         const guild_response = await getGuild(guildUrl);
-        if (!guild_response.success) throw new Error('Не удалось получить гильдию (err guild)');
+        if (!guild_response.success) return {message: 'Не удалось получить гильдию (err guild)'};
 
         // Отправка заявки
         let response = await makeAuthorizedRequest(
@@ -142,7 +142,7 @@ export async function verify_application(state: VerifyApplicationFormState, form
 
         // Проверка сессии
         const user_response = await getSession();
-        if (!user_response.success) throw new Error('Не удалось получить вашу сессию (err auth)');
+        if (!user_response.success)  return {message: 'Не удалось получить вашу сессию (err auth)'};
 
         const { data: userData } = user_response;
         if (userData.profile.hasAccess) redirect('/me');
