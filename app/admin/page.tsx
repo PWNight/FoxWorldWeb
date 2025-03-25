@@ -6,13 +6,7 @@ import MeSkelet from "@/components/skelets/me_skelet";
 import InDev from "@/components/indev";
 
 export default function AdminMe() {
-    const [userData, setUserData] = useState(Object)
-
-    const [notifyMessage, setNotifyMessage] = useState('');
-    const [notifyType, setNotifyType] = useState('');
-
     const [pageLoaded, setPageLoaded] = useState(false);
-
     const router = useRouter()
 
     useEffect(()=>{
@@ -26,14 +20,9 @@ export default function AdminMe() {
                 router.push("/")
                 return
             }
-            setUserData(r.data)
             setPageLoaded(true)
         });
     },[router])
-
-    const handleClose = () => {
-        setNotifyMessage('')
-    }
 
     if (!pageLoaded) {
         return (

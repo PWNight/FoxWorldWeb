@@ -1,5 +1,5 @@
 import SubAnchor from "@/components/subanchor";
-import {Castle, House, Landmark, Library, PaintbrushVertical, Scale, Store, UserCheck} from "lucide-react";
+import {House, Library, UserCheck} from "lucide-react";
 
 export function NavAdmin() {
     return (
