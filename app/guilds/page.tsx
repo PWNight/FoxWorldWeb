@@ -5,7 +5,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/notify-alert";
 import { Crown } from "lucide-react";
-import GuildSkeleton from "@/components/skelets/guilds";
+import {GuildSkeleton} from "@/components/skelets/guilds";
 
 export default function Guilds() {
     const [guilds, setGuilds] = useState([]);
