@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import {query} from "@/lib/mysql";
 import {getUserData} from "@/lib/utils";
-import {sendErrorMessage} from "@/lib/discord";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -24,14 +23,6 @@ export async function GET(request: Request) {
 
     return NextResponse.json(rows);
   } catch (error: any) {
-      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 'GET', 500,
-          {
-            message: error.message,
-            code: error.code || 'UNKNOWN_ERROR'
-          }
-      )
-
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
@@ -65,16 +56,6 @@ export async function POST(request: Request) {
 
     if (userId !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-            await sendErrorMessage(ip, 'api/v1/notifications', 'POST', 403,
-                {
-                    message: 'У вас нету прав на создание уведомлений для другого игрока',
-                    details: {
-                        userId: userId,
-                        profileId: user.profile.id,
-                    }
-                }
-            )
             return NextResponse.json({
                 success: false,
                 message: 'У вас нету прав на создание уведомлений для другого игрока',
@@ -82,9 +63,7 @@ export async function POST(request: Request) {
                     userId: userId,
                     profileId: user.profile.id,
                 }
-            },
-                {status: 403}
-            )
+            }, {status: 403})
         }
     }
 
@@ -95,14 +74,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
-      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 'POST', 500,
-          {
-            message: error.message,
-            code: error.code || 'UNKNOWN_ERROR'
-          }
-      )
-
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
@@ -131,22 +102,14 @@ export async function PATCH(request: Request) {
 
     if (userId !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-            await sendErrorMessage(ip, 'api/v1/notifications', 'PATCH', 403,
-                {
+            return NextResponse.json({
+                    success: false,
                     message: 'У вас нету прав на создание уведомлений для другого игрока',
                     details: {
-                        userId: id,
+                        userId: userId,
                         profileId: user.profile.id,
                     }
-                }
-            )
-
-            return NextResponse.json({
-                success: false,
-                message: 'У вас нету прав на создание уведомлений для другого игрока'},
-                {status: 403}
-            )
+            }, {status: 403})
         }
     }
 
@@ -156,14 +119,6 @@ export async function PATCH(request: Request) {
     );
     return NextResponse.json({ success: true });
   } catch (error: any) {
-      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 'PATCH', 500,
-        {
-          message: error.message,
-          code: error.code || 'UNKNOWN_ERROR'
-        }
-      )
-
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
