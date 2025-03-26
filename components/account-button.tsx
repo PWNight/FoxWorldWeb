@@ -29,6 +29,7 @@ interface Notification {
   message: string;
   is_read: boolean;
   created_at: string;
+  fk_profile: number;
 }
 
 interface UserData {
@@ -120,7 +121,7 @@ export function AccountButton() {
     return () => clearInterval(intervalId);
   }, [initialize, refreshData]);
 
-  const markAsRead = useCallback(async (notificationId: number) => {
+  const markAsRead = useCallback(async (notificationId: number, fk_profile: number) => {
     if (!userData?.token) return;
 
     setLoadingStates((prev) => ({ ...prev, [notificationId]: true }));
@@ -128,7 +129,7 @@ export function AccountButton() {
         "/api/v1/notifications",
         userData.token,
         "PATCH",
-        { id: notificationId }
+        { id: notificationId, userId: fk_profile }
     );
 
     if (success) await fetchNotifications(userData.token);
@@ -223,7 +224,7 @@ export function AccountButton() {
                               <button
                                   onClick={(e) => {
                                     e.stopPropagation(); // Предотвращаем закрытие меню при нажатии на "Пометить как прочитанное"
-                                    markAsRead(notification.id);
+                                    markAsRead(notification.id, notification.fk_profile);
                                   }}
                                   disabled={loadingStates[notification.id]}
                                   className="inline-flex gap-1 items-center text-orange-400 hover:text-orange-500 text-xs disabled:opacity-50 disabled:cursor-not-allowed"

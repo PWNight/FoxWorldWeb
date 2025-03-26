@@ -56,7 +56,14 @@ export async function POST(request: Request) {
 
     if (userId !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+            return NextResponse.json({
+                success: false,
+                message: 'У вас нету прав на создание уведомлений для другого игрока',
+                details: {
+                    userId: userId,
+                    profileId: user.profile.id,
+                }
+            }, {status: 403})
         }
     }
 
@@ -79,7 +86,7 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
-  const { id } = await request.json();
+  const { id, userId } = await request.json();
   const authHeader = request.headers.get("authorization");
   if (!authHeader) {
       return NextResponse.json({success: false, message: 'Отсутствует заголовок авторизации'},{status: 401})
@@ -93,9 +100,16 @@ export async function PATCH(request: Request) {
     }
     const user = result.data;
 
-    if (id !== user.profile.id){
+    if (userId !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+            return NextResponse.json({
+                    success: false,
+                    message: 'У вас нету прав на создание уведомлений для другого игрока',
+                    details: {
+                        userId: userId,
+                        profileId: user.profile.id,
+                    }
+            }, {status: 403})
         }
     }
 

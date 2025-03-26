@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
             await query('INSERT INTO profiles (nick, fk_uuid) VALUES (?, ?)', [last_nickname, uuid]);
         }
 
-        // Исправленное получение IP из объекта request
         const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
 
         return NextResponse.json({ success: true, data: { uuid, last_nickname, ip } }, { status: 200 });
