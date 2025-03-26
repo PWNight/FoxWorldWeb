@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Crown, SearchX } from "lucide-react";
 import { getAllMyGuilds, getSession } from "@/app/actions/getDataHandlers";
 import ErrorMessage from "@/components/ui/notify-alert";
-import GuildSkelet from "@/components/skelets/guild_skelet";
+import {GuildSkeleton} from "@/components/skelets/guilds";
 
 export default function MeGuilds() {
     const [pageLoaded, setPageLoaded] = useState(false);
@@ -40,7 +40,25 @@ export default function MeGuilds() {
         return (
             <>
                 {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
-                <GuildSkelet />
+                <div className="flex flex-col px-2 w-full">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Мои гильдии</h1>
+                        <Link
+                            href="/guilds/create"
+                            className={buttonVariants({
+                                size: 'sm',
+                                variant: 'accent',
+                                className: "w-full sm:w-auto px-4 py-2 bg-[#F38F54] hover:bg-[#e07b44] text-white"
+                            })}
+                        >
+                            Создать гильдию
+                        </Link>
+                    </div>
+                    <div className="grid gap-2 grid-cols-1 xl:grid-cols-2">
+                        <GuildSkeleton />
+                        <GuildSkeleton />
+                    </div>
+                </div>
             </>
         );
     }
