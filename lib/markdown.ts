@@ -86,6 +86,16 @@ export async function getWikiForSlug(slug: string) {
   }
 }
 
+export async function getOtherForSlug(slug: string){
+  try{
+    const contentPath = path.join(process.cwd(), "/contents/", `${slug}/index.mdx`);
+    const rawMdx = await fs.readFile(contentPath, "utf-8");
+    return await parseMdx<BaseMdxFrontmatter>(rawMdx);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function getWikiTocs(slug: string) {
   const contentPath = getWikiContentPath(slug);
   const rawMdx = await fs.readFile(contentPath, "utf-8");
