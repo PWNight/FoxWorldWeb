@@ -1,4 +1,32 @@
-export default function GuildSkeleton() {
+export function GuildEditSkelet() {
+    return (
+        <div className="container mx-auto px-4">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Редактирование гильдии</h1>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-pulse">
+                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-lg">
+                    <div className="h-6 w-1/2 bg-gray-200 dark:bg-zinc-700 rounded mb-4"></div>
+                    <div className="space-y-4">
+                        <div className="h-10 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-10 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-10 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-20 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-10 w-1/3 bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                    </div>
+                </div>
+                <div className="bg-white dark:bg-zinc-900 rounded-xl p-6 shadow-lg">
+                    <div className="h-6 w-1/2 bg-gray-200 dark:bg-zinc-700 rounded mb-4"></div>
+                    <div className="space-y-4">
+                        <div className="h-10 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-10 w-full bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                        <div className="h-10 w-1/3 bg-gray-200 dark:bg-zinc-700 rounded"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export function GuildSkeleton() {
     return (
         <div
             className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
