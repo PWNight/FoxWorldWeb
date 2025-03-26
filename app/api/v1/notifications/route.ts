@@ -65,7 +65,17 @@ export async function POST(request: Request) {
 
     if (userId !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+            const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
+            await sendErrorMessage(ip, 'api/v1/notifications', 'POST', 403,
+                {
+                    message: 'У вас нету прав на создание уведомлений для другого игрока'
+                }
+            )
+            return NextResponse.json({
+                success: false,
+                message: 'У вас нету прав на создание уведомлений для другого игрока'},
+                {status: 403}
+            )
         }
     }
 
@@ -112,7 +122,18 @@ export async function PATCH(request: Request) {
 
     if (id !== user.profile.id){
         if ( !user.profile.hasAdmin ){
-            return NextResponse.json({success: false, message: 'У вас нету прав на создание уведомлений для другого игрока'},{status: 403})
+            const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
+            await sendErrorMessage(ip, 'api/v1/notifications', 'PATCH', 403,
+                {
+                    message: 'У вас нету прав на создание уведомлений для другого игрока'
+                }
+            )
+
+            return NextResponse.json({
+                success: false,
+                message: 'У вас нету прав на создание уведомлений для другого игрока'},
+                {status: 403}
+            )
         }
     }
 
