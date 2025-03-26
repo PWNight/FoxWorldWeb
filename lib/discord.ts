@@ -31,7 +31,7 @@ export async function sendDiscordMessage(discordId: string, message: string) {
   return { success: true }
 }
 
-export async function sendErrorMessage(ip: string, url: string, method: number, code: string, object: object) {
+export async function sendErrorMessage(ip: string, url: string, method: string, code: number, object: object) {
   // Отправка в Discord
   const discordPayload = {
     content: "",

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     return NextResponse.json(rows);
   } catch (error: any) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'GET',
+      await sendErrorMessage(ip, 'api/v1/notifications', 'GET', 500,
           {
             message: error.message,
             code: error.code || 'UNKNOWN_ERROR'
@@ -77,7 +77,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error: any) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'POST',
+      await sendErrorMessage(ip, 'api/v1/notifications', 'POST', 500,
           {
             message: error.message,
             code: error.code || 'UNKNOWN_ERROR'
@@ -123,7 +123,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ success: true });
   } catch (error: any) {
       const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
-      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'PATCH',
+      await sendErrorMessage(ip, 'api/v1/notifications', 'PATCH', 500,
         {
           message: error.message,
           code: error.code || 'UNKNOWN_ERROR'
