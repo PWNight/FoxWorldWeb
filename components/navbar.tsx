@@ -5,7 +5,7 @@ import { SheetLeftbar } from "./leftbar";
 import { SheetClose } from "@/components/ui/sheet";
 import { AccountButton } from "./account-button";
 import Image from "next/image";
-import { Home, BookOpen, Users, Map } from "lucide-react";
+import {Home, Map, BookMarked, Library, Castle} from "lucide-react";
 
 export const NAVLINKS = [
     {
@@ -14,14 +14,19 @@ export const NAVLINKS = [
         icon: <Home className="w-4 h-4" />,
     },
     {
+        title: "Правила",
+        href: "/rules",
+        icon: <BookMarked className="w-4 h-4" />,
+    },
+    {
         title: "Вики",
         href: "/wiki",
-        icon: <BookOpen className="w-4 h-4" />,
+        icon: <Library className="w-4 h-4" />,
     },
     {
         title: "Гильдии",
         href: "/guilds",
-        icon: <Users className="w-4 h-4" />,
+        icon: <Castle className="w-4 h-4" />,
     },
     {
         title: "Карта",
