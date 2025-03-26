@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import {query} from "@/lib/mysql";
 import {getUserData} from "@/lib/utils";
+import {sendErrorMessage} from "@/lib/discord";
 
 export async function GET(request: Request) {
   const authHeader = request.headers.get("authorization");
@@ -23,6 +24,14 @@ export async function GET(request: Request) {
 
     return NextResponse.json(rows);
   } catch (error: any) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
+      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'GET',
+          {
+            message: error.message,
+            code: error.code || 'UNKNOWN_ERROR'
+          }
+      )
+
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
@@ -67,6 +76,14 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error: any) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
+      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'POST',
+          {
+            message: error.message,
+            code: error.code || 'UNKNOWN_ERROR'
+          }
+      )
+
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
@@ -105,6 +122,14 @@ export async function PATCH(request: Request) {
     );
     return NextResponse.json({ success: true });
   } catch (error: any) {
+      const ip = request.headers.get("x-forwarded-for")?.split(",")[1] || "unknown";
+      await sendErrorMessage(ip, 'api/v1/notifications', 500, 'PATCH',
+        {
+          message: error.message,
+          code: error.code || 'UNKNOWN_ERROR'
+        }
+      )
+
       return NextResponse.json({
         success: false,
         message: 'Серверная ошибка',
