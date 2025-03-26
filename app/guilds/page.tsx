@@ -5,6 +5,7 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/notify-alert";
 import { Crown } from "lucide-react";
+import GuildSkeleton from "@/components/skelets/guilds";
 
 export default function Guilds() {
     const [guilds, setGuilds] = useState([]);
@@ -31,14 +32,16 @@ export default function Guilds() {
             }
 
             const json = await response.json();
-            // Сортировка по количеству участников по убыванию
             const sortedGuilds = json.data.sort((a:any, b:any) => b.member_count - a.member_count);
+
             setGuilds(sortedGuilds);
             setPageLoaded(true);
         } catch (error) {
             console.error('Ошибка при загрузке гильдий:', error);
+
             setNotifyMessage(`Произошла ошибка при загрузке гильдий`);
             setNotifyType('error');
+
             setGuilds([]);
             setPageLoaded(true);
         }
@@ -46,14 +49,12 @@ export default function Guilds() {
 
     // Инициализация и настройка интервала обновления
     useEffect(() => {
-        fetchGuilds(); // Первоначальная загрузка
+        fetchGuilds();
 
-        // Установка интервала обновления каждые 15 секунд
         const intervalId = setInterval(() => {
             fetchGuilds();
         }, 15000);
 
-        // Очистка интервала при размонтировании компонента
         return () => clearInterval(intervalId);
     }, []);
 
@@ -72,7 +73,23 @@ export default function Guilds() {
     };
 
     if (!pageLoaded) {
-        return <div>Загрузка...</div>; // Можно добавить спиннер
+        return (
+            <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
+                <div className="flex mt-4 flex-col gap-4 select-none">
+                    <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
+                    <div className="sm:w-62 w-full h-10 bg-gray-300 dark:bg-zinc-600 rounded-lg"></div>
+                    <div className="w-40 h-10 bg-gray-300 dark:bg-zinc-600 rounded-lg"></div>
+                </div>
+                <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-8 mb-4">
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                </div>
+            </div>
+        );
     }
 
     if (guilds.length === 0) {
@@ -82,7 +99,6 @@ export default function Guilds() {
                     <ErrorMessage
                         message={notifyMessage}
                         onClose={handleClose}
-                        // @ts-ignore
                         type={notifyType}
                     />
                 )}
@@ -96,14 +112,13 @@ export default function Guilds() {
                 <ErrorMessage
                     message={notifyMessage}
                     onClose={handleClose}
-                    // @ts-ignore
                     type={notifyType}
                 />
             )}
             <div className="flex mt-4 flex-col gap-4 select-none">
                 <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                 <input
-                    className="p-3 border rounded-lg outline-none
+                    className="sm:w-fit p-3 border rounded-lg outline-none
                 dark:border-zinc-700 dark:bg-zinc-800 dark:text-white
                 border-zinc-300 bg-white text-black
                 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
