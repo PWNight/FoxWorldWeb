@@ -1,6 +1,6 @@
 "use client"
 import {PropsWithChildren} from "react";
-import {NavAdmin} from "@/components/navbar_admin";
+import {NavAdmin} from "@/components/navbar_me";
 
 export default function AdminMeLayout({ children }: PropsWithChildren) {
     return (
