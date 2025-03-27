@@ -285,7 +285,7 @@ export default function MyGuild(props: PageProps) {
                             <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Эмблема гильдии</h3>
                             <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
                                 Эмблема не должна нарушать{" "}
-                                <Link href="/wiki/rules" className="text-orange-500 hover:underline">
+                                <Link href="/rules" className="text-orange-500 hover:underline">
                                     правила сервера
                                 </Link>
                                 . См.{" "}
