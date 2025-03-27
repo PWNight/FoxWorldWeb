@@ -7,7 +7,7 @@ import { LifeBuoy } from "lucide-react";
 export function Footer() {
     return (
         <footer className="w-full p-2 px-6 border-t bg-muted/10">
-            <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
                 <div className="flex items-center gap-3">
                     <Image
                         src="/logo.png"
