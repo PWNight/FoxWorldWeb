@@ -77,8 +77,8 @@ export default function Guilds() {
             <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
                 <div className="flex mt-4 flex-col gap-4 select-none">
                     <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
-                    <div className="sm:w-62 w-full h-10 bg-gray-300 dark:bg-zinc-600 rounded-lg"></div>
-                    <div className="w-40 h-10 bg-gray-300 dark:bg-zinc-600 rounded-lg"></div>
+                    <div className="sm:w-62 w-full h-10 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
+                    <div className="w-40 h-10 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
                 </div>
                 <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 xl:grid-cols-3 gap-4 mt-8 mb-4">
                     <GuildSkeleton />
@@ -119,8 +119,8 @@ export default function Guilds() {
                 <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                 <input
                     className="sm:w-fit p-3 border rounded-lg outline-none
-                dark:border-zinc-700 dark:bg-zinc-800 dark:text-white
-                border-zinc-300 bg-white text-black
+                dark:bg-neutral-800 border-neutral-200 dark:border-neutral-700 dark:text-white
+                bg-white text-black
                 placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
                     type="text"
                     onChange={e => setSearchQuery(e.target.value)}
@@ -140,7 +140,7 @@ export default function Guilds() {
                         key={guild.url}
                         id={guild.url}
                         className='flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
-                    dark:bg-zinc-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
+                    dark:bg-neutral-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
                     bg-white border-zinc-200 hover:border-[#F38F54]
                     transition-all duration-300 shadow-md hover:shadow-lg w-full'
                     >
