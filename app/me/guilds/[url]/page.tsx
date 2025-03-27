@@ -121,7 +121,7 @@ export default function MyGuild(props: PageProps) {
                         <Trash2 className="w-4 h-4" /> Удалить гильдию
                     </button>
                 </DialogTrigger>
-                <DialogContent className="bg-white dark:bg-zinc-900 sm:max-w-[425px]">
+                <DialogContent className="bg-white dark:bg-neutral-800 sm:max-w-[425px]">
                     <DialogHeader>
                         <DialogTitle className="text-gray-900 dark:text-gray-100">Подтверждение удаления</DialogTitle>
                         <DialogDescription className="text-gray-600 dark:text-gray-400">
@@ -201,7 +201,7 @@ export default function MyGuild(props: PageProps) {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Редактирование гильдии</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Основная информация */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Основная информация</h2>
                     <form onSubmit={handleUpdate} className="space-y-4">
                         <div>
@@ -214,7 +214,7 @@ export default function MyGuild(props: PageProps) {
                                 placeholder="Введите новое название"
                                 defaultValue={userGuild.name}
                                 onChange={handleInputChange}
-                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                             />
                         </div>
                         <div>
@@ -227,7 +227,7 @@ export default function MyGuild(props: PageProps) {
                                 placeholder="Введите новую ссылку"
                                 defaultValue={userGuild.url}
                                 onChange={handleInputChange}
-                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                             />
                         </div>
                         <div>
@@ -240,7 +240,7 @@ export default function MyGuild(props: PageProps) {
                                 placeholder="Введите новый слоган"
                                 defaultValue={userGuild.info}
                                 onChange={handleInputChange}
-                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                             />
                         </div>
                         <div>
@@ -253,7 +253,7 @@ export default function MyGuild(props: PageProps) {
                                 defaultValue={userGuild.description}
                                 onChange={handleInputChange}
                                 rows={4}
-                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 resize-y"
+                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200 resize-y"
                             />
                         </div>
                         <button
@@ -278,7 +278,7 @@ export default function MyGuild(props: PageProps) {
                 </div>
 
                 {/* Дополнительные настройки */}
-                <div className="bg-white dark:bg-zinc-900 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Дополнительные настройки</h2>
                     <div className="space-y-6">
                         <div>
@@ -301,7 +301,7 @@ export default function MyGuild(props: PageProps) {
                                     placeholder="Ссылка на эмблему (planetminecraft)"
                                     defaultValue={userGuild.badge_url}
                                     onChange={handleInputChange}
-                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                                 />
                                 <button
                                     disabled={isLoading}
@@ -332,7 +332,7 @@ export default function MyGuild(props: PageProps) {
                                     placeholder="Ссылка на Discord (например, https://discord.gg/2yyeWQ5unZ)"
                                     defaultValue={userGuild.discord_code}
                                     onChange={handleInputChange}
-                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-zinc-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                                    className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                                 />
                                 <button
                                     disabled={isLoading}

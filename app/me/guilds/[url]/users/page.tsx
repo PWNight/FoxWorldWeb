@@ -227,16 +227,16 @@ export default function MyGuildMembers(props: PageProps) {
                                 {Array(3).fill(null).map((_, key) => (
                                     <div key={key} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow animate-pulse">
                                         <div className="flex items-center gap-3 mb-4">
-                                            <div className="w-12 h-12 bg-gray-300 dark:bg-gray-700 rounded-lg"></div>
-                                            <div className="h-6 w-32 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                            <div className="w-12 h-12 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
+                                            <div className="h-6 w-32 bg-gray-300 dark:bg-neutral-700 rounded"></div>
                                         </div>
                                         <div className="space-y-2 mb-4">
-                                            <div className="h-4 w-3/4 bg-gray-300 dark:bg-gray-700 rounded"></div>
-                                            <div className="h-4 w-1/2 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                            <div className="h-4 w-3/4 bg-gray-300 dark:bg-neutral-700 rounded"></div>
+                                            <div className="h-4 w-1/2 bg-gray-300 dark:bg-neutral-700 rounded"></div>
                                         </div>
                                         <div className="flex gap-2">
-                                            <div className="h-8 w-20 bg-gray-300 dark:bg-gray-700 rounded"></div>
-                                            <div className="h-8 w-20 bg-gray-300 dark:bg-gray-700 rounded"></div>
+                                            <div className="h-8 w-20 bg-gray-300 dark:bg-neutral-700 rounded"></div>
+                                            <div className="h-8 w-20 bg-gray-300 dark:bg-neutral-700 rounded"></div>
                                         </div>
                                     </div>
                                 ))}

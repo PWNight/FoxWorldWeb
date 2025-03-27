@@ -86,7 +86,7 @@ export default function MeGuilds() {
                         <div
                             key={guild.url}
                             className="flex flex-col p-4 rounded-lg
-                            bg-white dark:bg-zinc-800 dark:border-zinc-700
+                            bg-white dark:bg-neutral-800 dark:border-zinc-700
                             hover:border-[#F38F54] transition-all duration-300 shadow-md hover:shadow-lg"
                         >
                             <div className="flex flex-col gap-4">
@@ -182,7 +182,7 @@ export default function MeGuilds() {
                     ))}
                 </div>
             ) : (
-                <div className="w-fit bg-white dark:bg-zinc-800 rounded-lg p-6 border-2
+                <div className="w-fit bg-white dark:bg-neutral-800 rounded-lg p-6 border-2
                 border-zinc-200 dark:border-zinc-700 shadow-md">
                     <div className="flex flex-col gap-4">
                         <SearchX className="h-16 w-16 text-gray-500 dark:text-gray-400" />
