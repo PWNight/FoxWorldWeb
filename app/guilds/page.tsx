@@ -193,18 +193,20 @@ export default function Guilds() {
                                 )}
                             </div>
                         </div>
-                        <div className='flex sm:flex-row flex-col w-full gap-3 mt-4'>
-                            <Link
-                                href={`/guilds/${guild.url}/application`}
-                                className={buttonVariants({
-                                    variant: "accent",
-                                    className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
-                                    size: "sm",
-                                })}
-                            >
-                                Подать заявку
-                            </Link>
-                        </div>
+                            {guild.is_recruit ? (
+                                <div className='flex sm:flex-row flex-col w-full gap-3 mt-4'>
+                                    <Link
+                                        href={`/guilds/${guild.url}/application`}
+                                        className={buttonVariants({
+                                            variant: "accent",
+                                            className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
+                                            size: "sm",
+                                        })}
+                                    >
+                                        Подать заявку
+                                    </Link>
+                                </div>
+                            ) : ""}
                     </div>
                 ))}
             </div>

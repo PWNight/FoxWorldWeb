@@ -31,6 +31,10 @@ export default function GuildApplication(props: PageProps) {
                     router.push('/guilds')
                     return
                 }
+                if ( !r.data.is_recruit ){
+                    router.push('/guilds')
+                    return
+                }
                 setGuild(r.data);
 
                 checkGuildAccess(guildUrl, user_r.data).then((r) => {
