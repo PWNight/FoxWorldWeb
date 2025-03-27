@@ -67,7 +67,9 @@ export function AccountButton() {
         headers,
         body: body ? JSON.stringify(body) : undefined,
       });
+
       return res.ok ? res.json() : null;
+
     } catch (error) {
       console.error(`Error fetching ${endpoint}:`, error);
       return null;
@@ -91,7 +93,9 @@ export function AccountButton() {
       setIsUserLoading(false);
 
       setIsNotificationsLoading(true);
+
       await fetchNotifications(user.token);
+
       setIsNotificationsLoading(false);
     } else {
       setUserData(null);
@@ -112,12 +116,10 @@ export function AccountButton() {
   useEffect(() => {
     initialize();
 
-    // Update the information every 15 seconds
     const intervalId = setInterval(() => {
       refreshData();
     }, 15000);
 
-    // Clean up interval on component unmount
     return () => clearInterval(intervalId);
   }, [initialize, refreshData]);
 
@@ -125,6 +127,7 @@ export function AccountButton() {
     if (!userData?.token) return;
 
     setLoadingStates((prev) => ({ ...prev, [notificationId]: true }));
+
     const success = await fetchAPI<any>(
         "/api/v1/notifications",
         userData.token,
@@ -133,6 +136,7 @@ export function AccountButton() {
     );
 
     if (success) await fetchNotifications(userData.token);
+
     setLoadingStates((prev) => ({ ...prev, [notificationId]: false }));
   }, [userData?.token, fetchNotifications, fetchAPI]);
 
@@ -141,6 +145,7 @@ export function AccountButton() {
 
     await fetchAPI("/api/v1/auth/logout", userData.token);
     setUserData(null);
+
     router.push("/");
   }, [userData?.token, fetchAPI, router]);
 
@@ -181,7 +186,6 @@ export function AccountButton() {
 
   return (
       <div className="flex gap-2 items-center">
-        {/* Меню уведомлений */}
         {isNotificationsLoading ? (
             <Button variant="ghost" size="icon" disabled>
               <Loader2 className="h-6 w-6 animate-spin" />
@@ -223,7 +227,7 @@ export function AccountButton() {
                           {!notification.is_read && (
                               <button
                                   onClick={(e) => {
-                                    e.stopPropagation(); // Предотвращаем закрытие меню при нажатии на "Пометить как прочитанное"
+                                    e.stopPropagation();
                                     markAsRead(notification.id, notification.fk_profile);
                                   }}
                                   disabled={loadingStates[notification.id]}
