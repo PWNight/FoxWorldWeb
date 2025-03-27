@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ success: false, message: "Данный функционал доступен только команде разработки" }, { status: 401 });
         }
 
-        const verifyApplications : any = await query(`SELECT * FROM verify_applications WHERE status = 'Рассматривается'`)
+        const verifyApplications : any = await query(`SELECT * FROM verify_applications`)
         return NextResponse.json({ success: true, data: verifyApplications }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({
