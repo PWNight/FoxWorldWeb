@@ -3,8 +3,8 @@ import {Castle, House, Landmark, PaintbrushVertical, Scale, Store} from "lucide-
 
 export function NavMe() {
     return (
-        <div className="bg-neutral-100 rounded-lg shadow-sm dark:bg-neutral-800 p-4 sm:p-6">
-            <h1 className="text-xl sm:text-2xl font-semibold border-b border-neutral-200 dark:border-neutral-700 pb-3">
+        <div className="bg-white rounded-lg transition-all duration-300 shadow-md hover:shadow-lg dark:bg-neutral-800 p-4 sm:p-6">
+            <h1 className="text-xl sm:text-2xl font-semibold border-b border-neutral-200 dark:border-neutral-700 pb-3 pl-3">
                 Меню навигации
             </h1>
             <div className="mt-4 space-y-2">
