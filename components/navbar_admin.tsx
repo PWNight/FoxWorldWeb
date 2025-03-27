@@ -10,27 +10,27 @@ export function NavAdmin() {
             <div className="mt-4 space-y-2">
                 <SubAnchor
                     key='/me'
-                    activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                    activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                     absolute
-                    className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
+                    className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
                     href='/me'
                 >
                     <House/>Главная страница
                 </SubAnchor>
                 <SubAnchor
                     key='/admin/wiki'
-                    activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                    activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                     absolute
-                    className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
+                    className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
                     href='/admin/wiki'
                 >
                     <Library/> База знаний
                 </SubAnchor>
                 <SubAnchor
                     key='/admin/applications'
-                    activeClassName="bg-orange-400 text-muted hover:bg-orange-500"
+                    activeClassName="bg-orange-400 text-white hover:bg-orange-500"
                     absolute
-                    className="flex items-center gap-1 hover:bg-orange-400 hover:text-muted transition-all w-full py-2 px-1 rounded-sm"
+                    className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
                     href='/admin/applications'
                 >
                     <UserCheck/> Управление заявками
