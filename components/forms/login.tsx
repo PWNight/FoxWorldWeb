@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { signup } from "@/app/actions/actionHandlers";
+import {getSession} from "@/app/actions/getDataHandlers";
 
 export function LoginForm() {
     const [state, action, pending] = useActionState(signup, undefined);
@@ -14,6 +15,12 @@ export function LoginForm() {
     const redirectTo = searchParams.get("to") || "/me";
 
     useEffect(() => {
+        getSession().then(async(response) => {
+            if ( response.success ){
+                router.push(`/me`);
+                return
+            }
+        })
         if (state?.success) {
             const target = state.redirectTo || redirectTo;
             router.push(target);
