@@ -91,6 +91,7 @@ export default function MyGuild(props: PageProps) {
             return;
         }
 
+        setUserGuild({ ...userGuild, ...changedFormData });
         setNotifyMessage("Информация о гильдии успешно обновлена");
         setNotifyType("success");
         setIsLoading(false);
@@ -201,7 +202,7 @@ export default function MyGuild(props: PageProps) {
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Редактирование гильдии</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Основная информация */}
-                <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+                <div className="h-fit bg-white dark:bg-neutral-800 rounded-xl shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
                     <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Основная информация</h2>
                     <form onSubmit={handleUpdate} className="space-y-4">
                         <div>
@@ -334,6 +335,75 @@ export default function MyGuild(props: PageProps) {
                                     onChange={handleInputChange}
                                     className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
                                 />
+                                <button
+                                    disabled={isLoading}
+                                    className={buttonVariants({
+                                        variant: "accent",
+                                        className: "w-full flex items-center justify-center gap-2 text-white dark:text-white",
+                                    })}
+                                    type="submit"
+                                >
+                                    {isLoading ? (
+                                        <>
+                                            <Loader2 className="w-4 h-4 animate-spin" /> Выполняю...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Pencil className="w-4 h-4" /> Сохранить
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Статус набора</h3>
+                            <form onSubmit={handleUpdate} className="space-y-4">
+                                <div className="bg-neutral-100 dark:bg-neutral-700 rounded-lg p-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm font-medium dark:text-white">
+                                            Текущий статус:
+                                        </span>
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-sm font-semibold ${
+                                                updateFormData.is_recruit === 1
+                                                    ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                                    : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                            }`}
+                                        >
+                                            {updateFormData.is_recruit === 1 ? "Набор открыт" : "Набор закрыт"}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="flex gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setUpdateFormData({ ...updateFormData, is_recruit: 1 })}
+                                        disabled={updateFormData.is_recruit === 1}
+                                        className={buttonVariants({
+                                            variant: "accent",
+                                            className: `flex-1 ${
+                                                updateFormData.is_recruit === 1
+                                                    && "opacity-50 cursor-not-allowed dark:bg-neutral-700"
+                                            }`
+                                        })}
+                                    >
+                                        Открыть набор
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setUpdateFormData({ ...updateFormData, is_recruit: 0 })}
+                                        disabled={updateFormData.is_recruit === 0}
+                                        className={buttonVariants({
+                                            variant: "accent",
+                                            className: `flex-1 ${
+                                                updateFormData.is_recruit === 0
+                                                    && "opacity-50 cursor-not-allowed dark:bg-neutral-700"
+                                            }`
+                                        })}
+                                    >
+                                        Закрыть набор
+                                    </button>
+                                </div>
                                 <button
                                     disabled={isLoading}
                                     className={buttonVariants({
