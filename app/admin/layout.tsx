@@ -5,7 +5,9 @@ import {NavAdmin} from "@/components/navbar_admin";
 export default function AdminMeLayout({ children }: PropsWithChildren) {
     return (
         <div className="grid sm:grid-cols-[300px_1fr] gap-6 mt-4 mb-4 sm:px-4 lg:w-[95%] w-full mx-auto">
-            <NavAdmin/>
+            <div className='h-fit'>
+                <NavAdmin/>
+            </div>
             {children}
         </div>
     );
