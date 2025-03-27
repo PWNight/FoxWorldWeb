@@ -19,7 +19,7 @@ export function Footer() {
                     />
                     <div className="">
                         <p className="text-sm opacity-90">FoxWorld © 2025</p>
-                        <p className="text-xs opacity-70">v1.0.0-beta6 (22.03.25)</p>
+                        <p className="text-xs opacity-70">v1.0.0-beta6 PRE-1 (27.03.25)</p>
                     </div>
                 </div>
                 <FooterButtons />
