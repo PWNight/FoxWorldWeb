@@ -7,7 +7,6 @@ import { LifeBuoy } from "lucide-react";
 export function Footer() {
     return (
         <footer className="w-full p-2 px-6 border-t bg-muted/10">
-            {/* Первая строка: Копирайт и соцсети */}
             <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
                 <div className="flex items-center gap-3">
                     <Image
@@ -20,13 +19,12 @@ export function Footer() {
                     />
                     <div className="">
                         <p className="text-sm opacity-90">FoxWorld © 2025</p>
-                        <p className="text-xs opacity-70">v1.0.0-beta5 (22.03.25)</p>
+                        <p className="text-xs opacity-70">v1.0.0-beta6 (22.03.25)</p>
                     </div>
                 </div>
                 <FooterButtons />
             </div>
 
-            {/* Вторая строка: Юридические ссылки и информация */}
             <div className="flex flex-col gap-4">
                 <div className="flex items-start flex-wrap flex-row gap-4 sm:gap-6">
                     <Link
