@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Loader2, Pencil, Trash2 } from "lucide-react";
+import {ArrowLeft, Loader2, Pencil, Trash2} from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { getGuild, getSession } from "@/app/actions/getDataHandlers";
@@ -199,6 +199,11 @@ export default function MyGuild(props: PageProps) {
     return (
         <div className="container mx-auto px-4">
             {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
+            <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"})+"flex flex-row gap-2 mb-4"}>
+                <ArrowLeft/>
+                Обратно к гильдиям
+            </Link>
+
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Редактирование гильдии</h1>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Основная информация */}

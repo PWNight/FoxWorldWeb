@@ -2,10 +2,11 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getDataHandlers";
-import { Loader2, Pencil, SearchX, Trash } from "lucide-react";
+import {ArrowLeft, Loader2, Pencil, SearchX, Trash} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
+import Link from "next/link";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -249,10 +250,13 @@ export default function MyGuildMembers(props: PageProps) {
     }
 
     return (
-        <div className="p-6">
+        <div className="">
             <div className="max-w-7xl mx-auto space-y-8">
                 {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
-
+                <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"})+"flex flex-row gap-2 !mb-4"}>
+                    <ArrowLeft/>
+                    Обратно к гильдиям
+                </Link>
                 {/* Участники */}
                 <div className="space-y-4">
                     <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow p-4">
