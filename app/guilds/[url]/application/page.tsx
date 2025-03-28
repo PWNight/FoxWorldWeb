@@ -57,12 +57,12 @@ export default function GuildApplication(props: PageProps) {
 
     if ( pageLoaded ) {
         return (
-            <div className="flex items-center justify-center w-full min-h-screen p-4 sm:p-6">
+            <div className="flex items-center justify-center p-4 sm:p-6 h-full">
                 <form
                     className="w-full max-w-md mx-auto bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 sm:p-8 shadow-lg space-y-6 text-gray-900 dark:text-gray-100"
                     action={action}
                 >
-                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2 select-none">
+                    <h1 className="text-xl sm:text-2xl font-bold mb-2 select-none">
                         Заявка в гильдию &#34;{guild.name}&#34;
                     </h1>
 
