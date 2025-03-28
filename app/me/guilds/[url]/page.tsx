@@ -357,10 +357,10 @@ export default function MyGuild(props: PageProps) {
                         </div>
                         <div>
                             <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Статус набора</h3>
-                            <form onSubmit={handleUpdate} className="space-y-4">
-                                <div className="bg-neutral-100 dark:bg-neutral-700 rounded-lg p-4">
+                            <form onSubmit={handleUpdate} className="space-y-3">
+                                <div className="bg-neutral-100 dark:bg-neutral-700 rounded-lg p-2">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm font-medium dark:text-white">
+                                        <span className="text-sm font-medium dark:text-white p-1">
                                             Текущий статус:
                                         </span>
                                         <span
