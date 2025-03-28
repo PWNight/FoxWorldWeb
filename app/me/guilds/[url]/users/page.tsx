@@ -217,7 +217,7 @@ export default function MyGuildMembers(props: PageProps) {
 
     if (!pageLoaded) {
         return (
-            <div className="p-6">
+            <div className='px-4'>
                 <div className="max-w-7xl mx-auto space-y-8">
                     {['Участники', 'Заявки'].map((title, index) => (
                         <div key={index} className="space-y-4">
@@ -250,7 +250,7 @@ export default function MyGuildMembers(props: PageProps) {
     }
 
     return (
-        <div className="">
+        <div className='px-4'>
             <div className="max-w-7xl mx-auto space-y-8">
                 {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                 <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"})+"flex flex-row gap-2 !mb-4"}>

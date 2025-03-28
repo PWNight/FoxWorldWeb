@@ -197,7 +197,7 @@ export default function MyGuild(props: PageProps) {
     }
 
     return (
-        <div className="container mx-auto px-4">
+        <div className='px-4'>
             {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
             <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"})+"flex flex-row gap-2 mb-4"}>
                 <ArrowLeft/>
