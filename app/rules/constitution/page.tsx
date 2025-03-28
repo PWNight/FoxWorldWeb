@@ -29,7 +29,7 @@ export default async function RulesPage() {
                     <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
                         {res.content}
                     </div>
-                    <p className="text-xs sm:text-sm flex items-center gap-1.5 mt-8 text-muted-foreground px-3 py-1.5">
+                    <p className="text-xs sm:text-sm flex items-center gap-1.5 mt-8 text-muted-foreground">
                         <Info className="w-4 h-4" />
                         Последнее обновление: {res.frontmatter.update_date}
                     </p>
