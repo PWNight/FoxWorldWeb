@@ -51,7 +51,7 @@ export default function CreateGuild() {
             setError('Введите ссылку на гильдию');
             hasError = true;
         } else if (!URL_REGEX.test(url)) {
-            setError('Ссылка может содержать только буквы, цифры, дефис (-) и подчеркивание (_)');
+            setError('Ссылка может содержать только буквы в нижнем регистре, цифры, дефис (-) и подчеркивание (_)');
             hasError = true;
         }
 
@@ -156,7 +156,7 @@ export default function CreateGuild() {
                                 placeholder="например: foxcorp"
                             />
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                                Только буквы, цифры, - и _
+                                Только буквы в нижнем регистре, цифры, - и _
                             </p>
                         </div>
 
