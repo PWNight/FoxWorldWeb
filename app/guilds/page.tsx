@@ -107,7 +107,7 @@ export default function Guilds() {
     }
 
     return (
-        <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
+        <div className="flex flex-col px-4 py-2 w-full mx-auto sm:w-[95%]">
             {notifyMessage && (
                 <ErrorMessage
                     message={notifyMessage}
@@ -115,7 +115,7 @@ export default function Guilds() {
                     type={notifyType}
                 />
             )}
-            <div className="flex mt-4 flex-col gap-4 select-none">
+            <div className="flex flex-col gap-4 select-none">
                 <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                 <input
                     className="sm:w-fit p-3 border rounded-lg outline-none
@@ -194,18 +194,16 @@ export default function Guilds() {
                             </div>
                         </div>
                             {guild.is_recruit ? (
-                                <div className='flex sm:flex-row flex-col w-full gap-3 mt-4'>
-                                    <Link
-                                        href={`/guilds/${guild.url}/application`}
-                                        className={buttonVariants({
-                                            variant: "accent",
-                                            className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
-                                            size: "sm",
-                                        })}
-                                    >
-                                        Подать заявку
-                                    </Link>
-                                </div>
+                                <Link
+                                    href={`/guilds/${guild.url}/application`}
+                                    className={buttonVariants({
+                                        variant: "accent",
+                                        className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
+                                        size: "sm",
+                                    })}
+                                >
+                                    Подать заявку
+                                </Link>
                             ) : ""}
                     </div>
                 ))}
