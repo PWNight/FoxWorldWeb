@@ -84,9 +84,6 @@ export default function Me() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-neutral-100 rounded-lg shadow-sm dark:bg-neutral-800 w-full h-full flex items-center justify-center">
-                    <p>Говорят, скоро тут что-то будет</p>
-                </div>
             </div>
 
             {statisticLoadError ? <MeStatisticSkelet/> : (
