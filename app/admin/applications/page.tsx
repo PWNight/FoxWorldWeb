@@ -118,7 +118,7 @@ export default function VerifyApplications() {
     };
 
     return (
-        <div>
+        <div className={'px-4'}>
             {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
             <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-100">Управление заявками</h1>
 
