@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {getSession, getStats} from "@/app/actions/getDataHandlers";
-import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me_skelet";
+import MeSkelet, {MeStatisticSkelet} from "@/components/skelets/me";
 import ErrorMessage from "@/components/ui/notify-alert";
 
 export default function Me() {

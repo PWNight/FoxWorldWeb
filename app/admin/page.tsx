@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {getSession} from "@/app/actions/getDataHandlers";
-import MeSkelet from "@/components/skelets/me_skelet";
+import MeSkelet from "@/components/skelets/me";
 import InDev from "@/components/indev";
 
 export default function AdminMe() {
