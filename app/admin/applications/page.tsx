@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getSession, getVerifyApplications } from "@/app/actions/getDataHandlers";
-import { LucideCheck, Loader2, LucideX, SearchX } from "lucide-react";
+import { LucideCheck, Loader2, LucideX, SearchX, ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import ErrorMessage from "@/components/ui/notify-alert";
 
@@ -16,6 +16,8 @@ export default function VerifyApplications() {
     const [updating, setUpdating] = useState(0);
     const [statusFilter, setStatusFilter] = useState("all");
     const [dateSort, setDateSort] = useState("desc");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
 
     const router = useRouter();
 
@@ -63,6 +65,7 @@ export default function VerifyApplications() {
         });
 
         setFilteredApplications(updatedApplications);
+        setCurrentPage(1);
     }, [statusFilter, dateSort, verifyApplications]);
 
     const handleClose = () => setNotifyMessage("");
@@ -117,6 +120,18 @@ export default function VerifyApplications() {
         setUpdating(0);
     };
 
+    // Пагинация
+    const totalPages = Math.ceil(filteredApplications.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedApplications = filteredApplications.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        if (page >= 1 && page <= totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
     return (
         <div className={'px-4'}>
             {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
@@ -129,7 +144,7 @@ export default function VerifyApplications() {
                     <select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#F38F54]"
                     >
                         <option value="all">Все</option>
                         <option value="Рассматривается">Рассматривается</option>
@@ -142,7 +157,7 @@ export default function VerifyApplications() {
                     <select
                         value={dateSort}
                         onChange={(e) => setDateSort(e.target.value)}
-                        className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                        className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-3 py-2 bg-white dark:bg-neutral-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-[#F38F54]"
                     >
                         <option value="desc">Новые сверху</option>
                         <option value="asc">Старые сверху</option>
@@ -155,85 +170,124 @@ export default function VerifyApplications() {
                     <Loader2 className="animate-spin" /> <p>Загружаю анкеты...</p>
                 </div>
             ) : filteredApplications.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {filteredApplications.map((app: any) => (
-                        <div
-                            key={app.id}
-                            className="bg-white dark:bg-neutral-800 rounded-xl shadow-md p-6 flex flex-col transition-all duration-300 hover:shadow-lg"
-                        >
-                            <div className="flex items-center gap-3 mb-4">
-                                <Image
-                                    src={`https://minotar.net/helm/${app.nickname}/150.png`}
-                                    alt={app.nickname}
-                                    width={40}
-                                    height={40}
-                                    quality={100}
-                                    className="rounded-md"
-                                />
-                                <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{app.nickname}</h2>
-                            </div>
-                            <div className="space-y-3 flex-1">
-                                <p className="text-gray-500 dark:text-gray-400">
-                                    <span className="font-medium text-gray-700 dark:text-gray-300">Возраст:</span> {app.age}
-                                </p>
-                                <p className="text-gray-500 dark:text-gray-400">
-                                    <span className="font-medium text-gray-700 dark:text-gray-300">О себе:</span> {app.about}
-                                </p>
-                                <p className="text-gray-500 dark:text-gray-400">
-                                    <span className="font-medium text-gray-700 dark:text-gray-300">Откуда узнал:</span> {app.where_find}
-                                </p>
-                                <p className="text-gray-500 dark:text-gray-400">
-                                    <span className="font-medium text-gray-700 dark:text-gray-300">Планы:</span> {app.plans}
-                                </p>
-                                <p
-                                    className={`font-medium ${
-                                        app.status === "Принята"
-                                            ? "text-green-500"
-                                            : app.status === "Отклонена"
-                                                ? "text-red-500"
-                                                : "text-yellow-500"
-                                    }`}
-                                >
-                                    <span className="text-gray-700 dark:text-gray-300">Статус:</span> {app.status}
-                                </p>
-                            </div>
-                            {app.status === "Рассматривается" && (
-                                <div className="mt-4 flex gap-3">
-                                    <button
-                                        onClick={() => handleUpdate("Принята", app.nickname, app.id)}
-                                        disabled={updating === app.id}
-                                        className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg flex items-center justify-center transition-all duration-200"
-                                    >
-                                        {updating === app.id ? (
-                                            <>
-                                                <Loader2 className="mr-2 animate-spin" /> Выполняю..
-                                            </>
-                                        ) : (
-                                            <>
-                                                <LucideCheck className="mr-2" /> Принять
-                                            </>
-                                        )}
-                                    </button>
-                                    <button
-                                        onClick={() => handleUpdate("Отклонена", app.nickname, app.id)}
-                                        disabled={updating === app.id}
-                                        className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg flex items-center justify-center transition-all duration-200"
-                                    >
-                                        {updating === app.id ? (
-                                            <>
-                                                <Loader2 className="mr-2 animate-spin" /> Выполняю..
-                                            </>
-                                        ) : (
-                                            <>
-                                                <LucideX className="mr-2" /> Отклонить
-                                            </>
-                                        )}
-                                    </button>
+                <>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {paginatedApplications.map((app: any) => (
+                            <div
+                                key={app.id}
+                                className="bg-white dark:bg-neutral-800 rounded-xl shadow-md p-6 flex flex-col transition-all duration-300 hover:shadow-lg"
+                            >
+                                <div className="flex items-center gap-3 mb-4">
+                                    <Image
+                                        src={`https://minotar.net/helm/${app.nickname}/150.png`}
+                                        alt={app.nickname}
+                                        width={40}
+                                        height={40}
+                                        quality={100}
+                                        className="rounded-md"
+                                    />
+                                    <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{app.nickname}</h2>
                                 </div>
-                            )}
+                                <div className="space-y-3 flex-1">
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        <span className="font-medium text-gray-700 dark:text-gray-300">Возраст:</span> {app.age}
+                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        <span className="font-medium text-gray-700 dark:text-gray-300">О себе:</span> {app.about}
+                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        <span className="font-medium text-gray-700 dark:text-gray-300">Откуда узнал:</span> {app.where_find}
+                                    </p>
+                                    <p className="text-gray-500 dark:text-gray-400">
+                                        <span className="font-medium text-gray-700 dark:text-gray-300">Планы:</span> {app.plans}
+                                    </p>
+                                    <p
+                                        className={`font-medium ${
+                                            app.status === "Принята"
+                                                ? "text-green-500"
+                                                : app.status === "Отклонена"
+                                                    ? "text-red-500"
+                                                    : "text-[#F38F54]"
+                                        }`}
+                                    >
+                                        <span className="text-gray-700 dark:text-gray-300">Статус:</span> {app.status}
+                                    </p>
+                                </div>
+                                {app.status === "Рассматривается" && (
+                                    <div className="mt-4 flex gap-3">
+                                        <button
+                                            onClick={() => handleUpdate("Принята", app.nickname, app.id)}
+                                            disabled={updating === app.id}
+                                            className="flex-1 bg-green-500 hover:bg-green-600 text-white py-2 px-4 rounded-lg flex items-center justify-center transition-all duration-200"
+                                        >
+                                            {updating === app.id ? (
+                                                <>
+                                                    <Loader2 className="mr-2 animate-spin" /> Выполняю..
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <LucideCheck className="mr-2" /> Принять
+                                                </>
+                                            )}
+                                        </button>
+                                        <button
+                                            onClick={() => handleUpdate("Отклонена", app.nickname, app.id)}
+                                            disabled={updating === app.id}
+                                            className="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg flex items-center justify-center transition-all duration-200"
+                                        >
+                                            {updating === app.id ? (
+                                                <>
+                                                    <Loader2 className="mr-2 animate-spin" /> Выполняю..
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <LucideX className="mr-2" /> Отклонить
+                                                </>
+                                            )}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+
+                    {/* Пагинация */}
+                    {totalPages > 1 && (
+                        <div className="mt-6 flex items-center justify-center gap-2">
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className="p-2 rounded-lg bg-white dark:bg-neutral-800 disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+                            >
+                                <ChevronLeft className="h-5 w-5" />
+                            </button>
+
+                            <div className="flex gap-1">
+                                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                                    <button
+                                        key={page}
+                                        onClick={() => handlePageChange(page)}
+                                        className={`px-3 py-1 rounded-lg ${
+                                            currentPage === page
+                                                ? "bg-[#F38F54] text-white"
+                                                : "bg-white dark:bg-neutral-800 hover:bg-gray-100 dark:hover:bg-neutral-700"
+                                        } transition-colors`}
+                                    >
+                                        {page}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                className="p-2 rounded-lg bg-white dark:bg-neutral-800 disabled:opacity-50 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors"
+                            >
+                                <ChevronRight className="h-5 w-5" />
+                            </button>
                         </div>
-                    ))}
-                </div>
+                    )}
+                </>
             ) : (
                 <div className="w-full bg-white dark:bg-neutral-800 rounded-xl shadow-md p-6 text-center">
                     <SearchX className="h-20 w-20 mx-auto text-gray-500 dark:text-gray-400" />
