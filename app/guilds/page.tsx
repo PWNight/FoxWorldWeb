@@ -72,9 +72,16 @@ export default function Guilds() {
         setNotifyMessage('');
     };
 
-    if (!pageLoaded) {
+    if (guilds.length == 0 || !pageLoaded) {
         return (
             <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
+                {notifyMessage && (
+                    <ErrorMessage
+                        message={notifyMessage}
+                        onClose={handleClose}
+                        type={notifyType}
+                    />
+                )}
                 <div className="flex mt-4 flex-col gap-4 select-none">
                     <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                     <div className="sm:w-62 w-full h-10 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
@@ -89,20 +96,6 @@ export default function Guilds() {
                     <GuildSkeleton />
                 </div>
             </div>
-        );
-    }
-
-    if (guilds.length === 0) {
-        return (
-            <>
-                {notifyMessage && (
-                    <ErrorMessage
-                        message={notifyMessage}
-                        onClose={handleClose}
-                        type={notifyType}
-                    />
-                )}
-            </>
         );
     }
 
