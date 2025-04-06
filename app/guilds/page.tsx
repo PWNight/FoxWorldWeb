@@ -158,7 +158,6 @@ export default function Guilds() {
                                 <div className="space-y-2">
                                     <h1 className='text-2xl font-bold dark:text-white text-black'>{guild.name}</h1>
                                     <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
-                                    <p className="text-sm italic dark:text-zinc-400 text-zinc-500">{guild.description}</p>
                                     <ul className="list-inside list-disc text-sm space-y-1
                                 dark:text-zinc-300 text-zinc-700">
                                         {guild.is_recruit ? (
