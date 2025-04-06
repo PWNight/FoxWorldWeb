@@ -6,11 +6,16 @@ import ErrorMessage from "@/components/ui/notify-alert";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, Handshake } from "lucide-react";
 import { Crown } from "lucide-react";
+import { compileMDX } from "next-mdx-remote/rsc"; // Для обработки Markdown
+import remarkGfm from "remark-gfm"; // Поддержка GitHub Flavored Markdown
+import rehypeSlug from "rehype-slug"; // Добавление ID к заголовкам
+import rehypeAutolinkHeadings from "rehype-autolink-headings"; // Автоматические ссылки на заголовки
 
 type PageProps = {
     params: Promise<{ url: string }>;
 };
 
+// Список изображений
 const images = [
     "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
     "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
@@ -18,6 +23,17 @@ const images = [
     "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
     "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
 ];
+
+// Настройка компонентов для Markdown (если нужны кастомные элементы)
+const components = {
+    h1: (props: any) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
+    h2: (props: any) => <h2 className="text-xl font-semibold mt-3 mb-2" {...props} />,
+    p: (props: any) => <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed" {...props} />,
+    a: (props: any) => <a className="text-[#F38F54] hover:underline" {...props} />,
+    ul: (props: any) => <ul className="list-disc pl-5 mb-4" {...props} />,
+    ol: (props: any) => <ol className="list-decimal pl-5 mb-4" {...props} />,
+    li: (props: any) => <li className="mb-1" {...props} />,
+};
 
 export default function Guild(props: PageProps) {
     const [guild, setGuildData] = useState(Object);
@@ -29,6 +45,7 @@ export default function Guild(props: PageProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [visibleUsers, setVisibleUsers] = useState(5);
     const [showAll, setShowAll] = useState(false);
+    const [descriptionContent, setDescriptionContent] = useState<React.ReactNode | null>(null); // Для хранения HTML из Markdown
 
     useEffect(() => {
         const fetchGuild = async () => {
@@ -48,6 +65,22 @@ export default function Guild(props: PageProps) {
 
                 const guild = await response.json();
                 setGuildData(guild.data);
+
+                // Преобразование Markdown в HTML
+                const { content } = await compileMDX({
+                    source: guild.data.description || "", // Описание гильдии
+                    options: {
+                        mdxOptions: {
+                            remarkPlugins: [remarkGfm], // Поддержка таблиц и другого GFM
+                            rehypePlugins: [
+                                rehypeSlug, // Добавляет ID к заголовкам
+                                rehypeAutolinkHeadings, // Добавляет ссылки на заголовки
+                            ],
+                        },
+                    },
+                    components, // Кастомные компоненты для стилизации
+                });
+                setDescriptionContent(content);
 
                 const result = await fetch(`/api/v1/guilds/${guildUrl}/users`, { method: "GET" });
                 if (!result.ok) {
@@ -150,9 +183,7 @@ export default function Guild(props: PageProps) {
 
                 {/* Описание */}
                 <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 shadow-md">
-                    <p className="text-sm text-zinc-700 dark:text-zinc-300 leading-relaxed">
-                        {guild.description}
-                    </p>
+                    {descriptionContent} {/* Рендерим преобразованный Markdown */}
                 </div>
 
                 {/* Карусель */}
