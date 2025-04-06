@@ -1,15 +1,16 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Handshake } from "lucide-react";
+import {ChevronLeft, ChevronRight, Handshake} from "lucide-react";
 import { Crown } from "lucide-react";
 import { compileMDX } from "next-mdx-remote/rsc"; // Для обработки Markdown
 import remarkGfm from "remark-gfm"; // Поддержка GitHub Flavored Markdown
 import rehypeSlug from "rehype-slug"; // Добавление ID к заголовкам
-import rehypeAutolinkHeadings from "rehype-autolink-headings"; // Автоматические ссылки на заголовки
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import {Typography} from "@/components/typography"; // Автоматические ссылки на заголовки
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -134,7 +135,7 @@ export default function Guild(props: PageProps) {
 
     if (Object.keys(guild).length === 0 || !pageLoaded) {
         return (
-            <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%] min-h-screen items-center justify-center">
+            <div className="flex flex-col px-4 w-full mx-auto sm:w-[90%] items-center justify-center">
                 {notifyMessage && (
                     <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />
                 )}
@@ -143,7 +144,7 @@ export default function Guild(props: PageProps) {
     }
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] max-w-6xl mx-auto p-6 gap-6 min-h-screen">
+        <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr] sm:w-[90%] mx-auto p-6 gap-6">
             {/* Левая колонка */}
             <div className="space-y-6">
                 {notifyMessage && (
@@ -183,7 +184,11 @@ export default function Guild(props: PageProps) {
 
                 {/* Описание */}
                 <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 shadow-md">
-                    {descriptionContent} {/* Рендерим преобразованный Markdown */}
+                    <Typography>
+                        <div className="prose prose-sm sm:prose-base dark:prose-invert max-w-none">
+                            {descriptionContent}
+                        </div>
+                    </Typography>
                 </div>
 
                 {/* Карусель */}
@@ -260,16 +265,18 @@ export default function Guild(props: PageProps) {
                                 Подать заявку
                             </Link>
                         ) : null}
-                        <Link
-                            href={guild.badge_url}
-                            className={buttonVariants({
-                                variant: "link",
-                                className: "text-[#F38F54] hover:text-[#e07b39]",
-                                size: "sm",
-                            })}
-                        >
-                            Ссылка на баннер
-                        </Link>
+                        {guild.badge_url && (
+                            <Link
+                                href={guild.badge_url}
+                                className={buttonVariants({
+                                    variant: "link",
+                                    className: "text-[#F38F54] hover:text-[#e07b39]",
+                                    size: "sm",
+                                })}
+                            >
+                                Ссылка на баннер
+                            </Link>
+                        )}
                     </div>
                 </div>
 
