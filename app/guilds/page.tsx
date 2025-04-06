@@ -100,7 +100,7 @@ export default function Guilds() {
     }
 
     return (
-        <div className="flex flex-col px-4 py-2 w-full mx-auto sm:w-[95%]">
+        <div className="flex flex-col px-4 py-2 w-full sm:w-[90%] h-fit mx-auto">
             {notifyMessage && (
                 <ErrorMessage
                     message={notifyMessage}
@@ -173,15 +173,17 @@ export default function Guilds() {
                                     </ul>
                                 </div>
                                 {guild.badge_url && (
-                                    <Image
-                                        src={guild.badge_url}
-                                        alt={`Эмблема ${guild.url}`}
-                                        width={100}
-                                        height={100}
-                                        objectFit={'cover'}
-                                        quality={100}
-                                        className={'rounded-lg overflow-hidden'}
-                                    />
+                                    <div className={'flex justify-end'}>
+                                        <Image
+                                            src={guild.badge_url}
+                                            alt={`Эмблема ${guild.url}`}
+                                            width={100}
+                                            height={100}
+                                            objectFit={'cover'}
+                                            quality={100}
+                                            className={'rounded-lg overflow-hidden'}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>
