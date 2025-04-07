@@ -4,28 +4,18 @@ import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Image from "next/image";
-import {ChevronLeft, ChevronRight, Handshake} from "lucide-react";
+import { ChevronLeft, ChevronRight, Handshake } from "lucide-react";
 import { Crown } from "lucide-react";
-import { compileMDX } from "next-mdx-remote/rsc"; // Для обработки Markdown
-import remarkGfm from "remark-gfm"; // Поддержка GitHub Flavored Markdown
-import rehypeSlug from "rehype-slug"; // Добавление ID к заголовкам
+import { compileMDX } from "next-mdx-remote/rsc";
+import remarkGfm from "remark-gfm";
+import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
-import {Typography} from "@/components/typography"; // Автоматические ссылки на заголовки
+import { Typography } from "@/components/typography";
 
 type PageProps = {
     params: Promise<{ url: string }>;
 };
 
-// Список изображений
-const images = [
-    "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
-    "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
-    "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
-    "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
-    "https://plasmorp.com/api/teams/10195/vuXS0N0s.jpg",
-];
-
-// Настройка компонентов для Markdown (если нужны кастомные элементы)
 const components = {
     h1: (props: any) => <h1 className="text-2xl font-bold mt-4 mb-2" {...props} />,
     h2: (props: any) => <h2 className="text-xl font-semibold mt-3 mb-2" {...props} />,
@@ -39,6 +29,7 @@ const components = {
 export default function Guild(props: PageProps) {
     const [guild, setGuildData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
+    const [guildImages, setGuildImages] = useState([]); // State for images from DB
     const [notifyMessage, setNotifyMessage] = useState("");
     const [notifyType, setNotifyType] = useState("");
     const [pageLoaded, setPageLoaded] = useState(false);
@@ -46,7 +37,7 @@ export default function Guild(props: PageProps) {
     const [searchQuery, setSearchQuery] = useState("");
     const [visibleUsers, setVisibleUsers] = useState(5);
     const [showAll, setShowAll] = useState(false);
-    const [descriptionContent, setDescriptionContent] = useState<React.ReactNode | null>(null); // Для хранения HTML из Markdown
+    const [descriptionContent, setDescriptionContent] = useState<React.ReactNode | null>(null);
 
     useEffect(() => {
         const fetchGuild = async () => {
@@ -54,9 +45,10 @@ export default function Guild(props: PageProps) {
                 const params = await props.params;
                 const guildUrl = params.url;
 
-                const response = await fetch(`/api/v1/guilds/${guildUrl}`, { method: "GET" });
-                if (!response.ok) {
-                    const errorData = await response.json();
+                // Fetch guild data
+                const guildResponse = await fetch(`/api/v1/guilds/${guildUrl}`, { method: "GET" });
+                if (!guildResponse.ok) {
+                    const errorData = await guildResponse.json();
                     console.log(errorData);
                     setNotifyMessage(`Произошла ошибка при загрузке гильдии`);
                     setNotifyType("error");
@@ -64,28 +56,26 @@ export default function Guild(props: PageProps) {
                     return;
                 }
 
-                const guild = await response.json();
+                const guild = await guildResponse.json();
                 setGuildData(guild.data);
 
                 // Преобразование Markdown в HTML
                 const { content } = await compileMDX({
-                    source: guild.data.description || "", // Описание гильдии
+                    source: guild.data.description || "",
                     options: {
                         mdxOptions: {
-                            remarkPlugins: [remarkGfm], // Поддержка таблиц и другого GFM
-                            rehypePlugins: [
-                                rehypeSlug, // Добавляет ID к заголовкам
-                                rehypeAutolinkHeadings, // Добавляет ссылки на заголовки
-                            ],
+                            remarkPlugins: [remarkGfm],
+                            rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
                         },
                     },
-                    components, // Кастомные компоненты для стилизации
+                    components,
                 });
                 setDescriptionContent(content);
 
-                const result = await fetch(`/api/v1/guilds/${guildUrl}/users`, { method: "GET" });
-                if (!result.ok) {
-                    const errorData = await result.json();
+                // Fetch guild users
+                const usersResult = await fetch(`/api/v1/guilds/${guildUrl}/users`, { method: "GET" });
+                if (!usersResult.ok) {
+                    const errorData = await usersResult.json();
                     console.log(errorData);
                     setNotifyMessage(`Произошла ошибка при загрузке участников гильдии`);
                     setNotifyType("error");
@@ -93,12 +83,26 @@ export default function Guild(props: PageProps) {
                     return;
                 }
 
-                const guildUsers = await result.json();
+                const guildUsers = await usersResult.json();
                 setGuildUsers(guildUsers.data);
+
+                // Fetch guild images
+                const imagesResponse = await fetch(`/api/v1/guilds/${guildUrl}/images`, { method: "GET" });
+                if (!imagesResponse.ok) {
+                    const errorData = await imagesResponse.json();
+                    console.log(errorData);
+                    setNotifyMessage(`Произошла ошибка при загрузке изображений гильдии`);
+                    setNotifyType("error");
+                    setGuildImages([]); // Set empty array on failure
+                } else {
+                    const imagesData = await imagesResponse.json();
+                    setGuildImages(imagesData.data || []); // Ensure it's an array
+                }
+
                 setPageLoaded(true);
             } catch (error) {
-                console.error("Ошибка при загрузке гильдий:", error);
-                setNotifyMessage(`Произошла ошибка при загрузке гильдий`);
+                console.error("Ошибка при загрузке данных:", error);
+                setNotifyMessage(`Произошла ошибка при загрузке данных`);
                 setNotifyType("error");
                 setPageLoaded(true);
             }
@@ -110,9 +114,9 @@ export default function Guild(props: PageProps) {
     const handleClose = () => setNotifyMessage("");
 
     const handlePrevImage = () =>
-        setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
+        setCurrentImageIndex((prev) => (prev === 0 ? guildImages.length - 1 : prev - 1));
     const handleNextImage = () =>
-        setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
+        setCurrentImageIndex((prev) => (prev === guildImages.length - 1 ? 0 : prev + 1));
     const goToImage = (index: number) => setCurrentImageIndex(index);
 
     const filteredUsers = guildUsers
@@ -197,57 +201,65 @@ export default function Guild(props: PageProps) {
                 </div>
 
                 {/* Карусель */}
-                <div className="relative bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 shadow-md">
-                    <div className="overflow-hidden rounded-lg">
-                        <div
-                            className="flex transition-transform duration-300 ease-in-out"
-                            style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+                {guildImages.length > 0 ? (
+                    <div className="relative bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 shadow-md">
+                        <div className="overflow-hidden rounded-lg">
+                            <div
+                                className="flex transition-transform duration-300 ease-in-out"
+                                style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
+                            >
+                                {guildImages.map((image: any, index: number) => (
+                                    <div
+                                        key={image.id}
+                                        className="shrink-0 w-full aspect-video max-h-[400px] rounded-lg"
+                                    >
+                                        <Image
+                                            alt={`slide-${index + 1}`}
+                                            draggable={false}
+                                            loading="lazy"
+                                            width={1200}
+                                            height={675}
+                                            quality={100}
+                                            className="w-full h-full object-cover rounded-lg"
+                                            src={image.url}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <button
+                            onClick={handlePrevImage}
+                            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-neutral-200 dark:bg-neutral-700 rounded-full text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"
                         >
-                            {images.map((src, index) => (
-                                <div
+                            <ChevronLeft size={24} />
+                        </button>
+                        <button
+                            onClick={handleNextImage}
+                            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-neutral-200 dark:bg-neutral-700 rounded-full text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"
+                        >
+                            <ChevronRight size={24} />
+                        </button>
+                        <div className="flex justify-center gap-2 mt-4">
+                            {guildImages.map((_: any, index: number) => (
+                                <button
                                     key={index}
-                                    className="shrink-0 w-full aspect-video max-h-[400px] rounded-lg"
-                                >
-                                    <Image
-                                        alt={`slide-${index + 1}`}
-                                        draggable={false}
-                                        loading="lazy"
-                                        width={1200}
-                                        height={675}
-                                        quality={100}
-                                        className="w-full h-full object-cover rounded-lg"
-                                        src={src}
-                                    />
-                                </div>
+                                    onClick={() => goToImage(index)}
+                                    className={`w-3 h-3 rounded-full transition ${
+                                        currentImageIndex === index
+                                            ? "bg-[#F38F54]"
+                                            : "bg-neutral-400 dark:bg-neutral-600 hover:bg-neutral-500"
+                                    }`}
+                                />
                             ))}
                         </div>
                     </div>
-                    <button
-                        onClick={handlePrevImage}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-neutral-200 dark:bg-neutral-700 rounded-full text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"
-                    >
-                        <ChevronLeft size={24} />
-                    </button>
-                    <button
-                        onClick={handleNextImage}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-neutral-200 dark:bg-neutral-700 rounded-full text-black dark:text-white hover:bg-neutral-300 dark:hover:bg-neutral-600 transition"
-                    >
-                        <ChevronRight size={24} />
-                    </button>
-                    <div className="flex justify-center gap-2 mt-4">
-                        {images.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => goToImage(index)}
-                                className={`w-3 h-3 rounded-full transition ${
-                                    currentImageIndex === index
-                                        ? "bg-[#F38F54]"
-                                        : "bg-neutral-400 dark:bg-neutral-600 hover:bg-neutral-500"
-                                }`}
-                            />
-                        ))}
+                ) : (
+                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-xl p-6 shadow-md text-center">
+                        <p className="text-sm text-zinc-700 dark:text-zinc-300">
+                            Изображения для этой гильдии отсутствуют.
+                        </p>
                     </div>
-                </div>
+                )}
             </div>
 
             {/* Правая колонка */}
