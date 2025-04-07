@@ -68,7 +68,7 @@ export default function MyGuild(props: PageProps) {
                 const imagesData = await imagesResponse.json();
                 setGuildImages(imagesData.data || []);
             } else {
-                console.error("Failed to fetch guild images");
+                console.error("Failed to fetch guild album");
             }
         });
     }, [router, props]);

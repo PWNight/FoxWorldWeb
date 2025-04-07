@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
             return NextResponse.json({ success: false, message: "Гильдия не найдена" }, { status: 404 });
         }
 
-        // Fetch all images associated with the guild
+        // Fetch all album album associated with the guild
         const imagesData: any = await query(
             `SELECT id, fk_guild, url, fk_profile, create_date 
              FROM guilds_images 
