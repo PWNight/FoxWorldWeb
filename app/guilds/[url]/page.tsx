@@ -166,15 +166,20 @@ export default function Guild(props: PageProps) {
                         <h1 className="text-3xl font-bold text-black dark:text-white mb-2">{guild.name}</h1>
                         <p className="text-sm text-zinc-700 dark:text-zinc-300 mb-4">{guild.info}</p>
                         <ul className="text-sm text-zinc-700 dark:text-zinc-300 space-y-1">
+                            {guild.is_openProfile ? (
+                                <li className="text-green-400">Открытый профиль</li>
+                            ) : (
+                                <li className="text-red-400">Закрытый профиль</li>
+                            )}
                             {guild.is_recruit ? (
-                                <li className="text-green-400 flex items-center gap-1">
-                                    <Handshake size={16} /> Принимает заявки
-                                </li>
+                                <li className="text-green-400">Принимает заявки</li>
                             ) : (
                                 <li className="text-red-400">Не принимает заявки</li>
                             )}
                             {guild.discord_code && (
-                                <li className="text-blue-400">Есть Discord сервер</li>
+                                <li className="text-blue-400">Есть Discord сервер ({
+                                    guild.is_openDiscord ? "открытый" : "закрытый"
+                                })</li>
                             )}
                             <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
                             <li>{guild.member_count} участников</li>

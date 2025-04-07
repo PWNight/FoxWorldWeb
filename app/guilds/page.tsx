@@ -160,13 +160,20 @@ export default function Guilds() {
                                     <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
                                     <ul className="list-inside list-disc text-sm space-y-1
                                 dark:text-zinc-300 text-zinc-700">
+                                        {guild.is_openProfile ? (
+                                            <li className="text-green-400">Открытый профиль</li>
+                                        ) : (
+                                            <li className="text-red-400">Закрытый профиль</li>
+                                        )}
                                         {guild.is_recruit ? (
                                             <li className="text-green-400">Принимает заявки</li>
                                         ) : (
                                             <li className="text-red-400">Не принимает заявки</li>
                                         )}
                                         {guild.discord_code && (
-                                            <li className="text-blue-400">Есть Discord сервер</li>
+                                            <li className="text-blue-400">Есть Discord сервер ({
+                                                guild.is_openDiscord ? "открытый" : "закрытый"
+                                            })</li>
                                         )}
                                         <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
                                         <li>{guild.member_count} участников</li>
@@ -187,7 +194,7 @@ export default function Guilds() {
                                 )}
                             </div>
                         </div>
-                        <div className={'flex sm:flex-row flex-col gap-2'}>
+                        <div className={'flex gap-2'}>
                             <Link
                                 href={`/guilds/${guild.url}`}
                                 className={buttonVariants({

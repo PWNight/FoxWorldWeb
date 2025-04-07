@@ -81,15 +81,16 @@ export default function MeGuilds() {
             </div>
 
             {userGuilds.length > 0 ? (
-                <div className="grid gap-2 grid-cols-1 xl:grid-cols-2 w-fit">
+                <div className="grid gap-2 grid-cols-1 xl:grid-cols-3 w-fit">
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}
-                            className="flex flex-col p-4 rounded-lg
-                            bg-white dark:bg-neutral-800 dark:border-zinc-700
-                            hover:border-[#F38F54] transition-all duration-300 shadow-md hover:shadow-lg"
+                            className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
+                    dark:bg-neutral-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
+                    bg-white border-zinc-200 hover:border-[#F38F54]
+                    transition-all duration-300 shadow-md hover:shadow-lg w-full"
                         >
-                            <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-4 w-full">
                                 <div className="flex items-center gap-3">
                                     <Image
                                         src={`https://minotar.net/helm/${guild.owner_nickname}/150.png`}
@@ -107,35 +108,44 @@ export default function MeGuilds() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-row items-start gap-4">
+                                <div className="flex flex-row items-start gap-4 w-full">
                                     <div className="flex-1 space-y-3">
                                         <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
                                             {guild.name}
                                         </h3>
                                         <p className="text-sm text-gray-600 dark:text-gray-300">{guild.info}</p>
-                                        <p className="text-xs italic text-gray-500 dark:text-gray-400">
-                                            {guild.description}
-                                        </p>
                                         <ul className="list-disc list-inside text-sm space-y-1 text-gray-600 dark:text-gray-300">
-                                            <li className={guild.is_recruit ? "text-green-500" : "text-red-500"}>
-                                                {guild.is_recruit ? "Принимает заявки" : "Не принимает заявки"}
-                                            </li>
+                                            {guild.is_openProfile ? (
+                                                <li className="text-green-400">Открытый профиль</li>
+                                            ) : (
+                                                <li className="text-red-400">Закрытый профиль</li>
+                                            )}
+                                            {guild.is_recruit ? (
+                                                <li className="text-green-400">Принимает заявки</li>
+                                            ) : (
+                                                <li className="text-red-400">Не принимает заявки</li>
+                                            )}
                                             {guild.discord_code && (
-                                                <li className="text-blue-500">Есть Discord сервер</li>
+                                                <li className="text-blue-400">Есть Discord сервер ({
+                                                    guild.is_openDiscord ? "открытый" : "закрытый"
+                                                })</li>
                                             )}
                                             <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
                                             <li>{guild.member_count} участников</li>
                                         </ul>
                                     </div>
                                     {guild.badge_url && (
-                                        <Image
-                                            src={guild.badge_url}
-                                            alt={`Эмблема ${guild.url}`}
-                                            width={100}
-                                            height={100}
-                                            quality={100}
-                                            className="rounded-lg object-cover"
-                                        />
+                                        <div className={'flex justify-end'}>
+                                            <Image
+                                                src={guild.badge_url}
+                                                alt={`Эмблема ${guild.url}`}
+                                                width={100}
+                                                height={100}
+                                                objectFit={'cover'}
+                                                quality={100}
+                                                className={'rounded-lg overflow-hidden'}
+                                            />
+                                        </div>
                                     )}
                                 </div>
                             </div>
