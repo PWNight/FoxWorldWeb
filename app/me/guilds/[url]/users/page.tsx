@@ -218,14 +218,14 @@ export default function MyGuildMembers(props: PageProps) {
     if (!pageLoaded) {
         return (
             <div className='px-4'>
-                <div className="max-w-7xl mx-auto space-y-8">
+                <div className="max-w-9xl space-y-8">
                     {['Участники', 'Заявки'].map((title, index) => (
                         <div key={index} className="space-y-4">
                             <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow p-4">
                                 <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
                             </div>
-                            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                {Array(3).fill(null).map((_, key) => (
+                            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                                {Array(6).fill(null).map((_, key) => (
                                     <div key={key} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow animate-pulse">
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="w-12 h-12 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
@@ -251,7 +251,7 @@ export default function MyGuildMembers(props: PageProps) {
 
     return (
         <div className='px-4'>
-            <div className="max-w-7xl mx-auto space-y-8">
+            <div className="max-w-9xl space-y-8">
                 {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
                 <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"})+"flex flex-row gap-2 !mb-4"}>
                     <ArrowLeft/>
@@ -263,7 +263,7 @@ export default function MyGuildMembers(props: PageProps) {
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Участники</h2>
                     </div>
                     {guildUsers.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
                             {guildUsers.map((user: any) => (
                                 <div key={user.uid} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
