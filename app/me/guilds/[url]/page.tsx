@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {ArrowLeft, Loader2, Pencil, Trash2} from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { getGuild, getSession } from "@/app/actions/getDataHandlers";
+import {checkGuildAccess, getGuild, getSession} from "@/app/actions/getDataHandlers";
 import {
     Dialog,
     DialogTrigger,
@@ -58,6 +58,12 @@ export default function MyGuild(props: PageProps) {
                 setUpdateFormData({ ...r.data });
                 setPageLoaded(true);
             });
+
+            const accessResult = await checkGuildAccess(url, r.data);
+            if (!accessResult.success) {
+                router.push("/me/guilds");
+                return;
+            }
 
             // TODO: Вынести получение альбома гильдии в функцию getDataHandlers.tsx
             const imagesResponse = await fetch(`/api/v1/guilds/${url}/album`, {
