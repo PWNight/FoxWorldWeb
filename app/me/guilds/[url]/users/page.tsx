@@ -16,15 +16,19 @@ export default function MyGuildMembers(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
     const [guildApplications, setGuildApplications] = useState([]);
+
     const [guildUrl, setGuildUrl] = useState("");
+
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
 
     const router = useRouter();
 
     const fetchGuildData = async (url: string, token: string) => {
+        // TODO: Добавить вывод ошибок в консоль
         const usersResult = await getGuildUsers(url);
         if (!usersResult.success) {
             setGuildUsers([]);
@@ -48,6 +52,7 @@ export default function MyGuildMembers(props: PageProps) {
         let intervalId : any;
 
         const initializeData = async () => {
+            // TODO: Добавить вывод ошибок в консоль
             const params = await props.params;
             const { url } = params;
             setGuildUrl(url);
@@ -81,8 +86,10 @@ export default function MyGuildMembers(props: PageProps) {
     }, [props.params, router]);
 
     const handleUpdateUser = async (user : any, newPermission : any) => {
+        // TODO: Придумать как оптимизировать названия для ф-ий
         setIsLoading(true);
         const session_token = userData.token;
+
         let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
@@ -95,6 +102,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при повышении пользователя');
             setIsLoading(false);
@@ -113,6 +121,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyType('error');
             setNotifyMessage('Произошла ошибка при отправке уведомления');
             setIsLoading(false);
@@ -120,6 +129,7 @@ export default function MyGuildMembers(props: PageProps) {
         }
 
         await fetchGuildData(guildUrl, session_token);
+
         setNotifyType('success');
         setNotifyMessage(`Пользователь повышен до ${newPermission} уровня`);
         setIsLoading(false);
@@ -128,6 +138,7 @@ export default function MyGuildMembers(props: PageProps) {
     const handleDeleteUser = async (user : any) => {
         setIsLoading(true);
         const session_token = userData.token;
+
         let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'DELETE',
             headers: {
@@ -139,6 +150,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyType('error');
             setNotifyMessage(`Ошибка ${response.status} при удалении пользователя`);
             setIsLoading(false);
@@ -157,6 +169,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyType('error');
             setNotifyMessage('Ошибка при отправке уведомления');
             setIsLoading(false);
@@ -164,6 +177,7 @@ export default function MyGuildMembers(props: PageProps) {
         }
 
         await fetchGuildData(guildUrl, session_token);
+
         setNotifyType('success');
         setNotifyMessage('Пользователь исключён');
         setIsLoading(false);
@@ -172,7 +186,9 @@ export default function MyGuildMembers(props: PageProps) {
     const handleClose = () => setNotifyMessage('');
 
     const handleApplication = async (application : any, is_accepted : any) => {
+        // TODO: Придумать как оптимизировать
         setIsLoading(true);
+
         const user_id = application.fk_profile;
         const status = is_accepted ? 'Принята' : 'Отклонена';
 
@@ -185,6 +201,7 @@ export default function MyGuildMembers(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyType('error');
             setNotifyMessage('Ошибка при обработке заявки');
             setIsLoading(false);
