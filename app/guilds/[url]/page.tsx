@@ -29,15 +29,18 @@ const components = {
 export default function Guild(props: PageProps) {
     const [guild, setGuildData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
-    const [guildImages, setGuildImages] = useState([]); // State for images from DB
+    const [guildImages, setGuildImages] = useState([]);
+    const [descriptionContent, setDescriptionContent] = useState('');
+
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [visibleUsers, setVisibleUsers] = useState(5);
+
+    const [searchQuery, setSearchQuery] = useState("");
     const [notifyMessage, setNotifyMessage] = useState("");
     const [notifyType, setNotifyType] = useState("");
-    const [pageLoaded, setPageLoaded] = useState(false);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [visibleUsers, setVisibleUsers] = useState(5);
+
     const [showAll, setShowAll] = useState(false);
-    const [descriptionContent, setDescriptionContent] = useState<React.ReactNode | null>(null);
+    const [pageLoaded, setPageLoaded] = useState(false);
 
     useEffect(() => {
         const fetchGuild = async () => {
@@ -45,11 +48,13 @@ export default function Guild(props: PageProps) {
                 const params = await props.params;
                 const guildUrl = params.url;
 
-                // Fetch guild data
+                // Получение данных о гильдии
+                // TODO: Перенести запрос в getDataHandlers.tsx
                 const guildResponse = await fetch(`/api/v1/guilds/${guildUrl}`, { method: "GET" });
                 if (!guildResponse.ok) {
                     const errorData = await guildResponse.json();
                     console.log(errorData);
+
                     setNotifyMessage(`Произошла ошибка при загрузке гильдии`);
                     setNotifyType("error");
                     setPageLoaded(true);
@@ -70,13 +75,16 @@ export default function Guild(props: PageProps) {
                     },
                     components,
                 });
+                // TODO: Исправить проблему с типизацией
                 setDescriptionContent(content);
 
-                // Fetch guild users
+                // Получение данных о участниках
+                // TODO: Перенести запрос в getDataHandlers.tsx
                 const usersResult = await fetch(`/api/v1/guilds/${guildUrl}/users`, { method: "GET" });
                 if (!usersResult.ok) {
                     const errorData = await usersResult.json();
                     console.log(errorData);
+
                     setNotifyMessage(`Произошла ошибка при загрузке участников гильдии`);
                     setNotifyType("error");
                     setPageLoaded(true);
@@ -86,17 +94,19 @@ export default function Guild(props: PageProps) {
                 const guildUsers = await usersResult.json();
                 setGuildUsers(guildUsers.data);
 
-                // Fetch guild images
-                const imagesResponse = await fetch(`/api/v1/guilds/${guildUrl}/images`, { method: "GET" });
+                // Получение данных о альбоме
+                // TODO: Перенести запрос в getDataHandlers.tsx
+                const imagesResponse = await fetch(`/api/v1/guilds/${guildUrl}/album`, { method: "GET" });
                 if (!imagesResponse.ok) {
                     const errorData = await imagesResponse.json();
                     console.log(errorData);
+
                     setNotifyMessage(`Произошла ошибка при загрузке изображений гильдии`);
                     setNotifyType("error");
-                    setGuildImages([]); // Set empty array on failure
+                    setGuildImages([]);
                 } else {
                     const imagesData = await imagesResponse.json();
-                    setGuildImages(imagesData.data || []); // Ensure it's an array
+                    setGuildImages(imagesData.data || []);
                 }
 
                 setPageLoaded(true);
@@ -113,10 +123,8 @@ export default function Guild(props: PageProps) {
 
     const handleClose = () => setNotifyMessage("");
 
-    const handlePrevImage = () =>
-        setCurrentImageIndex((prev) => (prev === 0 ? guildImages.length - 1 : prev - 1));
-    const handleNextImage = () =>
-        setCurrentImageIndex((prev) => (prev === guildImages.length - 1 ? 0 : prev + 1));
+    const handlePrevImage = () => setCurrentImageIndex((prev) => (prev === 0 ? guildImages.length - 1 : prev - 1));
+    const handleNextImage = () => setCurrentImageIndex((prev) => (prev === guildImages.length - 1 ? 0 : prev + 1));
     const goToImage = (index: number) => setCurrentImageIndex(index);
 
     const filteredUsers = guildUsers
