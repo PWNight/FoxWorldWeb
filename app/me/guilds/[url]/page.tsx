@@ -29,6 +29,7 @@ export default function MyGuild(props: PageProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [notifyMessage, setNotifyMessage] = useState("");
     const [notifyType, setNotifyType] = useState("");
+    const [guildImages, setGuildImages] = useState([]);
     const router = useRouter();
 
     useEffect(() => {
@@ -51,8 +52,77 @@ export default function MyGuild(props: PageProps) {
                 setUpdateFormData({ ...r.data });
                 setPageLoaded(true);
             });
+
+            const imagesResponse = await fetch(`/api/v1/guilds/${url}/images`, {
+                headers: { Authorization: `Bearer ${r.data.token}` },
+            });
+            if (imagesResponse.ok) {
+                const imagesData = await imagesResponse.json();
+                setGuildImages(imagesData.data || []);
+            } else {
+                console.error("Failed to fetch guild images");
+            }
         });
     }, [router, props]);
+
+    const handleAddScreenshot = async (e: any) => {
+        e.preventDefault();
+        setIsLoading(true);
+
+        const session_token = userData.token;
+        const params = await props.params;
+        const { url } = params;
+        const imageUrl = e.target.image_url.value;
+
+        const response = await fetch(`/api/v1/guilds/${url}/images`, {
+            method: "POST",
+            headers: { Authorization: `Bearer ${session_token}` },
+            body: JSON.stringify({ url: imageUrl }),
+        });
+
+        if (!response.ok) {
+            setNotifyMessage(`Ошибка ${response.status} при добавлении скриншота`);
+            setNotifyType("error");
+            setIsLoading(false);
+            return;
+        }
+
+        const newImage = await response.json();
+        setGuildImages([...guildImages, newImage.data]);
+        setNotifyMessage("Скриншот успешно добавлен");
+        setNotifyType("success");
+        setIsLoading(false);
+        e.target.reset();
+    };
+
+    const handleDeleteScreenshot = async (imageId: number) => {
+        setIsLoading(true);
+        const session_token = userData.token;
+        const params = await props.params;
+        const { url } = params;
+
+        console.log(imageId)
+        const response = await fetch(`/api/v1/guilds/${url}/images?imageId=${imageId}`, {
+            method: "DELETE",
+            headers: { Authorization: `Bearer ${session_token}` },
+        });
+
+        const errorData = await response.json();
+        console.log(errorData)
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.log(errorData)
+            setNotifyMessage(`Ошибка ${response.status} при удалении скриншота`);
+            setNotifyType("error");
+            setIsLoading(false);
+            return;
+        }
+
+        setGuildImages(guildImages.filter((img) => img.id !== imageId));
+        setNotifyMessage("Скриншот успешно удален");
+        setNotifyType("success");
+        setIsLoading(false);
+    };
 
     const handleUpdate = async (e: any) => {
         e.preventDefault();
@@ -447,7 +517,64 @@ export default function MyGuild(props: PageProps) {
                             </button>
                         </form>
                     </div>
-                    <div className="space-y-3 bg-white dark:bg-neutral-800 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl p-6">
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl p-6">
+                        <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Альбом скриншотов</h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            Добавляйте скриншоты вашей гильдии. Они будут отображаться на странице гильдии.
+                        </p>
+
+                        {/* Display current screenshots */}
+                        {guildImages.length > 0 ? (
+                            <div className="space-y-2 mb-4">
+                                {guildImages.map((image) => (
+                                    <div key={image.id} className="flex items-center justify-between p-2 bg-neutral-100 dark:bg-neutral-700 rounded-lg">
+                                        <a href={image.url} target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline truncate flex-1">
+                                            {image.url}
+                                        </a>
+                                        <button
+                                            onClick={() => handleDeleteScreenshot(image.id)}
+                                            className={buttonVariants({
+                                                variant: "destructive",
+                                                className: "ml-2 flex items-center gap-1 text-white dark:text-white",
+                                            })}
+                                            disabled={isLoading}
+                                        >
+                                            <Trash2 className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Скриншоты отсутствуют</p>
+                        )}
+
+                        {/* Form to add a new screenshot */}
+                        <form onSubmit={handleAddScreenshot} className="space-y-3">
+                            <input
+                                type="text"
+                                id="image_url"
+                                placeholder="Введите ссылку на изображение"
+                                className="w-full border border-gray-300 dark:border-zinc-700 rounded-lg px-4 py-2 bg-white dark:bg-neutral-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all duration-200"
+                            />
+                            <button
+                                type="submit"
+                                disabled={isLoading}
+                                className={buttonVariants({
+                                    variant: "accent",
+                                    className: "w-full flex items-center justify-center gap-2 text-white dark:text-white",
+                                })}
+                            >
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" /> Добавляю...
+                                    </>
+                                ) : (
+                                    <>
+                                        <Pencil className="w-4 h-4" /> Добавить скриншот
+                                    </>
+                                )}
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
