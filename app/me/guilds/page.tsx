@@ -81,7 +81,7 @@ export default function MeGuilds() {
             </div>
 
             {userGuilds.length > 0 ? (
-                <div className="grid gap-2 grid-cols-1 xl:grid-cols-3 w-fit">
+                <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 w-fit">
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}

@@ -197,7 +197,7 @@ export default function MyGuild(props: PageProps) {
     }
 
     return (
-        <div className='px-4'>
+        <div>
             {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
             <Link href={'/me/guilds'} className={buttonVariants({variant: "accent"}) + "flex flex-row gap-2 mb-4"}>
                 <ArrowLeft/>
@@ -205,9 +205,9 @@ export default function MyGuild(props: PageProps) {
             </Link>
 
             <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-6">Редактирование гильдии</h1>
-            <div className="flex flex-col sm:flex-row gap-6">
+            <div className="flex flex-col lg:flex-row gap-6">
                 {/* Основная информация */}
-                <div className="h-fit min-w-[30%] space-y-4">
+                <div className="h-fit lg:min-w-[40%] space-y-4">
                     <form onSubmit={handleUpdate} className="space-y-4 bg-white dark:bg-neutral-800 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl p-6">
                         <div>
                             <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -295,7 +295,7 @@ export default function MyGuild(props: PageProps) {
                 </div>
 
                 {/* Дополнительные настройки */}
-                <div className="grid xl:grid-cols-2 grid-cols-1 gap-2 h-fit">
+                <div className="grid 3xl:grid-cols-2 grid-cols-1 gap-2 h-fit">
                     <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl p-6">
                         <h3 className="text-lg font-medium text-gray-800 dark:text-gray-200 mb-2">Эмблема гильдии</h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">

@@ -263,7 +263,7 @@ export default function MyGuildMembers(props: PageProps) {
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Участники</h2>
                     </div>
                     {guildUsers.length > 0 ? (
-                        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                             {guildUsers.map((user: any) => (
                                 <div key={user.uid} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
@@ -331,7 +331,7 @@ export default function MyGuildMembers(props: PageProps) {
                         <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Заявки</h2>
                     </div>
                     {guildApplications.length > 0 ? (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                             {guildApplications.map((application:any) => (
                                 <div key={application.fk_profile} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
                                     <div className="flex items-center gap-3 mb-4">
