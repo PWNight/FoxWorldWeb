@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import ErrorMessage from "@/components/ui/notify-alert";
 import {GuildEditSkelet} from "@/components/skelets/guilds";
-import InDev from "@/components/indev";
 
 type PageProps = {
     params: Promise<{ url: string }>;
