@@ -24,27 +24,33 @@ type PageProps = {
 export default function MyGuild(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const [userGuild, setUserGuild] = useState(Object);
+    const [guildImages, setGuildImages] = useState([]);
+
     const [updateFormData, setUpdateFormData] = useState(Object);
+
+    const [notifyMessage, setNotifyMessage] = useState("");
+
+    const [notifyType, setNotifyType] = useState("");
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const [notifyMessage, setNotifyMessage] = useState("");
-    const [notifyType, setNotifyType] = useState("");
-    const [guildImages, setGuildImages] = useState([]);
+
     const router = useRouter();
 
     useEffect(() => {
+        // TODO: Сделать вывод ошибок в консоль
         getSession().then(async (r) => {
             const params = await props.params;
             const { url } = params;
 
-            if (!r.success) {
+            if ( !r.success ) {
                 router.push(`/login?to=me/guilds/${url}`);
                 return;
             }
             setUserData(r.data);
 
+            // TODO: Переписать получение гильдии, сделав проверку на наличие доступа на редактирование
             getGuild(url).then((r) => {
-                if (!r.success) {
+                if ( !r.success ) {
                     router.push("/me/guilds");
                     return;
                 }
@@ -53,10 +59,12 @@ export default function MyGuild(props: PageProps) {
                 setPageLoaded(true);
             });
 
-            const imagesResponse = await fetch(`/api/v1/guilds/${url}/images`, {
+            // TODO: Вынести получение альбома гильдии в функцию getDataHandlers.tsx
+            const imagesResponse = await fetch(`/api/v1/guilds/${url}/album`, {
                 headers: { Authorization: `Bearer ${r.data.token}` },
             });
-            if (imagesResponse.ok) {
+
+            if ( !imagesResponse.ok ) {
                 const imagesData = await imagesResponse.json();
                 setGuildImages(imagesData.data || []);
             } else {
@@ -74,7 +82,7 @@ export default function MyGuild(props: PageProps) {
         const { url } = params;
         const imageUrl = e.target.image_url.value;
 
-        const response = await fetch(`/api/v1/guilds/${url}/images`, {
+        const response = await fetch(`/api/v1/guilds/${url}/album`, {
             method: "POST",
             headers: { Authorization: `Bearer ${session_token}` },
             body: JSON.stringify({ url: imageUrl }),
@@ -88,7 +96,10 @@ export default function MyGuild(props: PageProps) {
         }
 
         const newImage = await response.json();
+        // TODO: Исправить типизацию
+        // @ts-ignore
         setGuildImages([...guildImages, newImage.data]);
+
         setNotifyMessage("Скриншот успешно добавлен");
         setNotifyType("success");
         setIsLoading(false);
@@ -101,24 +112,23 @@ export default function MyGuild(props: PageProps) {
         const params = await props.params;
         const { url } = params;
 
-        console.log(imageId)
-        const response = await fetch(`/api/v1/guilds/${url}/images?imageId=${imageId}`, {
+        const response = await fetch(`/api/v1/guilds/${url}/album?imageId=${imageId}`, {
             method: "DELETE",
             headers: { Authorization: `Bearer ${session_token}` },
         });
 
-        const errorData = await response.json();
-        console.log(errorData)
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData)
+
             setNotifyMessage(`Ошибка ${response.status} при удалении скриншота`);
             setNotifyType("error");
             setIsLoading(false);
             return;
         }
 
-        setGuildImages(guildImages.filter((img) => img.id !== imageId));
+        setGuildImages(guildImages.filter((img:any) => img.id !== imageId));
+
         setNotifyMessage("Скриншот успешно удален");
         setNotifyType("success");
         setIsLoading(false);
@@ -155,6 +165,7 @@ export default function MyGuild(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData);
+
             setNotifyMessage(`Произошла ошибка ${response.status} при обновлении гильдии`);
             setNotifyType("error");
             setIsLoading(false);
@@ -162,6 +173,7 @@ export default function MyGuild(props: PageProps) {
         }
 
         setUserGuild({ ...userGuild, ...changedFormData });
+
         setNotifyMessage("Информация о гильдии успешно обновлена");
         setNotifyType("success");
         setIsLoading(false);
@@ -226,6 +238,7 @@ export default function MyGuild(props: PageProps) {
     };
 
     const handleDelete = async () => {
+        // TODO: Придумать как оптимизировать создание fetch переменных
         const session_token = userData.token;
         let response = await fetch(`/api/v1/guilds/${userGuild.url}`, {
             method: "DELETE",
@@ -235,6 +248,7 @@ export default function MyGuild(props: PageProps) {
         if (!response.ok) {
             const errorData = await response.json();
             console.log(errorData);
+
             setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`);
             setNotifyType("error");
             return;
@@ -262,6 +276,7 @@ export default function MyGuild(props: PageProps) {
 
     const handleClose = () => setNotifyMessage("");
 
+    // TODO: Обновить скелет под новый дизайн
     if (!pageLoaded) {
         return <GuildEditSkelet/>;
     }
@@ -526,7 +541,7 @@ export default function MyGuild(props: PageProps) {
                         {/* Display current screenshots */}
                         {guildImages.length > 0 ? (
                             <div className="space-y-2 mb-4">
-                                {guildImages.map((image) => (
+                                {guildImages.map((image: any) => (
                                     <div key={image.id} className="flex items-center justify-between p-2 bg-neutral-100 dark:bg-neutral-700 rounded-lg">
                                         <a href={image.url} target="_blank" rel="noopener noreferrer" className="text-orange-500 hover:underline truncate flex-1">
                                             {image.url}
