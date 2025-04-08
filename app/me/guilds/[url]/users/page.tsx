@@ -74,7 +74,7 @@ export default function MyGuildMembers(props: PageProps) {
                 router.push("/me/guilds");
                 return;
             }
-            if ( guildUserResult.data.permission == 0 ) {
+            if ( guildUserResult.data.permission < 1 ) {
                 router.push("/me/guilds");
                 return;
             }
