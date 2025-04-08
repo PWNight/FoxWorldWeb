@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import ErrorMessage from "@/components/ui/notify-alert";
 import {GuildEditSkelet} from "@/components/skelets/guilds";
+import {sendNotification} from "@/app/actions/actionHandlers";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -45,6 +46,7 @@ export default function MyGuild(props: PageProps) {
                 router.push(`/login?to=me/guilds/${url}`);
                 return;
             }
+
             setUserData(r.data);
 
             const guildResult = await getGuild(url)
@@ -52,6 +54,7 @@ export default function MyGuild(props: PageProps) {
                 router.push("/me/guilds");
                 return;
             }
+
             setUserGuild(guildResult.data);
             setUpdateFormData({ ...guildResult.data });
 
@@ -71,6 +74,7 @@ export default function MyGuild(props: PageProps) {
                 setNotifyType("warning");
                 setGuildImages([])
             }
+            setGuildImages(albumResult.data)
 
             setPageLoaded(true);
         });
@@ -80,14 +84,13 @@ export default function MyGuild(props: PageProps) {
         e.preventDefault();
         setIsLoading(true);
 
-        const session_token = userData.token;
         const params = await props.params;
         const { url } = params;
         const imageUrl = e.target.image_url.value;
 
         const response = await fetch(`/api/v1/guilds/${url}/album`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${session_token}` },
+            headers: { Authorization: `Bearer ${userData.token}` },
             body: JSON.stringify({ url: imageUrl }),
         });
 
@@ -109,13 +112,13 @@ export default function MyGuild(props: PageProps) {
 
     const handleDeleteScreenshot = async (imageId: number) => {
         setIsLoading(true);
-        const session_token = userData.token;
+
         const params = await props.params;
         const { url } = params;
 
         const response = await fetch(`/api/v1/guilds/${url}/album?imageId=${imageId}`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${session_token}` },
+            headers: { Authorization: `Bearer ${userData.token}` },
         });
 
         if (!response.ok) {
@@ -139,7 +142,6 @@ export default function MyGuild(props: PageProps) {
         e.preventDefault();
         setIsLoading(true);
 
-        const session_token = userData.token;
         const params = await props.params;
         const { url } = params;
 
@@ -159,11 +161,11 @@ export default function MyGuild(props: PageProps) {
 
         const response = await fetch(`/api/v1/guilds/${url}`, {
             method: "POST",
-            headers: { Authorization: `Bearer ${session_token}` },
+            headers: { Authorization: `Bearer ${userData.token}` },
             body: JSON.stringify({ formData: changedFormData }),
         });
 
-        if (!response.ok) {
+        if ( !response.ok ) {
             const errorData = await response.json();
             console.log(errorData);
 
@@ -253,20 +255,9 @@ export default function MyGuild(props: PageProps) {
             return;
         }
 
-        const notifyResult = await fetch("/api/v1/notifications", {
-            method: "POST",
-            headers: { Authorization: `Bearer ${userData.token}` },
-            body: JSON.stringify({
-                userId: userData.profile.id,
-                message: "Ваша гильдия успешно удалена.",
-            }),
-        });
-
-        if (!notifyResult.ok) {
-            const errorData = await notifyResult.json();
-            console.log(errorData);
-
-            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
+        const notifyResult = await sendNotification(userData.profile.id, userData.token, `Ваша гильдия ${userGuild.name} успешно удалена`)
+        if ( !notifyResult.success ) {
+            setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
             setNotifyType("error");
             return;
         }
