@@ -12,6 +12,7 @@ import {
 import {ArrowLeft, Loader2, Pencil, SearchX, Trash} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Link from "next/link";
+import {sendNotification} from "@/app/actions/actionHandlers";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -39,6 +40,7 @@ export default function MyGuildMembers(props: PageProps) {
             setNotifyType('error');
             setNotifyMessage('Не удалось получить участников гильдии');
         }
+
         setGuildUsers(usersResult.data);
 
         const appsResult = await getGuildApplications(url, token);
@@ -47,6 +49,7 @@ export default function MyGuildMembers(props: PageProps) {
             setNotifyType('error');
             setNotifyMessage('Не удалось получить заявки в гильдию');
         }
+
         setGuildApplications(appsResult.data);
     };
 
@@ -63,6 +66,7 @@ export default function MyGuildMembers(props: PageProps) {
                 router.push(`/login?to=me/guilds/${url}/users`);
                 return;
             }
+
             setUserData(sessionResult.data);
 
             const guildUserResult = await getGuildUser(url, sessionResult.data.profile.id);
@@ -76,6 +80,7 @@ export default function MyGuildMembers(props: PageProps) {
             }
 
             await fetchGuildData(url, sessionResult.data.token);
+
             setPageLoaded(true);
 
             intervalId = setInterval(async () => {
@@ -112,22 +117,10 @@ export default function MyGuildMembers(props: PageProps) {
             return;
         }
 
-        const notifyResult = await fetch("/api/v1/notifications", {
-            headers: { "Authorization": `Bearer ${userData.token}` },
-            method: "POST",
-            body: JSON.stringify({
-                userId: user.uid,
-                message: `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`,
-            })
-        });
-
-        if ( !notifyResult.ok ) {
-            const errorData = await notifyResult.json();
-            console.log(errorData)
-
-            setNotifyType('error');
-            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
-            setIsLoading(false);
+        const notifyResult = await sendNotification(user.uid, userData.token, `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`)
+        if ( !notifyResult.success ) {
+            setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
+            setNotifyType("error");
             return;
         }
 
@@ -135,6 +128,7 @@ export default function MyGuildMembers(props: PageProps) {
 
         setNotifyType('success');
         setNotifyMessage(`Пользователь повышен до ${newPermission} уровня`);
+
         setIsLoading(false);
     };
 
@@ -159,29 +153,18 @@ export default function MyGuildMembers(props: PageProps) {
             return;
         }
 
-        const notifyResult = await fetch("/api/v1/notifications", {
-            headers: { "Authorization": `Bearer ${userData.token}` },
-            method: "POST",
-            body: JSON.stringify({
-                userId: user.uid,
-                message: `Вы были исключены из гильдии /${guildUrl}`,
-            })
-        });
-
-        if ( !notifyResult.ok ) {
-            const errorData = await notifyResult.json();
-            console.log(errorData)
-
-            setNotifyType('error');
-            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
-            setIsLoading(false);
+        const notifyResult = await sendNotification(user.uid, userData.token, `Вы были исключены из гильдии /${guildUrl}`)
+        if ( !notifyResult.success ) {
+            setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
+            setNotifyType("error");
             return;
         }
 
         await fetchGuildData(guildUrl, userData.token);
 
         setNotifyType('success');
-        setNotifyMessage('Пользователь исключён');
+        setNotifyMessage(`Пользователь ${user.nickname} исключён`);
+
         setIsLoading(false);
     };
 
@@ -209,28 +192,18 @@ export default function MyGuildMembers(props: PageProps) {
             return;
         }
 
-        const notifyResult = await fetch("/api/v1/notifications", {
-            headers: { "Authorization": `Bearer ${userData.token}` },
-            method: "POST",
-            body: JSON.stringify({
-                userId: application.fk_profile,
-                message: `Ваша заявка в гильдию /${guildUrl} была ${is_accepted ? 'принята' : 'отклонена'}.`,
-            })
-        });
-
-        if ( !notifyResult.ok ) {
-            const errorData = await notifyResult.json();
-            console.log(errorData)
-
-            setNotifyType('error');
-            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
-            setIsLoading(false);
+        const notifyResult = await sendNotification(uId, userData.token, `Ваша заявка в гильдию /${guildUrl} была ${is_accepted ? 'принята' : 'отклонена'}.`)
+        if ( !notifyResult.success ) {
+            setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
+            setNotifyType("error");
             return;
         }
 
         await fetchGuildData(guildUrl, userData.token);
+
         setNotifyType('success');
         setNotifyMessage(`Заявка изменена на "${status}"`);
+
         setIsLoading(false);
     };
 
