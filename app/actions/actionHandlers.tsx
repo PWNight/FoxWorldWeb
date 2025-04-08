@@ -14,6 +14,30 @@ interface ApiErrorResponse {
     message?: string;
 }
 
+// Утилита для отправки уведомлений пользователем
+export async function sendNotification(uId: number, token: string, message: string){
+    const response = await fetch("/api/v1/notifications", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+            userId: uId,
+            message,
+        }),
+    });
+    if ( !response.ok ) {
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при отправке уведомления",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
+    }
+
+    return { success: true }
+}
 // Утилита для обработки API ответов
 async function handleApiResponse(response: Response) {
     if (!response.ok) {
