@@ -25,12 +25,14 @@ export default function MeGuilds() {
                 router.push("/login?to=me/guilds");
                 return;
             }
+
             const myGuildsResult = await getAllMyGuilds(r.data.token)
             if (!myGuildsResult.success) {
                 setNotifyMessage(`Произошла ошибка при загрузке списка гильдий`);
                 setNotifyType('error');
                 return;
             }
+
             setUserGuilds(myGuildsResult.data || []);
             setPageLoaded(true);
         });
@@ -40,28 +42,26 @@ export default function MeGuilds() {
 
     if (!pageLoaded) {
         return (
-            <>
+            <div className="flex flex-col px-2 w-full">
                 {notifyMessage && <ErrorMessage message={notifyMessage} onClose={handleClose} type={notifyType} />}
-                <div className="flex flex-col px-2 w-full">
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Мои гильдии</h1>
-                        <Link
-                            href="/guilds/create"
-                            className={buttonVariants({
-                                size: 'sm',
-                                variant: 'accent',
-                                className: "w-full sm:w-auto px-4 py-2 bg-[#F38F54] hover:bg-[#e07b44] text-white"
-                            })}
-                        >
-                            Создать гильдию
-                        </Link>
-                    </div>
-                    <div className="grid gap-2 grid-cols-1 xl:grid-cols-2">
-                        <GuildSkeleton />
-                        <GuildSkeleton />
-                    </div>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                    <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Мои гильдии</h1>
+                    <Link
+                        href="/guilds/create"
+                        className={buttonVariants({
+                            size: 'sm',
+                            variant: 'accent',
+                            className: "w-full sm:w-auto px-4 py-2 bg-[#F38F54] hover:bg-[#e07b44] text-white"
+                        })}
+                    >
+                        Создать гильдию
+                    </Link>
                 </div>
-            </>
+                <div className="grid gap-2 grid-cols-1 xl:grid-cols-2">
+                    <GuildSkeleton />
+                    <GuildSkeleton />
+                </div>
+            </div>
         );
     }
 
@@ -153,29 +153,29 @@ export default function MeGuilds() {
                             </div>
 
                             <div className="flex flex-row flex-wrap gap-2 mt-4">
-                                {guild.permission === 2 && (
-                                    <>
-                                        <Link
-                                            href={`/me/guilds/${guild.url}`}
-                                            className={buttonVariants({
-                                                size: 'sm',
-                                                variant: 'accent',
-                                                className: "bg-[#F38F54] hover:bg-[#e07b44] text-white"
-                                            })}
-                                        >
-                                            Редактировать гильдию
-                                        </Link>
-                                        <Link
-                                            href={`/me/guilds/${guild.url}/users`}
-                                            className={buttonVariants({
-                                                size: 'sm',
-                                                variant: 'accent',
-                                                className: "bg-[#F38F54] hover:bg-[#e07b44] text-white"
-                                            })}
-                                        >
-                                            Управлять заявками
-                                        </Link>
-                                    </>
+                                {guild.permission == 2 && (
+                                    <Link
+                                        href={`/me/guilds/${guild.url}`}
+                                        className={buttonVariants({
+                                            size: 'sm',
+                                            variant: 'accent',
+                                            className: "bg-[#F38F54] hover:bg-[#e07b44] text-white"
+                                        })}
+                                    >
+                                        Редактировать гильдию
+                                    </Link>
+                                )}
+                                {guild.permission >= 1 && (
+                                    <Link
+                                        href={`/me/guilds/${guild.url}/users`}
+                                        className={buttonVariants({
+                                            size: 'sm',
+                                            variant: 'accent',
+                                            className: "bg-[#F38F54] hover:bg-[#e07b44] text-white"
+                                        })}
+                                    >
+                                        Управлять заявками
+                                    </Link>
                                 )}
                                 {guild.discord_code && (
                                     <Link
