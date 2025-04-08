@@ -11,6 +11,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import { Typography } from "@/components/typography";
+import {getGuild, getGuildAlbum, getGuildUsers} from "@/app/actions/getDataHandlers";
 
 type PageProps = {
     params: Promise<{ url: string }>;
@@ -29,8 +30,8 @@ const components = {
 export default function Guild(props: PageProps) {
     const [guild, setGuildData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
-    const [guildImages, setGuildImages] = useState([]);
-    const [descriptionContent, setDescriptionContent] = useState('');
+    const [guildImages, setGuildImages] = useState(Array);
+    const [descriptionContent, setDescriptionContent] = useState(Object);
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [visibleUsers, setVisibleUsers] = useState(5);
@@ -44,82 +45,54 @@ export default function Guild(props: PageProps) {
 
     useEffect(() => {
         const fetchGuild = async () => {
-            try {
-                const params = await props.params;
-                const guildUrl = params.url;
+            const params = await props.params;
+            const guildUrl = params.url;
 
-                // Получение данных о гильдии
-                // TODO: Перенести запрос в getDataHandlers.tsx
-                const guildResponse = await fetch(`/api/v1/guilds/${guildUrl}`, { method: "GET" });
-                if (!guildResponse.ok) {
-                    const errorData = await guildResponse.json();
-                    console.log(errorData);
-
-                    setNotifyMessage(`Произошла ошибка при загрузке гильдии`);
-                    setNotifyType("error");
-                    setPageLoaded(true);
-                    return;
-                }
-
-                const guild = await guildResponse.json();
-                setGuildData(guild.data);
-
-                // Преобразование Markdown в HTML
-                const { content } = await compileMDX({
-                    source: guild.data.description || "",
-                    options: {
-                        mdxOptions: {
-                            remarkPlugins: [remarkGfm],
-                            rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
-                        },
-                    },
-                    components,
-                });
-                // TODO: Исправить проблему с типизацией
-                setDescriptionContent(content);
-
-                // Получение данных о участниках
-                // TODO: Перенести запрос в getDataHandlers.tsx
-                const usersResult = await fetch(`/api/v1/guilds/${guildUrl}/users`, { method: "GET" });
-                if (!usersResult.ok) {
-                    const errorData = await usersResult.json();
-                    console.log(errorData);
-
-                    setNotifyMessage(`Произошла ошибка при загрузке участников гильдии`);
-                    setNotifyType("error");
-                    setPageLoaded(true);
-                    return;
-                }
-
-                const guildUsers = await usersResult.json();
-                setGuildUsers(guildUsers.data);
-
-                // Получение данных о альбоме
-                // TODO: Перенести запрос в getDataHandlers.tsx
-                const imagesResponse = await fetch(`/api/v1/guilds/${guildUrl}/album`, { method: "GET" });
-                if (!imagesResponse.ok) {
-                    const errorData = await imagesResponse.json();
-                    console.log(errorData);
-
-                    setNotifyMessage(`Произошла ошибка при загрузке изображений гильдии`);
-                    setNotifyType("error");
-                    setGuildImages([]);
-                } else {
-                    const imagesData = await imagesResponse.json();
-                    setGuildImages(imagesData.data || []);
-                }
-
-                setPageLoaded(true);
-            } catch (error) {
-                console.error("Ошибка при загрузке данных:", error);
-                setNotifyMessage(`Произошла ошибка при загрузке данных`);
+            // Получение данных о гильдии
+            const guildResult = await getGuild(guildUrl);
+            if ( !guildResult.success ) {
+                setNotifyMessage(`Произошла ошибка при загрузке гильдии`);
                 setNotifyType("error");
-                setPageLoaded(true);
+                return;
             }
+
+            setGuildData(guildResult.data);
+
+            // Преобразование Markdown в HTML
+            const { content } = await compileMDX({
+                source: guild.data.description || "",
+                options: {
+                    mdxOptions: {
+                        remarkPlugins: [remarkGfm],
+                        rehypePlugins: [rehypeSlug, rehypeAutolinkHeadings],
+                    },
+                },
+                components,
+            });
+            setDescriptionContent(content);
+
+            // Получение данных об участниках
+            const usersResult = await getGuildUsers(guildUrl);
+            if ( !usersResult.success ) {
+                setNotifyMessage(`Произошла ошибка при загрузке участников гильдии`);
+                setNotifyType("error");
+                return;
+            }
+
+            setGuildUsers(usersResult.data);
+
+            // Получение данных об альбоме
+            const albumResult = await getGuildAlbum(guildUrl);
+            if ( !albumResult.success ) {
+                setNotifyMessage(`Произошла ошибка при загрузке изображений гильдии`);
+                setNotifyType("error");
+            }
+            setGuildImages(albumResult.data)
+            setPageLoaded(true);
         };
 
         fetchGuild();
-    }, [props.params]);
+    }, [guild.data.description, props.params]);
 
     const handleClose = () => setNotifyMessage("");
 
