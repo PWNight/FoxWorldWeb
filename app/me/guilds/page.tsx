@@ -25,16 +25,14 @@ export default function MeGuilds() {
                 router.push("/login?to=me/guilds");
                 return;
             }
-            // TODO: Переписать ф-ию, давать только токен
-            getAllMyGuilds(r.data).then((r) => {
-                if (!r.success) {
-                    setNotifyMessage(`Произошла ошибка при загрузке списка гильдий`);
-                    setNotifyType('error');
-                    return;
-                }
-                setUserGuilds(r.data || []);
-                setPageLoaded(true);
-            });
+            const myGuildsResult = await getAllMyGuilds(r.data.token)
+            if (!myGuildsResult.success) {
+                setNotifyMessage(`Произошла ошибка при загрузке списка гильдий`);
+                setNotifyType('error');
+                return;
+            }
+            setUserGuilds(myGuildsResult.data || []);
+            setPageLoaded(true);
         });
     }, [router]);
 
