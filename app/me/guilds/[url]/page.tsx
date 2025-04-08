@@ -55,12 +55,12 @@ export default function MyGuild(props: PageProps) {
             setUserGuild(guildResult.data);
             setUpdateFormData({ ...guildResult.data });
 
-            const accessResult = await getGuildUser(url, r.data.profile.id);
-            if (!accessResult.success) {
+            const guildUserResult = await getGuildUser(url, r.data.profile.id);
+            if (!guildUserResult.success) {
                 router.push("/me/guilds");
                 return;
             }
-            if( accessResult.data.permission != 2 ) {
+            if( guildUserResult.data.permission != 2 ) {
                 router.push("/me/guilds");
                 return;
             }
