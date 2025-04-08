@@ -10,10 +10,13 @@ import ErrorMessage from "@/components/ui/notify-alert";
 import {GuildSkeleton} from "@/components/skelets/guilds";
 
 export default function MeGuilds() {
-    const [pageLoaded, setPageLoaded] = useState(false);
     const [userGuilds, setUserGuilds] = useState([]);
+
     const [notifyMessage, setNotifyMessage] = useState('');
     const [notifyType, setNotifyType] = useState('');
+
+    const [pageLoaded, setPageLoaded] = useState(false);
+
     const router = useRouter();
 
     useEffect(() => {
@@ -22,6 +25,7 @@ export default function MeGuilds() {
                 router.push("/login?to=me/guilds");
                 return;
             }
+            // TODO: Переписать ф-ию, давать только токен
             getAllMyGuilds(r.data).then((r) => {
                 if (!r.success) {
                     setNotifyMessage(`Произошла ошибка при загрузке списка гильдий`);

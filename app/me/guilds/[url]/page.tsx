@@ -29,8 +29,8 @@ export default function MyGuild(props: PageProps) {
     const [updateFormData, setUpdateFormData] = useState(Object);
 
     const [notifyMessage, setNotifyMessage] = useState("");
-
     const [notifyType, setNotifyType] = useState("");
+
     const [pageLoaded, setPageLoaded] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
