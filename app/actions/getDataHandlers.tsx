@@ -1,53 +1,85 @@
+// Ф-ия получения данных о пользователе из сессии
 export async function getSession() {
     const response = await fetch("/api/v1/users/me", {
         method: "GET",
     });
     if ( !response.ok ) {
-        return { success: false}
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
-    return {success: true, data: json }
+    return { success: true, data: json }
 }
 
-export async function getStats(data : any){
-    const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${data.profile.fk_uuid}`,{
+// Ф-ия получения статистики об игроке по его UUID
+export async function getStats(uuid: string){
+    const response = await fetch(`https://foxworldstatisticplan.dynmap.xyz/v1/player?player=${uuid}`,{
         method: "GET"
     })
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
     return { success: true, data: json };
 }
 
-export async function getAllMyGuilds(data:any){
-    const session_token = data.token
+export async function getAllMyGuilds(token: string){
     const response = await fetch("/api/v1/guilds/me",{
         method: "GET",
-        headers: {"Authorization": `Bearer ${session_token}`},
+        headers: {"Authorization": `Bearer ${token}`},
     })
 
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
     return { success: true, data: json.data }
 }
 
-export async function getMyGuildsApplications(data:any){
-    const session_token = data.token
+export async function getMyGuildsApplications(token: string){
     const response = await fetch("/api/v1/guilds/me/applications", {
         method: "GET",
         headers: {
-            "Authorization": `Bearer ${session_token}`
+            "Authorization": `Bearer ${token}`
         }
     })
 
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
@@ -60,7 +92,15 @@ export async function getGuild(url: string){
     })
 
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
@@ -71,20 +111,36 @@ export async function getGuildUsers(url: string) {
         method: "GET",
     });
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json()
     return { success: true, data: json.data }
 }
 
-export async function checkGuildAccess(url: string, data : any) {
-    const response = await fetch(`/api/v1/guilds/${url}/users/${data.profile.id}`, {
+export async function checkGuildAccess(url: string, uId: number) {
+    const response = await fetch(`/api/v1/guilds/${url}/users/${uId}`, {
         method: "GET",
     });
 
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json();
@@ -98,8 +154,17 @@ export async function getGuildApplications(url: string, token: string) {
         },
         method: "GET",
     });
+
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json()
@@ -113,8 +178,17 @@ export async function getVerifyApplications(token: string) {
         },
         method: "GET",
     });
+
     if ( !response.ok ) {
-        return { success: false }
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
     }
 
     const json = await response.json()
