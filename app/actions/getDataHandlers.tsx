@@ -126,8 +126,29 @@ export async function getGuildUsers(url: string) {
     return { success: true, data: json.data }
 }
 
-export async function checkGuildAccess(url: string, uId: number) {
+export async function getGuildUser(url: string, uId: number) {
     const response = await fetch(`/api/v1/guilds/${url}/users/${uId}`, {
+        method: "GET",
+    });
+
+    if ( !response.ok ) {
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при получении данных из API",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
+    }
+
+    const json = await response.json();
+    return { success: true, data: json.data }
+}
+
+export async function getGuildAlbum(url: string) {
+    const response = await fetch(`/api/v1/guilds/${url}/album`, {
         method: "GET",
     });
 
