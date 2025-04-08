@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {ArrowLeft, Loader2, Pencil, Trash2} from "lucide-react";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import {checkGuildAccess, getGuild, getSession} from "@/app/actions/getDataHandlers";
+import {getGuild, getGuildAlbum, getGuildUser, getSession} from "@/app/actions/getDataHandlers";
 import {
     Dialog,
     DialogTrigger,
@@ -24,7 +24,7 @@ type PageProps = {
 export default function MyGuild(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const [userGuild, setUserGuild] = useState(Object);
-    const [guildImages, setGuildImages] = useState([]);
+    const [guildImages, setGuildImages] = useState(Array);
 
     const [updateFormData, setUpdateFormData] = useState(Object);
 
@@ -37,7 +37,6 @@ export default function MyGuild(props: PageProps) {
     const router = useRouter();
 
     useEffect(() => {
-        // TODO: Сделать вывод ошибок в консоль
         getSession().then(async (r) => {
             const params = await props.params;
             const { url } = params;
@@ -48,34 +47,32 @@ export default function MyGuild(props: PageProps) {
             }
             setUserData(r.data);
 
-            // TODO: Переписать получение гильдии, сделав проверку на наличие доступа на редактирование
-            getGuild(url).then((r) => {
-                if ( !r.success ) {
-                    router.push("/me/guilds");
-                    return;
-                }
-                setUserGuild(r.data);
-                setUpdateFormData({ ...r.data });
-                setPageLoaded(true);
-            });
+            const guildResult = await getGuild(url)
+            if ( !guildResult.success ) {
+                router.push("/me/guilds");
+                return;
+            }
+            setUserGuild(guildResult.data);
+            setUpdateFormData({ ...guildResult.data });
 
-            const accessResult = await checkGuildAccess(url, r.data);
+            const accessResult = await getGuildUser(url, r.data.profile.id);
             if (!accessResult.success) {
                 router.push("/me/guilds");
                 return;
             }
-
-            // TODO: Вынести получение альбома гильдии в функцию getDataHandlers.tsx
-            const imagesResponse = await fetch(`/api/v1/guilds/${url}/album`, {
-                headers: { Authorization: `Bearer ${r.data.token}` },
-            });
-
-            if ( !imagesResponse.ok ) {
-                const imagesData = await imagesResponse.json();
-                setGuildImages(imagesData.data || []);
-            } else {
-                console.error("Failed to fetch guild album");
+            if( accessResult.data.permission != 2 ) {
+                router.push("/me/guilds");
+                return;
             }
+
+            const albumResult = await getGuildAlbum(url)
+            if ( !albumResult.success ) {
+                setNotifyMessage(`Произошла ошибка ${albumResult.data.code} при получении альбома гильдии`);
+                setNotifyType("warning");
+                setGuildImages([])
+            }
+
+            setPageLoaded(true);
         });
     }, [router, props]);
 
@@ -95,15 +92,13 @@ export default function MyGuild(props: PageProps) {
         });
 
         if (!response.ok) {
-            setNotifyMessage(`Ошибка ${response.status} при добавлении скриншота`);
+            setNotifyMessage(`Произошла ошибка ${response.status} при добавлении скриншота`);
             setNotifyType("error");
             setIsLoading(false);
             return;
         }
 
         const newImage = await response.json();
-        // TODO: Исправить типизацию
-        // @ts-ignore
         setGuildImages([...guildImages, newImage.data]);
 
         setNotifyMessage("Скриншот успешно добавлен");
@@ -127,7 +122,7 @@ export default function MyGuild(props: PageProps) {
             const errorData = await response.json();
             console.log(errorData)
 
-            setNotifyMessage(`Ошибка ${response.status} при удалении скриншота`);
+            setNotifyMessage(`Произошла ошибка ${response.status} при удалении скриншота`);
             setNotifyType("error");
             setIsLoading(false);
             return;
@@ -244,35 +239,34 @@ export default function MyGuild(props: PageProps) {
     };
 
     const handleDelete = async () => {
-        // TODO: Придумать как оптимизировать создание fetch переменных
-        const session_token = userData.token;
-        let response = await fetch(`/api/v1/guilds/${userGuild.url}`, {
+        const deleteResult = await fetch(`/api/v1/guilds/${userGuild.url}`, {
             method: "DELETE",
-            headers: { Authorization: `Bearer ${session_token}` },
+            headers: { Authorization: `Bearer ${userData.token}` },
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if (!deleteResult.ok) {
+            const errorData = await deleteResult.json();
             console.log(errorData);
 
-            setNotifyMessage(`Произошла ошибка ${response.status} при удалении гильдии`);
+            setNotifyMessage(`Произошла ошибка ${deleteResult.status} при удалении гильдии`);
             setNotifyType("error");
             return;
         }
 
-        response = await fetch("/api/v1/notifications", {
+        const notifyResult = await fetch("/api/v1/notifications", {
             method: "POST",
-            headers: { Authorization: `Bearer ${session_token}` },
+            headers: { Authorization: `Bearer ${userData.token}` },
             body: JSON.stringify({
                 userId: userData.profile.id,
                 message: "Ваша гильдия успешно удалена.",
             }),
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if (!notifyResult.ok) {
+            const errorData = await notifyResult.json();
             console.log(errorData);
-            setNotifyMessage(`Произошла ошибка ${response.status} при отправке уведомления`);
+
+            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
             setNotifyType("error");
             return;
         }
