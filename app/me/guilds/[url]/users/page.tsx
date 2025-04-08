@@ -3,7 +3,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import {Button, buttonVariants} from "@/components/ui/button";
-import { checkGuildAccess, getGuildApplications, getGuildUsers, getSession } from "@/app/actions/getDataHandlers";
+import {
+    getGuildApplications,
+    getGuildUser,
+    getGuildUsers,
+    getSession
+} from "@/app/actions/getDataHandlers";
 import {ArrowLeft, Loader2, Pencil, SearchX, Trash} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Link from "next/link";
@@ -28,53 +33,53 @@ export default function MyGuildMembers(props: PageProps) {
     const router = useRouter();
 
     const fetchGuildData = async (url: string, token: string) => {
-        // TODO: Добавить вывод ошибок в консоль
         const usersResult = await getGuildUsers(url);
-        if (!usersResult.success) {
+        if ( !usersResult.success ) {
             setGuildUsers([]);
             setNotifyType('error');
             setNotifyMessage('Не удалось получить участников гильдии');
-        } else {
-            setGuildUsers(usersResult.data);
         }
+        setGuildUsers(usersResult.data);
 
         const appsResult = await getGuildApplications(url, token);
-        if (!appsResult.success) {
+        if ( !appsResult.success ) {
             setGuildApplications([]);
             setNotifyType('error');
             setNotifyMessage('Не удалось получить заявки в гильдию');
-        } else {
-            setGuildApplications(appsResult.data);
         }
+        setGuildApplications(appsResult.data);
     };
 
     useEffect(() => {
         let intervalId : any;
 
         const initializeData = async () => {
-            // TODO: Добавить вывод ошибок в консоль
             const params = await props.params;
             const { url } = params;
             setGuildUrl(url);
 
-            const user_r = await getSession();
-            if (!user_r.success) {
+            const sessionResult = await getSession();
+            if (!sessionResult.success) {
                 router.push(`/login?to=me/guilds/${url}/users`);
                 return;
             }
-            setUserData(user_r.data);
+            setUserData(sessionResult.data);
 
-            const accessResult = await checkGuildAccess(url, user_r.data);
-            if (!accessResult.success) {
+            const guildUserResult = await getGuildUser(url, sessionResult.data.profile.id);
+            if (!guildUserResult.success) {
+                router.push("/me/guilds");
+                return;
+            }
+            if ( guildUserResult.data.permission == 0 ) {
                 router.push("/me/guilds");
                 return;
             }
 
-            await fetchGuildData(url, user_r.data.token);
+            await fetchGuildData(url, sessionResult.data.token);
             setPageLoaded(true);
 
             intervalId = setInterval(async () => {
-                await fetchGuildData(url, user_r.data.token);
+                await fetchGuildData(url, sessionResult.data.token);
             }, 15000);
         };
 
@@ -86,31 +91,29 @@ export default function MyGuildMembers(props: PageProps) {
     }, [props.params, router]);
 
     const handleUpdateUser = async (user : any, newPermission : any) => {
-        // TODO: Придумать как оптимизировать названия для ф-ий
         setIsLoading(true);
-        const session_token = userData.token;
 
-        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        const updateResult = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Bearer ${session_token}`,
+                "Authorization": `Bearer ${userData.token}`,
             },
             body: JSON.stringify({ permission: newPermission }),
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !updateResult.ok ) {
+            const errorData = await updateResult.json();
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage('Произошла ошибка при повышении пользователя');
+            setNotifyMessage(`Произошла ошибка ${updateResult.status} при повышении пользователя`);
             setIsLoading(false);
             return;
         }
 
-        response = await fetch("/api/v1/notifications", {
-            headers: { "Authorization": `Bearer ${session_token}` },
+        const notifyResult = await fetch("/api/v1/notifications", {
+            headers: { "Authorization": `Bearer ${userData.token}` },
             method: "POST",
             body: JSON.stringify({
                 userId: user.uid,
@@ -118,17 +121,17 @@ export default function MyGuildMembers(props: PageProps) {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !notifyResult.ok ) {
+            const errorData = await notifyResult.json();
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage('Произошла ошибка при отправке уведомления');
+            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
             setIsLoading(false);
             return;
         }
 
-        await fetchGuildData(guildUrl, session_token);
+        await fetchGuildData(guildUrl, userData.token);
 
         setNotifyType('success');
         setNotifyMessage(`Пользователь повышен до ${newPermission} уровня`);
@@ -137,28 +140,27 @@ export default function MyGuildMembers(props: PageProps) {
 
     const handleDeleteUser = async (user : any) => {
         setIsLoading(true);
-        const session_token = userData.token;
 
-        let response = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
+        const deleteResult = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Bearer ${session_token}`,
+                "Authorization": `Bearer ${userData.token}`,
             }
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !deleteResult.ok ) {
+            const errorData = await deleteResult.json();
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage(`Ошибка ${response.status} при удалении пользователя`);
+            setNotifyMessage(`Произошла ошибка ${deleteResult.status} при удалении пользователя`);
             setIsLoading(false);
             return;
         }
 
-        response = await fetch("/api/v1/notifications", {
-            headers: { "Authorization": `Bearer ${session_token}` },
+        const notifyResult = await fetch("/api/v1/notifications", {
+            headers: { "Authorization": `Bearer ${userData.token}` },
             method: "POST",
             body: JSON.stringify({
                 userId: user.uid,
@@ -166,17 +168,17 @@ export default function MyGuildMembers(props: PageProps) {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !notifyResult.ok ) {
+            const errorData = await notifyResult.json();
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage('Ошибка при отправке уведомления');
+            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
             setIsLoading(false);
             return;
         }
 
-        await fetchGuildData(guildUrl, session_token);
+        await fetchGuildData(guildUrl, userData.token);
 
         setNotifyType('success');
         setNotifyMessage('Пользователь исключён');
@@ -186,29 +188,28 @@ export default function MyGuildMembers(props: PageProps) {
     const handleClose = () => setNotifyMessage('');
 
     const handleApplication = async (application : any, is_accepted : any) => {
-        // TODO: Придумать как оптимизировать
         setIsLoading(true);
 
-        const user_id = application.fk_profile;
+        const uId = application.fk_profile;
         const status = is_accepted ? 'Принята' : 'Отклонена';
 
-        let response = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
+        const updateResult = await fetch(`/api/v1/guilds/${guildUrl}/applications`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${userData.token}` },
-            body: JSON.stringify({ user_id, status }),
+            body: JSON.stringify({ uId, status }),
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !updateResult.ok ) {
+            const errorData = await updateResult.json();
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage('Ошибка при обработке заявки');
+            setNotifyMessage(`Произошла ошибка ${updateResult.status} при обработке заявки`);
             setIsLoading(false);
             return;
         }
 
-        response = await fetch("/api/v1/notifications", {
+        const notifyResult = await fetch("/api/v1/notifications", {
             headers: { "Authorization": `Bearer ${userData.token}` },
             method: "POST",
             body: JSON.stringify({
@@ -217,11 +218,12 @@ export default function MyGuildMembers(props: PageProps) {
             })
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if ( !notifyResult.ok ) {
+            const errorData = await notifyResult.json();
             console.log(errorData)
+
             setNotifyType('error');
-            setNotifyMessage('Ошибка при отправке уведомления');
+            setNotifyMessage(`Произошла ошибка ${notifyResult.status} при отправке уведомления`);
             setIsLoading(false);
             return;
         }
