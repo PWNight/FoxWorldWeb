@@ -30,7 +30,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
         }
 
         const [guildAccess] : any = await query(`SELECT permission FROM guilds_members WHERE fk_guild = ? AND uid = ?`, [guildData.id, user.id])
-        if( !guildAccess || guildAccess.permission != 2 ){
+        if( !guildAccess || guildAccess.permission < 1 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии'}, { status: 400 });
         }
 
@@ -75,7 +75,7 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
         }
 
         const [guildAccess] : any = await query(`SELECT permission FROM guilds_members WHERE fk_guild = ? AND uid = ?`, [guildData.id, user.id])
-        if( !guildAccess || guildAccess.permission != 2 ){
+        if( !guildAccess || guildAccess.permission < 1 ){
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии'}, { status: 400 });
         }
 
