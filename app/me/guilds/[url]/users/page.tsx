@@ -9,7 +9,7 @@ import {
     getGuildUsers,
     getSession
 } from "@/app/actions/getDataHandlers";
-import {ArrowLeft, Loader2, Pencil, SearchX, Trash, ArrowDown} from "lucide-react";
+import {ArrowLeft, Loader2, Pencil, SearchX, Trash, ArrowDown, ArrowUp} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Link from "next/link";
 import {sendNotification} from "@/app/actions/actionHandlers";
@@ -100,6 +100,15 @@ export default function MyGuildMembers(props: PageProps) {
     const handleUpdateUser = async (user : any, newPermission : any) => {
         setIsLoading(true);
 
+        // Подтверждение для повышения до уровня 2
+        if (newPermission === 2) {
+            const confirmTransfer = confirm(`Вы уверены, что хотите передать гильдию ${guildUrl} пользователю ${user.nickname}? Это сделает его новым главой, а вы потеряете права владельца.`);
+            if (!confirmTransfer) {
+                setIsLoading(false);
+                return;
+            }
+        }
+
         const updateResult = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
             method: 'POST',
             headers: {
@@ -119,7 +128,13 @@ export default function MyGuildMembers(props: PageProps) {
             return;
         }
 
-        const notifyResult = await sendNotification(user.uid, userData.token, `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`)
+        const notifyResult = await sendNotification(
+            user.uid,
+            userData.token,
+            newPermission === 2
+                ? `Вы стали новым главой гильдии /${guildUrl}!`
+                : `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`
+        );
         if (!notifyResult.success) {
             setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
             setNotifyType("error");
@@ -129,12 +144,26 @@ export default function MyGuildMembers(props: PageProps) {
         await fetchGuildData(guildUrl, userData.token);
 
         setNotifyType('success');
-        setNotifyMessage(`Уровень пользователя изменён на ${newPermission}`);
+        setNotifyMessage(
+            newPermission === 2
+                ? `Гильдия передана ${user.nickname}`
+                : `Уровень пользователя изменён на ${newPermission}`
+        );
+
+        // Если передали права владельца, перенаправляем на страницу гильдий
+        if (newPermission === 2) {
+            router.push('/me/guilds');
+        }
 
         setIsLoading(false);
     };
 
     const handleDeleteUser = async (user : any) => {
+        const confirmDelete = confirm(`Вы уверены, что хотите исключить ${user.nickname} из гильдии ${guildUrl}?`);
+        if (!confirmDelete) {
+            return;
+        }
+
         setIsLoading(true);
 
         const deleteResult = await fetch(`/api/v1/guilds/${guildUrl}/users/${user.uid}`, {
@@ -276,24 +305,58 @@ export default function MyGuildMembers(props: PageProps) {
                                         <p>Участник с: {new Date(user.member_since).toLocaleString("ru-RU")}</p>
                                     </div>
                                     <div className="flex gap-2 flex-wrap">
-                                        {currentUserPermission === 2 && user.permission === 1 && (
-                                            <Button
-                                                onClick={() => handleUpdateUser(user, 0)}
-                                                disabled={isLoading}
-                                                variant="destructive"
-                                                size="sm"
-                                                className="flex-1 min-w-[100px]"
-                                            >
-                                                {isLoading ? (
-                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
-                                                ) : (
-                                                    <><ArrowDown className="w-4 h-4 mr-2" />Понизить</>
+                                        {currentUserPermission === 2 && (
+                                            <>
+                                                {user.permission === 0 && (
+                                                    <Button
+                                                        onClick={() => handleUpdateUser(user, 2)}
+                                                        disabled={isLoading}
+                                                        variant="accent"
+                                                        size="sm"
+                                                        className="flex-1 min-w-[100px]"
+                                                    >
+                                                        {isLoading ? (
+                                                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                        ) : (
+                                                            <><ArrowUp className="w-4 h-4 mr-2" />Сделать главой</>
+                                                        )}
+                                                    </Button>
                                                 )}
-                                            </Button>
+                                                {user.permission === 1 && (
+                                                    <Button
+                                                        onClick={() => handleUpdateUser(user, 2)}
+                                                        disabled={isLoading}
+                                                        variant="accent"
+                                                        size="sm"
+                                                        className="flex-1 min-w-[100px]"
+                                                    >
+                                                        {isLoading ? (
+                                                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                        ) : (
+                                                            <><ArrowUp className="w-4 h-4 mr-2" />Сделать главой</>
+                                                        )}
+                                                    </Button>
+                                                )}
+                                                {user.permission === 1 && (
+                                                    <Button
+                                                        onClick={() => handleUpdateUser(user, 0)}
+                                                        disabled={isLoading}
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="flex-1 min-w-[100px]"
+                                                    >
+                                                        {isLoading ? (
+                                                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                        ) : (
+                                                            <><ArrowDown className="w-4 h-4 mr-2" />Понизить</>
+                                                        )}
+                                                    </Button>
+                                                )}
+                                            </>
                                         )}
                                         {(currentUserPermission === 2 || (currentUserPermission === 1 && user.permission === 0)) && (
                                             <>
-                                                {user.permission === 0 && (
+                                                {user.permission === 0 && currentUserPermission !== 2 && (
                                                     <Button
                                                         onClick={() => handleUpdateUser(user, 1)}
                                                         disabled={isLoading}
