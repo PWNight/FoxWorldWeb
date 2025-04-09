@@ -216,15 +216,6 @@ export function NavAdmin() {
                 >
                     <Library/> База знаний
                 </SubAnchor>
-                <SubAnchor
-                    key='/admin/applications'
-                    activeClassName="bg-orange-400 text-white hover:bg-orange-500"
-                    absolute
-                    className="flex items-center gap-2 w-full py-2 px-3 rounded-md sm:text-base hover:bg-orange-400 hover:text-white transition-all duration-200"
-                    href='/admin/applications'
-                >
-                    <UserCheck/> Управление заявками
-                </SubAnchor>
             </div>
         </div>
     );
