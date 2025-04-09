@@ -165,7 +165,7 @@ export default function MeGuilds() {
                                         Редактировать гильдию
                                     </Link>
                                 )}
-                                {guild.permission >= 1 && (
+                                {guild.permission > 0 && (
                                     <Link
                                         href={`/me/guilds/${guild.url}/users`}
                                         className={buttonVariants({
