@@ -35,7 +35,6 @@ interface UserData {
   profile: {
     nick: string;
     hasFoxPlus: boolean;
-    hasAccess: boolean;
     is_banned: boolean;
     hasAdmin: boolean;
   };
@@ -278,15 +277,6 @@ export function AccountButton() {
                           <HandHeart className="h-4 w-4" />
                           Подписка активна
                         </p>
-                    )}
-                    {!userData.profile.hasAccess && (
-                        <Link
-                            href="/access"
-                            className="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 flex items-center gap-1 hover:underline"
-                        >
-                          <Ban className="h-4 w-4" />
-                          Заполните анкету
-                        </Link>
                     )}
                     {userData.profile.is_banned && (
                         <p className="text-red-500 flex items-center gap-1">

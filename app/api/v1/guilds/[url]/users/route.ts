@@ -6,11 +6,11 @@ import {getUserData} from "@/lib/utils";
 export async function GET(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     try {
-        let guildUsers : any = await query(`SELECT uid, profiles.nick AS nickname, permission, member_since FROM guilds_members 
-            JOIN profiles ON guilds_members.uid = profiles.id 
-            JOIN guilds ON guilds_members.fk_guild = guilds.id 
-            WHERE guilds.url = ?`,
-        [url])
+        let guildUsers : any = await query(`SELECT uid, profiles.nick AS nickname, permission, member_since FROM guilds_members
+                                                                                                                     JOIN profiles ON guilds_members.uid = profiles.id
+                                                                                                                     JOIN guilds ON guilds_members.fk_guild = guilds.id
+                                            WHERE guilds.url = ?`,
+            [url])
         if( guildUsers.length == 0 ){
             return NextResponse.json({ success: false, message: "Пользователи гильдии не найдены" }, {status:404});
         }
@@ -26,6 +26,7 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
         }, {status:500})
     }
 }
+
 export async function PUT(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     const data = await request.json();
@@ -34,7 +35,7 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
 
     const userSchema = Joi.object({
         user_id: Joi.required(),
-        permission: Joi.required()
+        permission: Joi.number().integer().min(0).max(2).required()
     })
     const { error } = userSchema.validate(data);
 
@@ -64,20 +65,38 @@ export async function PUT(request: NextRequest, {params}: { params: Promise<{ ur
             return NextResponse.json({success: false, message: 'Гильдия не найдена'},{status:404})
         }
 
-        const [userPermission] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild', [user.id, guildData.id])
-        if ( !userPermission || userPermission.permission != 2 ){
-            return NextResponse.json({success: false, message: 'У вас нету доступа к этой гильдии'},{status:401})
+        const [userPermission] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user.id, guildData.id])
+        if ( !userPermission || userPermission.permission < 1 ){
+            return NextResponse.json({success: false, message: 'У вас нет прав на управление гильдией'},{status:401})
         }
 
-        if( permission == 2 ){
+        const [targetUser] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user_id, guildData.id])
+
+        // Если целевой пользователь не найден, это добавление нового
+        if (!targetUser) {
+            await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)",
+                [guildData.id, user_id, permission]);
+            return NextResponse.json({ success: true, message: "Игрок успешно добавлен в гильдию" }, { status: 200 });
+        }
+
+        // Проверяем права доступа
+        if (userPermission.permission === 1 && targetUser.permission > 0) {
+            return NextResponse.json({success: false, message: 'У вас нет прав изменять этого пользователя'},{status:401})
+        }
+
+        if (permission === 2) {
+            if (userPermission.permission !== 2) {
+                return NextResponse.json({success: false, message: 'Только глава может передать права владения'},{status:401})
+            }
             await query("UPDATE guilds_members SET permission = 0 WHERE uid = ?", [user.id])
             await query("UPDATE guilds_members SET permission = 2 WHERE uid = ?",[user_id])
             await query("UPDATE guilds SET owner_id = ? WHERE owner_id = ?", [user_id, guildData.owner_id])
-            return NextResponse.json({success: true, message: 'Гильдия успешно передана новому главе'},{status:401})
+            return NextResponse.json({success: true, message: 'Гильдия успешно передана новому главе'},{status:200})
         }
 
-        await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData.id, user_id, permission])
-        return NextResponse.json({ success: true, message: "Игрок успешно добавлен в гильдию" }, { status: 200 });
+        await query("UPDATE guilds_members SET permission = ? WHERE uid = ? AND fk_guild = ?",
+            [permission, user_id, guildData.id])
+        return NextResponse.json({ success: true, message: "Уровень доступа обновлен" }, { status: 200 });
     } catch (error: any) {
         return NextResponse.json({
             success: false,

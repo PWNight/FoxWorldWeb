@@ -21,7 +21,7 @@ export default function Me() {
                 return
             }
             setUserData(r.data)
-            getStats(r.data).then(r => {
+            getStats(r.data.profile.fk_uuid).then(r => {
                 if (!r.success) {
                     setStatisticLoadError(true);
                     setNotifyMessage(`Произошла ошибка при загрузке игровой статистики`)

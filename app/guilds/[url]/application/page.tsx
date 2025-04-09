@@ -1,7 +1,7 @@
 "use client";
 import {useActionState, useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import {checkGuildAccess, getGuild, getMyGuildsApplications, getSession} from "@/app/actions/getDataHandlers";
+import {getGuild, getGuildUser, getMyGuildsApplications, getSession} from "@/app/actions/getDataHandlers";
 import Link from "next/link";
 import {Castle, Loader2} from "lucide-react";
 import {guild_application} from "@/app/actions/actionHandlers";
@@ -17,41 +17,40 @@ export default function GuildApplication(props: PageProps) {
     const router = useRouter();
 
     useEffect(() => {
-        getSession().then(async(user_r) => {
+        getSession().then(async(r) => {
             const params = await props.params;
             const guildUrl = params.url;
 
-            if ( !user_r.success ){
+            if ( !r.success ){
                 router.push(`/login?to=guilds/${guildUrl}/application`);
                 return
             }
 
-            getGuild(guildUrl).then((r) => {
-                if ( !r.success ){
-                    router.push('/guilds')
-                    return
-                }
-                if ( !r.data.is_recruit ){
-                    router.push('/guilds')
-                    return
-                }
-                setGuild(r.data);
+            const guildResult = await getGuild(guildUrl)
+            if ( !guildResult.success ){
+                router.push('/guilds')
+                return
+            }
+            if ( !guildResult.data.is_recruit ){
+                router.push('/guilds')
+                return
+            }
 
-                checkGuildAccess(guildUrl, user_r.data).then((r) => {
-                    if ( r.success ){
-                        router.push("/me/guilds/");
-                        return
-                    }
-                    getMyGuildsApplications(user_r.data).then((r)=>{
-                        if ( r.data.length > 0 ) {
-                            router.push('/me/guilds/');
-                            return
-                        }
-                        setPageLoaded(true);
-                    })
-                })
-            })
+            setGuild(guildResult.data);
 
+            const guildUserResult = await getGuildUser(guildUrl, r.data.profile.id);
+            if ( guildUserResult.success ){
+                router.push("/me/guilds/");
+                return
+            }
+                
+            const userApplications = await getMyGuildsApplications(r.data.token)
+            if ( userApplications.data.length > 0 ) {
+                router.push('/me/guilds/');
+                return
+            }
+
+            setPageLoaded(true);
         })
     }, [props.params, router]);
 

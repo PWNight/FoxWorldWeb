@@ -30,22 +30,24 @@ export default function Home() {
           Наш проект предлагает вам дружелюбное пространство, где вы можете раскрыть свой творческий потенциал в ванильной среде Minecraft.
         </p>
         <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-          <Link
-            href={`/access`}
-            className={buttonVariants({ variant: "accent", className: "px-6 text-center", size: "lg" })}
-          >
-            Заполнить заявку
-          </Link>
-          <Link
-            href="/wiki/introduction/about"
-            className={buttonVariants({
-              variant: "accent",
-              className: "px-6 text-center",
-              size: "lg",
-            })}
-          >
-            О сервере
-          </Link>
+            <Link
+                href="/wiki/introduction/start-game"
+                className={buttonVariants({
+                    variant: "accent",
+                    className: "px-6 text-center",
+                    size: "lg",
+                })}>
+                Начать игру
+            </Link>
+            <Link
+                href="/wiki/introduction/about"
+                className={buttonVariants({
+                  variant: "accent",
+                  className: "px-6 text-center",
+                  size: "lg",
+            })}>
+                О сервере
+            </Link>
         </div>
       </div>
     </div>

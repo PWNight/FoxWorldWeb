@@ -24,9 +24,11 @@ export default function Guilds() {
             if (!response.ok) {
                 const errorData = await response.json();
                 console.log(errorData);
+
                 setNotifyMessage(`Произошла ошибка при загрузке гильдий`);
                 setNotifyType('error');
                 setGuilds([]);
+
                 setPageLoaded(true);
                 return;
             }
@@ -72,9 +74,16 @@ export default function Guilds() {
         setNotifyMessage('');
     };
 
-    if (!pageLoaded) {
+    if (guilds.length == 0 || !pageLoaded) {
         return (
             <div className="flex flex-col px-4 w-full mx-auto sm:w-[95%]">
+                {notifyMessage && (
+                    <ErrorMessage
+                        message={notifyMessage}
+                        onClose={handleClose}
+                        type={notifyType}
+                    />
+                )}
                 <div className="flex mt-4 flex-col gap-4 select-none">
                     <h1 className="text-3xl font-bold dark:text-white text-black">Гильдии</h1>
                     <div className="sm:w-62 w-full h-10 bg-gray-300 dark:bg-neutral-700 rounded-lg"></div>
@@ -92,22 +101,8 @@ export default function Guilds() {
         );
     }
 
-    if (guilds.length === 0) {
-        return (
-            <>
-                {notifyMessage && (
-                    <ErrorMessage
-                        message={notifyMessage}
-                        onClose={handleClose}
-                        type={notifyType}
-                    />
-                )}
-            </>
-        );
-    }
-
     return (
-        <div className="flex flex-col px-4 py-2 w-full mx-auto sm:w-[95%]">
+        <div className="flex flex-col px-4 py-2 w-full sm:w-[90%] h-fit mx-auto">
             {notifyMessage && (
                 <ErrorMessage
                     message={notifyMessage}
@@ -165,34 +160,53 @@ export default function Guilds() {
                                 <div className="space-y-2">
                                     <h1 className='text-2xl font-bold dark:text-white text-black'>{guild.name}</h1>
                                     <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
-                                    <p className="text-sm italic dark:text-zinc-400 text-zinc-500">{guild.description}</p>
                                     <ul className="list-inside list-disc text-sm space-y-1
                                 dark:text-zinc-300 text-zinc-700">
+                                        {guild.is_openProfile ? (
+                                            <li className="text-green-400">Открытый профиль</li>
+                                        ) : (
+                                            <li className="text-red-400">Закрытый профиль</li>
+                                        )}
                                         {guild.is_recruit ? (
                                             <li className="text-green-400">Принимает заявки</li>
                                         ) : (
                                             <li className="text-red-400">Не принимает заявки</li>
                                         )}
                                         {guild.discord_code && (
-                                            <li className="text-blue-400">Есть Discord сервер</li>
+                                            <li className="text-blue-400">Есть Discord сервер ({
+                                                guild.is_openDiscord ? "открытый" : "закрытый"
+                                            })</li>
                                         )}
                                         <li>Создана {new Date(guild.create_date).toLocaleString("ru-RU")}</li>
                                         <li>{guild.member_count} участников</li>
                                     </ul>
                                 </div>
                                 {guild.badge_url && (
-                                    <Image
-                                        src={guild.badge_url}
-                                        alt={`Эмблема ${guild.url}`}
-                                        width={100}
-                                        height={100}
-                                        objectFit={'cover'}
-                                        quality={100}
-                                        className={'rounded-lg overflow-hidden'}
-                                    />
+                                    <div className={'flex justify-end'}>
+                                        <Image
+                                            src={guild.badge_url}
+                                            alt={`Эмблема ${guild.url}`}
+                                            width={100}
+                                            height={100}
+                                            objectFit={'cover'}
+                                            quality={100}
+                                            className={'rounded-lg overflow-hidden'}
+                                        />
+                                    </div>
                                 )}
                             </div>
                         </div>
+                        <div className={'flex gap-2'}>
+                            <Link
+                                href={`/guilds/${guild.url}`}
+                                className={buttonVariants({
+                                    variant: "accent",
+                                    className: "px-4 py-2 w-full sm:w-auto dark:text-white text-black",
+                                    size: "sm",
+                                })}
+                            >
+                                Подробнее
+                            </Link>
                             {guild.is_recruit ? (
                                 <Link
                                     href={`/guilds/${guild.url}/application`}
@@ -205,6 +219,7 @@ export default function Guilds() {
                                     Подать заявку
                                 </Link>
                             ) : ""}
+                        </div>
                     </div>
                 ))}
             </div>

@@ -3,8 +3,6 @@ import {
     FormState,
     GuildApplicationFormSchema,
     GuildApplicationFormState,
-    VerifyApplicationFormState,
-    VerifyApplicationFormSchema
 } from '@/lib/definitions'
 import { redirect } from "next/navigation";
 import { getGuild, getSession } from "@/app/actions/getDataHandlers";
@@ -14,6 +12,30 @@ interface ApiErrorResponse {
     message?: string;
 }
 
+// Утилита для отправки уведомлений пользователем
+export async function sendNotification(uId: number, token: string, message: string){
+    const response = await fetch("/api/v1/notifications", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: JSON.stringify({
+            userId: uId,
+            message,
+        }),
+    });
+    if ( !response.ok ) {
+        const errorJSON = await response.json();
+        console.log(errorJSON)
+
+        return {
+            success: false,
+            code: response.status,
+            message: errorJSON.message || "Произошла ошибка при отправке уведомления",
+            error: errorJSON.error || "Неизвестная ошибка",
+        }
+    }
+
+    return { success: true }
+}
 // Утилита для обработки API ответов
 async function handleApiResponse(response: Response) {
     if (!response.ok) {
@@ -117,7 +139,7 @@ export async function signup(state: FormState, formData: FormData) {
             token,
             {
                 nickname: username,
-                message: `Вы авторизовались под IP ${ip}`
+                message: `Вы авторизовались под IP${ip}`
             },
             "POST"
         );
@@ -128,73 +150,4 @@ export async function signup(state: FormState, formData: FormData) {
     } catch (error) {
         return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
     }
-}
-
-export async function verify_application(state: VerifyApplicationFormState, formData: FormData) {
-    try {
-        // Валидация полей
-        const validatedFields = VerifyApplicationFormSchema.safeParse(Object.fromEntries(formData));
-        if (!validatedFields.success) {
-            return { errors: validatedFields.error.flatten().fieldErrors };
-        }
-
-        const { nickname, age, about, where_find, plans } = validatedFields.data;
-
-        // Проверка сессии
-        const user_response = await getSession();
-        if (!user_response.success)  return {message: 'Не удалось получить вашу сессию (err auth)'};
-
-        const { data: userData } = user_response;
-        if (userData.profile.hasAccess) redirect('/me');
-
-        // Отправка заявки
-        let response = await makeAuthorizedRequest(
-            `/api/v1/users/applications`,
-            user_response.data.token,
-            { nickname, age, about, where_find, plans },
-            "PUT",
-        );
-        await handleApiResponse(response);
-
-        // Отправка уведомления
-        response = await makeAuthorizedRequest(
-            `/api/v1/notifications`,
-            user_response.data.token,
-            { userId: userData.profile.id, message: "Ваша заявка получена! Мы уведомим вас, как только она будет рассмотрена." },
-            "POST"
-        );
-        await handleApiResponse(response);
-
-        // Отправка в Discord
-        const discordPayload = {
-            content: "",
-            tts: false,
-            embeds: [{
-                id: 467674012,
-                color: 15510603,
-                description: `## Заявка игрока ${nickname}\n` +
-                    `Возраст: ${age}\n` +
-                    `О игроке: ${about}\n` +
-                    `Откуда узнал о проекте: ${where_find}\n` +
-                    `Планы: ${plans}\n\n` +
-                    `[Рассмотреть заявку](https://foxworld.ru/admin/applications)`,
-            }],
-            username: "Заявки",
-            avatar_url: "https://cdn.discordapp.com/avatars/948287446808932373/73fbe4737f059852f8ffc523d83927e0.png"
-        };
-
-        await fetch(
-            "https://discord.com/api/webhooks/1346083291325009951/zWw4VjgNVMu7DTN7AYLUCXGe3tBKNYIVsFccPx8NgQDCyVrIQt486WgS_9CIQgVULBnJ",
-            {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(discordPayload),
-            }
-        );
-
-    } catch (error) {
-        console.log(error)
-        return { message: error instanceof Error ? error.message : 'Произошла ошибка' };
-    }
-    redirect('/me');
 }
