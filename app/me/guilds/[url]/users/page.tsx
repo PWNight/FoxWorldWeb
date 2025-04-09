@@ -9,7 +9,7 @@ import {
     getGuildUsers,
     getSession
 } from "@/app/actions/getDataHandlers";
-import {ArrowLeft, Loader2, Pencil, SearchX, Trash} from "lucide-react";
+import {ArrowLeft, Loader2, Pencil, SearchX, Trash, ArrowDown} from "lucide-react";
 import ErrorMessage from "@/components/ui/notify-alert";
 import Link from "next/link";
 import {sendNotification} from "@/app/actions/actionHandlers";
@@ -114,7 +114,7 @@ export default function MyGuildMembers(props: PageProps) {
             console.log(errorData)
 
             setNotifyType('error');
-            setNotifyMessage(`Произошла ошибка ${updateResult.status} при повышении пользователя`);
+            setNotifyMessage(`Произошла ошибка ${updateResult.status} при изменении уровня пользователя`);
             setIsLoading(false);
             return;
         }
@@ -129,7 +129,7 @@ export default function MyGuildMembers(props: PageProps) {
         await fetchGuildData(guildUrl, userData.token);
 
         setNotifyType('success');
-        setNotifyMessage(`Пользователь повышен до ${newPermission} уровня`);
+        setNotifyMessage(`Уровень пользователя изменён на ${newPermission}`);
 
         setIsLoading(false);
     };
@@ -275,7 +275,22 @@ export default function MyGuildMembers(props: PageProps) {
                                         <p>Уровень доступа: {user.permission}</p>
                                         <p>Участник с: {new Date(user.member_since).toLocaleString("ru-RU")}</p>
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex gap-2 flex-wrap">
+                                        {currentUserPermission === 2 && user.permission === 1 && (
+                                            <Button
+                                                onClick={() => handleUpdateUser(user, 0)}
+                                                disabled={isLoading}
+                                                variant="destructive"
+                                                size="sm"
+                                                className="flex-1 min-w-[100px]"
+                                            >
+                                                {isLoading ? (
+                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                ) : (
+                                                    <><ArrowDown className="w-4 h-4 mr-2" />Понизить</>
+                                                )}
+                                            </Button>
+                                        )}
                                         {(currentUserPermission === 2 || (currentUserPermission === 1 && user.permission === 0)) && (
                                             <>
                                                 {user.permission === 0 && (
@@ -284,7 +299,7 @@ export default function MyGuildMembers(props: PageProps) {
                                                         disabled={isLoading}
                                                         variant="accent"
                                                         size="sm"
-                                                        className="flex-1"
+                                                        className="flex-1 min-w-[100px]"
                                                     >
                                                         {isLoading ? (
                                                             <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
@@ -299,7 +314,7 @@ export default function MyGuildMembers(props: PageProps) {
                                                         disabled={isLoading}
                                                         variant="destructive"
                                                         size="sm"
-                                                        className="flex-1"
+                                                        className="flex-1 min-w-[100px]"
                                                     >
                                                         {isLoading ? (
                                                             <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
