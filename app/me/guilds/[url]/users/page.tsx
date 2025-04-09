@@ -22,6 +22,7 @@ export default function MyGuildMembers(props: PageProps) {
     const [userData, setUserData] = useState(Object);
     const [guildUsers, setGuildUsers] = useState([]);
     const [guildApplications, setGuildApplications] = useState([]);
+    const [currentUserPermission, setCurrentUserPermission] = useState(0);
 
     const [guildUrl, setGuildUrl] = useState("");
 
@@ -35,7 +36,7 @@ export default function MyGuildMembers(props: PageProps) {
 
     const fetchGuildData = async (url: string, token: string) => {
         const usersResult = await getGuildUsers(url);
-        if ( !usersResult.success ) {
+        if (!usersResult.success) {
             setGuildUsers([]);
             setNotifyType('error');
             setNotifyMessage('Не удалось получить участников гильдии');
@@ -44,7 +45,7 @@ export default function MyGuildMembers(props: PageProps) {
         setGuildUsers(usersResult.data);
 
         const appsResult = await getGuildApplications(url, token);
-        if ( !appsResult.success ) {
+        if (!appsResult.success) {
             setGuildApplications([]);
             setNotifyType('error');
             setNotifyMessage('Не удалось получить заявки в гильдию');
@@ -74,11 +75,12 @@ export default function MyGuildMembers(props: PageProps) {
                 router.push("/me/guilds");
                 return;
             }
-            if ( guildUserResult.data.permission < 1 ) {
+            if (guildUserResult.data.permission < 1) {
                 router.push("/me/guilds");
                 return;
             }
 
+            setCurrentUserPermission(guildUserResult.data.permission);
             await fetchGuildData(url, sessionResult.data.token);
 
             setPageLoaded(true);
@@ -107,7 +109,7 @@ export default function MyGuildMembers(props: PageProps) {
             body: JSON.stringify({ permission: newPermission }),
         });
 
-        if ( !updateResult.ok ) {
+        if (!updateResult.ok) {
             const errorData = await updateResult.json();
             console.log(errorData)
 
@@ -118,7 +120,7 @@ export default function MyGuildMembers(props: PageProps) {
         }
 
         const notifyResult = await sendNotification(user.uid, userData.token, `Ваш уровень в гильдии /${guildUrl} изменён на ${newPermission}`)
-        if ( !notifyResult.success ) {
+        if (!notifyResult.success) {
             setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
             setNotifyType("error");
             return;
@@ -143,7 +145,7 @@ export default function MyGuildMembers(props: PageProps) {
             }
         });
 
-        if ( !deleteResult.ok ) {
+        if (!deleteResult.ok) {
             const errorData = await deleteResult.json();
             console.log(errorData)
 
@@ -154,7 +156,7 @@ export default function MyGuildMembers(props: PageProps) {
         }
 
         const notifyResult = await sendNotification(user.uid, userData.token, `Вы были исключены из гильдии /${guildUrl}`)
-        if ( !notifyResult.success ) {
+        if (!notifyResult.success) {
             setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
             setNotifyType("error");
             return;
@@ -182,7 +184,7 @@ export default function MyGuildMembers(props: PageProps) {
             body: JSON.stringify({ uId, status }),
         });
 
-        if ( !updateResult.ok ) {
+        if (!updateResult.ok) {
             const errorData = await updateResult.json();
             console.log(errorData)
 
@@ -193,7 +195,7 @@ export default function MyGuildMembers(props: PageProps) {
         }
 
         const notifyResult = await sendNotification(uId, userData.token, `Ваша заявка в гильдию /${guildUrl} была ${is_accepted ? 'принята' : 'отклонена'}.`)
-        if ( !notifyResult.success ) {
+        if (!notifyResult.success) {
             setNotifyMessage(`Произошла ошибка ${notifyResult.code} при отправке уведомления`);
             setNotifyType("error");
             return;
@@ -274,35 +276,39 @@ export default function MyGuildMembers(props: PageProps) {
                                         <p>Участник с: {new Date(user.member_since).toLocaleString("ru-RU")}</p>
                                     </div>
                                     <div className="flex gap-2">
-                                        {user.permission === 0 && (
-                                            <Button
-                                                onClick={() => handleUpdateUser(user, 1)}
-                                                disabled={isLoading}
-                                                variant="accent"
-                                                size="sm"
-                                                className="flex-1"
-                                            >
-                                                {isLoading ? (
-                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
-                                                ) : (
-                                                    <><Pencil className="w-4 h-4 mr-2" />Повысить</>
+                                        {(currentUserPermission === 2 || (currentUserPermission === 1 && user.permission === 0)) && (
+                                            <>
+                                                {user.permission === 0 && (
+                                                    <Button
+                                                        onClick={() => handleUpdateUser(user, 1)}
+                                                        disabled={isLoading}
+                                                        variant="accent"
+                                                        size="sm"
+                                                        className="flex-1"
+                                                    >
+                                                        {isLoading ? (
+                                                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                        ) : (
+                                                            <><Pencil className="w-4 h-4 mr-2" />Повысить</>
+                                                        )}
+                                                    </Button>
                                                 )}
-                                            </Button>
-                                        )}
-                                        {user.permission !== 2 && (
-                                            <Button
-                                                onClick={() => handleDeleteUser(user)}
-                                                disabled={isLoading}
-                                                variant="destructive"
-                                                size="sm"
-                                                className="flex-1"
-                                            >
-                                                {isLoading ? (
-                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
-                                                ) : (
-                                                    <><Trash className="w-4 h-4 mr-2" />Исключить</>
+                                                {user.permission !== 2 && (
+                                                    <Button
+                                                        onClick={() => handleDeleteUser(user)}
+                                                        disabled={isLoading}
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        className="flex-1"
+                                                    >
+                                                        {isLoading ? (
+                                                            <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                        ) : (
+                                                            <><Trash className="w-4 h-4 mr-2" />Исключить</>
+                                                        )}
+                                                    </Button>
                                                 )}
-                                            </Button>
+                                            </>
                                         )}
                                     </div>
                                 </div>
@@ -318,69 +324,71 @@ export default function MyGuildMembers(props: PageProps) {
                 </div>
 
                 {/* Заявки */}
-                <div className="space-y-4">
-                    <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow p-4">
-                        <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Заявки</h2>
+                {currentUserPermission >= 1 && (
+                    <div className="space-y-4">
+                        <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg shadow p-4">
+                            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Заявки</h2>
+                        </div>
+                        {guildApplications.length > 0 ? (
+                            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                {guildApplications.map((application:any) => (
+                                    <div key={application.fk_profile} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
+                                        <div className="flex items-center gap-3 mb-4">
+                                            <Image
+                                                src={`https://minotar.net/helm/${application.nick}/150.png`}
+                                                alt={application.nick}
+                                                width={48}
+                                                height={48}
+                                                quality={100}
+                                                className="rounded-lg"
+                                            />
+                                            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{application.nick}</h3>
+                                        </div>
+                                        <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                                            <p><span className="font-medium">О себе:</span> {application.about_user}</p>
+                                            <p><span className="font-medium">Почему выбрал:</span> {application.why_this_guild}</p>
+                                            <p><span className="font-medium">Дата заявки:</span> {new Date(application.create_data).toLocaleString("ru-RU")}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                onClick={() => handleApplication(application, true)}
+                                                disabled={isLoading}
+                                                variant="accent"
+                                                size="sm"
+                                                className="flex-1"
+                                            >
+                                                {isLoading ? (
+                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                ) : (
+                                                    <><Pencil className="w-4 h-4 mr-2" />Принять</>
+                                                )}
+                                            </Button>
+                                            <Button
+                                                onClick={() => handleApplication(application, false)}
+                                                disabled={isLoading}
+                                                variant="destructive"
+                                                size="sm"
+                                                className="flex-1"
+                                            >
+                                                {isLoading ? (
+                                                    <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
+                                                ) : (
+                                                    <><Trash className="w-4 h-4 mr-2" />Отклонить</>
+                                                )}
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-6 shadow text-center">
+                                <SearchX className="w-16 h-16 mx-auto text-gray-500 dark:text-gray-400 mb-4" />
+                                <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">Заявки не найдены</h3>
+                                <p className="text-gray-600 dark:text-gray-400">Активнее продвигайте свою гильдию!</p>
+                            </div>
+                        )}
                     </div>
-                    {guildApplications.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                            {guildApplications.map((application:any) => (
-                                <div key={application.fk_profile} className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-4 shadow hover:shadow-md transition-shadow">
-                                    <div className="flex items-center gap-3 mb-4">
-                                        <Image
-                                            src={`https://minotar.net/helm/${application.nick}/150.png`}
-                                            alt={application.nick}
-                                            width={48}
-                                            height={48}
-                                            quality={100}
-                                            className="rounded-lg"
-                                        />
-                                        <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100">{application.nick}</h3>
-                                    </div>
-                                    <div className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                                        <p><span className="font-medium">О себе:</span> {application.about_user}</p>
-                                        <p><span className="font-medium">Почему выбрал:</span> {application.why_this_guild}</p>
-                                        <p><span className="font-medium">Дата заявки:</span> {new Date(application.create_data).toLocaleString("ru-RU")}</p>
-                                    </div>
-                                    <div className="flex gap-2">
-                                        <Button
-                                            onClick={() => handleApplication(application, true)}
-                                            disabled={isLoading}
-                                            variant="accent"
-                                            size="sm"
-                                            className="flex-1"
-                                        >
-                                            {isLoading ? (
-                                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
-                                            ) : (
-                                                <><Pencil className="w-4 h-4 mr-2" />Принять</>
-                                            )}
-                                        </Button>
-                                        <Button
-                                            onClick={() => handleApplication(application, false)}
-                                            disabled={isLoading}
-                                            variant="destructive"
-                                            size="sm"
-                                            className="flex-1"
-                                        >
-                                            {isLoading ? (
-                                                <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Выполняю...</>
-                                            ) : (
-                                                <><Trash className="w-4 h-4 mr-2" />Отклонить</>
-                                            )}
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="bg-neutral-100 dark:bg-neutral-800 rounded-lg p-6 shadow text-center">
-                            <SearchX className="w-16 h-16 mx-auto text-gray-500 dark:text-gray-400 mb-4" />
-                            <h3 className="text-xl font-medium text-gray-900 dark:text-gray-100 mb-2">Заявки не найдены</h3>
-                            <p className="text-gray-600 dark:text-gray-400">Активнее продвигайте свою гильдию!</p>
-                        </div>
-                    )}
-                </div>
+                )}
             </div>
         </div>
     );
