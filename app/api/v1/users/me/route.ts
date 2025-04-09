@@ -36,12 +36,6 @@ async function checkToken(token: any){
             hasFoxPlus = true;
         }
 
-        let hasAccess = false;
-        const userApplications : any = await query("SELECT * FROM verify_applications WHERE nickname = ? AND status = ?", [profile.nick, 'Принята'])
-        if ( userApplications.length > 0 ){
-            hasAccess = true;
-        }
-
         let inGuild = false;
         const userGuilds : any = await query("SELECT * FROM guilds_members WHERE uid = ?", [profile.id])
         if ( userGuilds.length > 0 ){
@@ -55,7 +49,6 @@ async function checkToken(token: any){
                 id: profile.id,
                 nick: profile.nick,
                 fk_uuid: profile.fk_uuid,
-                hasAccess,
                 hasAdmin,
                 hasFoxPlus,
                 inGuild
