@@ -3,8 +3,6 @@ import {
     FormState,
     GuildApplicationFormSchema,
     GuildApplicationFormState,
-    VerifyApplicationFormState,
-    VerifyApplicationFormSchema
 } from '@/lib/definitions'
 import { redirect } from "next/navigation";
 import { getGuild, getSession } from "@/app/actions/getDataHandlers";
@@ -141,7 +139,7 @@ export async function signup(state: FormState, formData: FormData) {
             token,
             {
                 nickname: username,
-                message: `Вы авторизовались под IP ${ip}`
+                message: `Вы авторизовались под IP${ip}`
             },
             "POST"
         );
