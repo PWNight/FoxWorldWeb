@@ -2,7 +2,7 @@
 import React from 'react';
 
 type Size = 'small' | 'medium' | 'large';
-type Color = 'blue' | 'red' | 'green' | 'gray';
+type Color = 'blue' | 'red' | 'green' | 'gray' | 'orange';
 
 interface LoadingSpinnerProps {
     text?: string;
@@ -29,6 +29,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
     const colorStyles: Record<Color, string> = {
         blue: 'border-t-blue-700 dark:border-t-blue-400 border-blue-200 dark:border-blue-800',
+        orange: 'border-t-orange-700 dark:border-t-orange-400 border-orange-200 dark:border-orange-800',
         red: 'border-t-red-700 dark:border-t-red-400 border-red-200 dark:border-red-800',
         green: 'border-t-green-700 dark:border-t-green-400 border-green-200 dark:border-green-800',
         gray: 'border-t-gray-700 dark:border-t-gray-400 border-gray-200 dark:border-gray-800'
@@ -36,7 +37,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
     const textColorStyles: Record<Color, string> = {
         gray: 'text-gray-800 dark:text-gray-200',
-        blue: 'text-blue-800 dark:text-blue-200',
+        blue: 'border-t-blue-700 dark:border-t-blue-400 border-blue-200 dark:border-blue-800',
+        orange: 'text-orange-800 dark:text-orange-200',
         red: 'text-red-800 dark:text-red-200',
         green: 'text-green-800 dark:text-green-200'
     };
@@ -61,7 +63,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             />
             <span
                 className={`
-          font-medium text-base
+          font-medium text-base text-center
           ${textColorStyles[textColor]}
         `}
             >
