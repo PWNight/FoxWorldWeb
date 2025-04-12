@@ -13,14 +13,25 @@ export default function MeLayout({ children }: PropsWithChildren) {
     const router = useRouter();
 
     useEffect(() => {
-        getSession().then((r) => {
+        // Функция для получения сессии
+        const fetchSession = async () => {
+            const r = await getSession();
             if (!r.success) {
                 router.push("/login?to=me");
                 return;
             }
             setSession(r.data);
             setIsAuthorized(true);
-        });
+        };
+
+        // Первоначальная загрузка
+        fetchSession();
+
+        // Установка интервала для обновления каждые 30 секунд
+        const intervalId = setInterval(fetchSession, 30_000);
+
+        // Очистка интервала при размонтировании компонента
+        return () => clearInterval(intervalId);
     }, [router]);
 
     if (isAuthorized === null) {
