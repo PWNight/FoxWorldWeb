@@ -22,7 +22,7 @@ export function Footer() {
                             FoxWorld © 2025
                         </p>
                         <p className="text-xs opacity-75 font-light">
-                            v1.0.0 PRE-3 (08.04.25)
+                            v1.0.0 PRE-4 (12.04.25)
                         </p>
                     </div>
                 </div>
