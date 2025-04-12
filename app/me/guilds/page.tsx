@@ -83,11 +83,11 @@ export default function MeGuilds() {
             </div>
 
             {userGuilds.length > 0 ? (
-                <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 w-fit">
+                <div className="grid gap-2 grid-cols-1 lg:grid-cols-2 w-full">
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}
-                            className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
+                            className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-4 px-4
                     dark:bg-neutral-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
                     bg-white border-zinc-200 hover:border-[#F38F54]
                     transition-all duration-300 shadow-md hover:shadow-lg w-full"
