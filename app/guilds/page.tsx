@@ -156,17 +156,12 @@ export default function Guilds() {
                                     </h1>
                                 </div>
                             </div>
-                            <div className="grid grid-cols-[1fr_.3fr] gap-3">
+                            <div className="grid grid-cols-[1fr_.3fr]  gap-4 justify-between">
                                 <div className="space-y-2">
                                     <h1 className='text-2xl font-bold dark:text-white text-black'>{guild.name}</h1>
                                     <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
                                     <ul className="list-inside list-disc text-sm space-y-1
                                 dark:text-zinc-300 text-zinc-700">
-                                        {guild.is_openProfile ? (
-                                            <li className="text-green-400">Открытый профиль</li>
-                                        ) : (
-                                            <li className="text-red-400">Закрытый профиль</li>
-                                        )}
                                         {guild.is_recruit ? (
                                             <li className="text-green-400">Принимает заявки</li>
                                         ) : (
@@ -182,17 +177,14 @@ export default function Guilds() {
                                     </ul>
                                 </div>
                                 {guild.badge_url && (
-                                    <div className={'flex justify-end'}>
-                                        <Image
-                                            src={guild.badge_url}
-                                            alt={`Эмблема ${guild.url}`}
-                                            width={100}
-                                            height={100}
-                                            objectFit={'cover'}
-                                            quality={100}
-                                            className={'rounded-lg overflow-hidden'}
-                                        />
-                                    </div>
+                                    <Image
+                                        src={guild.badge_url}
+                                        alt={`Эмблема ${guild.url}`}
+                                        width={100}
+                                        height={100}
+                                        quality={100}
+                                        className={'rounded-lg overflow-hidden h-full w-full'}
+                                    />
                                 )}
                             </div>
                         </div>

@@ -87,7 +87,7 @@ export default function MeGuilds() {
                     {userGuilds.map((guild: any) => (
                         <div
                             key={guild.url}
-                            className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-4 px-4
+                            className="flex flex-col justify-between gap-4 items-start border-2 rounded-lg py-6 px-4
                     dark:bg-neutral-800 dark:border-zinc-700 dark:hover:border-[#F38F54]
                     bg-white border-zinc-200 hover:border-[#F38F54]
                     transition-all duration-300 shadow-md hover:shadow-lg w-full"
@@ -110,18 +110,12 @@ export default function MeGuilds() {
                                     </div>
                                 </div>
 
-                                <div className="flex flex-row items-start gap-4 w-full">
-                                    <div className="flex-1 space-y-3">
-                                        <h3 className="text-xl font-bold text-gray-900 dark:text-gray-100">
-                                            {guild.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-300">{guild.info}</p>
-                                        <ul className="list-disc list-inside text-sm space-y-1 text-gray-600 dark:text-gray-300">
-                                            {guild.is_openProfile ? (
-                                                <li className="text-green-400">Открытый профиль</li>
-                                            ) : (
-                                                <li className="text-red-400">Закрытый профиль</li>
-                                            )}
+                                <div className="grid lg:grid-cols-[1fr_.2fr] grid-cols-[1fr_.3fr] gap-4 justify-between">
+                                    <div className="space-y-2">
+                                        <h1 className='text-2xl font-bold dark:text-white text-black'>{guild.name}</h1>
+                                        <p className="text-sm dark:text-zinc-300 text-zinc-700">{guild.info}</p>
+                                        <ul className="list-inside list-disc text-sm space-y-1
+                                dark:text-zinc-300 text-zinc-700">
                                             {guild.is_recruit ? (
                                                 <li className="text-green-400">Принимает заявки</li>
                                             ) : (
@@ -137,17 +131,14 @@ export default function MeGuilds() {
                                         </ul>
                                     </div>
                                     {guild.badge_url && (
-                                        <div className={'flex justify-end'}>
-                                            <Image
-                                                src={guild.badge_url}
-                                                alt={`Эмблема ${guild.url}`}
-                                                width={100}
-                                                height={100}
-                                                objectFit={'cover'}
-                                                quality={100}
-                                                className={'rounded-lg overflow-hidden'}
-                                            />
-                                        </div>
+                                        <Image
+                                            src={guild.badge_url}
+                                            alt={`Эмблема ${guild.url}`}
+                                            width={100}
+                                            height={100}
+                                            quality={100}
+                                            className={'rounded-lg overflow-hidden h-full w-full'}
+                                        />
                                     )}
                                 </div>
                             </div>
