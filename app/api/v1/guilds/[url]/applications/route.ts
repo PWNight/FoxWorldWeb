@@ -51,8 +51,8 @@ export async function GET(request: NextRequest, {params}: { params: Promise<{ ur
 export async function POST(request: NextRequest, {params}: { params: Promise<{ url: string }> }) {
     const {url} = await params;
     const data = await request.json();
-    const { status, user_id } = data;
-    if ( !status || !user_id ) {
+    const { status, uId } = data;
+    if ( !status || !uId ) {
         return NextResponse.json({ success: false, message: 'Ошибка валидации, отсутствует статус или айди пользователя' }, { status: 400 });
     }
 
@@ -79,20 +79,20 @@ export async function POST(request: NextRequest, {params}: { params: Promise<{ u
             return NextResponse.json({ success: false, message: 'У вас нету доступа к этой гильдии'}, { status: 400 });
         }
 
-        const [userGuild] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [user_id, guildData.id])
+        const [userGuild] : any = await query('SELECT permission FROM guilds_members WHERE uid = ? AND fk_guild = ?', [uId, guildData.id])
         if ( userGuild ){
             return NextResponse.json({ success: false, message: 'Пользователь уже является участником гильдии' },{status: 409})
         }
 
-        const [guildApplication] : any = await query('SELECT * FROM guilds_applications WHERE fk_guild = ? AND fk_profile = ?',[guildData.id, user_id])
+        const [guildApplication] : any = await query('SELECT * FROM guilds_applications WHERE fk_guild = ? AND fk_profile = ?',[guildData.id, uId])
         if ( !guildApplication ){
             return NextResponse.json({ success: false, message: 'Заявка не найдена' },{status: 400})
         }
 
-        await query('UPDATE guilds_applications SET status = ? WHERE fk_guild = ? AND fk_profile = ?',[status, guildData.id, user_id])
+        await query('UPDATE guilds_applications SET status = ? WHERE fk_guild = ? AND fk_profile = ?',[status, guildData.id, uId])
 
         if ( status == 'Принята' ) {
-            await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData.id, user_id, 0])
+            await query("INSERT INTO guilds_members (fk_guild, uid, permission) VALUES (?, ?, ?)", [guildData.id, uId, 0])
         }
         return NextResponse.json({ success: true, message: 'Заявка успешно обновлена' }, { status: 200 });
     } catch (error: any) {
