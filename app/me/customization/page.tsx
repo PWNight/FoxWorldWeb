@@ -1,29 +1,32 @@
-"use client"
+"use client";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import InDev from "@/components/indev";
-import {getSession} from "@/app/actions/getDataHandlers";
+import { useSession } from "@/context/SessionContext";
+import Loading from "@/components/loading";
 
-export default function MeBank() {
-    const [userData, setUserData] = useState(Object)
-    const router = useRouter()
+export default function MeCustomization() {
+    const { session, isAuthorized } = useSession();
+    const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(()=>{
-        getSession().then(async r => {
-            if ( !r.success ) {
-                router.push("/login?to=me/customization")
-                return
-            }
-            setUserData(r.data)
-        });
-        //TODO: Page loaded state update (in last async function)
-    },[router])
+    useEffect(() => {
+        if (isAuthorized !== null) {
+            setIsLoading(false);
+        }
+    }, [isAuthorized]);
 
-    if(Object.keys(userData).length != 0){
+    if (isLoading || !session) {
         return (
-            <div className="">
-                <InDev/>
-            </div>
-        )
+            <Loading
+                text={"Проверяем вашу сессию, пожалуйста, подождите.."}
+                color={"orange"}
+                className={"h-full w-full"}
+            />
+        );
     }
+
+    return (
+        <div>
+            <InDev />
+        </div>
+    );
 }
