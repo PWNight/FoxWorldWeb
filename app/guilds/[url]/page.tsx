@@ -60,7 +60,7 @@ export default function Guild(props: PageProps) {
 
             // Преобразование Markdown в HTML
             const { content } = await compileMDX({
-                source: guild.data.description || "",
+                source: guild.description || "",
                 options: {
                     mdxOptions: {
                         remarkPlugins: [remarkGfm],
@@ -92,7 +92,7 @@ export default function Guild(props: PageProps) {
         };
 
         fetchGuild();
-    }, [guild.data.description, props.params]);
+    }, [guild.description, props.params]);
 
     const handleClose = () => setNotifyMessage("");
 
