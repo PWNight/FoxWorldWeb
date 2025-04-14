@@ -26,7 +26,7 @@
     "gray-matter": "^4.0.3",
     "joi": "^17.13.3",
     "jose": "^6.0.6",
-    "lucide-react": "^0.487.0",
+    "lucide-react": "^0.488.0",
     "minecraft-rcon-client": "^3.0.0",
     "mysql2": "^3.12.0",
     "next": "^15.2.4",
