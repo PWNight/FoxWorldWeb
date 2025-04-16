@@ -14,8 +14,9 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
-        <link rel="shortcut icon" href="/logo.png" />
-        <title>FoxWorld</title>
+          <meta name="yandex-verification" content="ab60f1f29b3e713d" />
+          <link rel="shortcut icon" href="/logo.png" />
+          <title>FoxWorld</title>
       </head>
       <body
         className={`${GeistSans.variable} ${GeistMono.variable} font-regular antialiased tracking-wide min-h-screen grid grid-rows-[64px_1fr_74px]`}
