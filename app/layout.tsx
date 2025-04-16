@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="ru" suppressHydrationWarning>
       <head>
-          <meta name="yandex-verification" content="ab60f1f29b3e713d" />
+          <meta name="yandex-verification" content="c04ce28554a98387" />
           <link rel="shortcut icon" href="/logo.png" />
           <title>FoxWorld</title>
       </head>
