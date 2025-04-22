@@ -2,6 +2,7 @@ import { buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import {Metadata} from "next";
+import {ArrowRightIcon} from "lucide-react";
 
 export const metadata: Metadata = {
   title: "FW - Главная",
@@ -9,47 +10,36 @@ export const metadata: Metadata = {
 
 export default function Home() {
   return (
-    <div className="relative w-full h-full flex justify-center items-center"> {/* Контейнер центрируется по горизонтали и вертикали */}
-      <Image
-        src='/background.png'
-        alt='background'
-        fill
-        quality={100}
-        className="brightness-40 object-cover"
-      />
-      <div className="absolute flex flex-col sm:items-start justify-center gap-3 px-3"> {/* Текст выравнивается по левому краю */}
-        <div className="flex text-4xl sm:text-5xl font-bold gap-2 sm:items-center sm:flex-row flex-col text-white">
-          <h1 className="text-[#F38F54]">FoxWorld</h1>
-          <h1 className="sm:flex hidden">:</h1>
-          <h1>Новое начало</h1>
-        </div>
-        <h2 className="font-bold mb-4 sm:text-2xl text-white">
-          Minecraft проект с акцентом на качество и разнообразие
-        </h2>
-        <p className="mb-8 max-w-[300px] sm:max-w-[800px] text-white">
-          Наш проект предлагает вам дружелюбное пространство, где вы можете раскрыть свой творческий потенциал в ванильной среде Minecraft.
-        </p>
-        <div className="flex flex-col sm:flex-row sm:items-center gap-5">
-            <Link
-                href="/wiki/introduction/start-game"
-                className={buttonVariants({
-                    variant: "accent",
-                    className: "px-6 text-center",
-                    size: "lg",
+    <div className="min-h-screen bg-[#f39054] flex justify-center items-center">
+        <div className="w-[80%] flex flex-col gap-6 px-3 mx-auto">
+            <div className="max-w-4xl flex gap-2 items-center">
+                <Image src={'/logo.png'} width={120} height={120} alt={'logo'} className={'object-contain'} />
+                <h1 className={'text-8xl font-bold text-white'}>FoxWorld 2</h1>
+            </div>
+            <p className={'max-w-4xl text-3xl text-bold text-white'}>Ванилла+ проект с дружелюбным сообществом и акцентом на качество и свободу</p>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-5 mt-4">
+                <Link
+                    href="/wiki/introduction/start-game"
+                    className={buttonVariants({
+                        variant: "outline",
+                        className: "px-6 text-center",
+                        size: "lg",
+                    })}>
+                    Начать игру
+                </Link>
+                <Link
+                    href="/wiki/introduction/about"
+                    className={buttonVariants({
+                      variant: "link",
+                      className: "px-6 !text-xl text-center flex gap-2 text-white",
+                      size: "lg",
                 })}>
-                Начать игру
-            </Link>
-            <Link
-                href="/wiki/introduction/about"
-                className={buttonVariants({
-                  variant: "accent",
-                  className: "px-6 text-center",
-                  size: "lg",
-            })}>
-                О сервере
-            </Link>
+                    О сервере
+                    <ArrowRightIcon />
+                </Link>
+            </div>
+            <p className={'text-white'}>Сервер поддерживает вход с версий Java Edition 1.21 - 1.21.5. Версия сервера 1.21.4.</p>
         </div>
-      </div>
     </div>
   );
 }

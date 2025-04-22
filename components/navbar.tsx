@@ -50,8 +50,8 @@ export const NAVLINKS = [
 
 export function Navbar() {
     return (
-        <nav className="w-full p-2 px-6 flex items-center shadow-md text-gray-900 dark:text-white">
-            <div className="w-full h-full flex items-center justify-between gap-2">
+        <nav className="backdrop-blur-xl fixed top-0 z-50 grid h-18 w-full select-none items-center border-b transition bg-white dark:bg-neutral-900/80 backdrop-saturate-150 border-neutral-200/50 dark:border-neutral-700/75">
+            <div className="w-full h-full flex items-center justify-between gap-2 px-6">
                 <div className="flex items-center h-full gap-8">
                     <div className="sm:text-2xl text-lg">
                         <Logo />
@@ -96,14 +96,14 @@ export function NavMenu({ isSheet = false }) {
                 const Comp = (
                     <Anchor
                         key={item.title + item.href}
-                        activeClassName="text-orange-400 font-semibold rounded-md"
+                        activeClassName="!text-orange-400 font-semibold rounded-md"
                         absolute
-                        className="flex items-center gap-2 py-1.5 hover:text-[#F38F54] transition-all duration-200 group"
+                        className="flex items-center gap-2 py-1.5 text-black dark:text-white hover:text-[#F38F54] transition-all duration-200 group"
                         href={item.href}
                     >
-            <span className="group-[.active]:text-orange-400 transition-colors duration-200">
-              {item.icon}
-            </span>
+                        <span className="group-[.active]:text-orange-400 transition-colors duration-200">
+                            {item.icon}
+                        </span>
                         {item.title}
                     </Anchor>
                 );
