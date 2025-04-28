@@ -28,7 +28,7 @@
     "jose": "^6.0.10",
     "lucide-react": "^0.503.0",
     "minecraft-rcon-client": "^3.0.0",
-    "mysql2": "^3.14.0",
+    "mysql2": "^3.14.1",
     "next": "^15.3.1",
     "next-mdx-remote": "^5.0.0",
     "next-themes": "^0.4.6",
